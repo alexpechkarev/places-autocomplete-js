@@ -1,0 +1,42 @@
+{
+  "name": "places-autocomplete",
+  "version": "1.0.0",
+  "description": "A flexible and customizable JavaScript component leveraging the Google Maps Places (New) Autocomplete API to provide a user-friendly way to search for and retrieve detailed address information within your applications.",
+  "main": "dist/PacAutocomplete.min.js", 
+  "module": "src/PacAutocomplete.js",    
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build", 
+    "preview": "vite preview",
+    "lint": "eslint src/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpechkarev/places-autocomplete.git"
+  },
+  "keywords": [
+    "google-place-autocomplete",
+    "google-places-api",
+    "google-places-autocomplete-api",
+    "autocomplete",
+    "google-maps",
+    "places-autocomplete",
+    "location",
+    "geocoding",
+    "address",
+    "address-input",
+    "input",
+    "search",
+    "new api"
+  ],
+  "author": "Alexander Pechkarev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexpechkarev/places-autocomplete/issues"
+  },
+  "homepage": "https://github.com/alexpechkarev/places-autocomplete#readme",
+  "devDependencies": {
+    "vite": "^6.3.5",
+    "eslint": "^9.26.0"
+  }
+}

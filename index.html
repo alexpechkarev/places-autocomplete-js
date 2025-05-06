@@ -1,0 +1,55 @@
+<script type="module">
+    import { PacAutocomplete } from './src/PacAutocomplete.js';
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        try {
+            const myPac = new PacAutocomplete({
+                containerId: 'my-pac-container',
+                googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your Google Maps API key
+                options: { // Optional: Override default options
+                    placeholder: 'Enter an address...',
+                    debounce: 200,
+                    onData: (placeDetails) => {
+                        console.log('Place selected from module:', placeDetails);
+                        // Example: document.getElementById('address-field').value = placeDetails.formatted_address;
+                    },
+                    onError: (error) => {
+                        console.error('Error from module:', error.message);
+                    },
+                    classes: { // Override specific classes
+                        input:
+                            "border-1 w-full rounded-md border-0 shadow-sm bg-gray-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm",
+                    }
+                },
+                requestParams: { // Optional: Override default request parameters
+                    input: '', // The user's input text. Will be updated dynamically.
+                    includedRegionCodes: ['GB'], // Restrict search to Great Britain.
+                    language: 'en-gb', // Preferred language for results.
+                    region: 'GB' // Region biasing (GB).
+                    // sessionToken: undefined // Will be added/refreshed dynamically.
+                    // origin: undefined // Can be added for distance calculation.
+                    // locationBias: undefined
+                    // locationRestriction: undefined
+                }
+            });
+
+            // To programmatically clear:
+            // myPac.clear();
+
+            // To destroy and clean up:
+            // myPac.destroy();
+
+        } catch (error) {
+            console.error("Failed to initialize PAC:", error.message);
+            console.error("Error details:", error);
+        }
+    });
+</script>
+
+<div id="my-pac-container"></div>
+
+
+
+HAHAHA

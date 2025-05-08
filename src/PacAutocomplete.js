@@ -128,6 +128,8 @@ export class PacAutocomplete {
       ...config.requestParams, // User-defined request params override defaults
     };
 
+    //console.log(this.#request);
+
     this._init(); // Underscore prefix for internal initialization method
   }
 
@@ -174,7 +176,7 @@ export class PacAutocomplete {
    * @returns {string | null} Formatted distance string (e.g., "1.23 km") or null if input is invalid.
    */
   _formatDistance(distance, units) {
-    if (typeof distance !== "number" || !options.distance) {
+    if (typeof distance !== "number" || !this.#options.distance) {
       return null; // Return null if distance isn't shown or invalid
     }
     let value;
@@ -450,7 +452,7 @@ export class PacAutocomplete {
         .forEach((cl) => this.#kbdDown?.classList.add(cl));
       setTimeout(
         () =>
-          options.classes.kbd_active
+          this.#options.classes.kbd_active
             .split(" ")
             .forEach((cl) => this.#kbdDown?.classList.remove(cl)),
         300
@@ -490,7 +492,9 @@ export class PacAutocomplete {
         this.#currentSuggestion >= 0 &&
         this.#currentSuggestion < this.#allSuggestions.length
       ) {
-        this._onPlaceSelected(this.#allSuggestions[currentSuggestion].place);
+        this._onPlaceSelected(
+          this.#allSuggestions[this.#currentSuggestion].place
+        );
         // Reset is handled within onPlaceSelected via reset(true)
       }
     } else if (e.key === "Escape") {

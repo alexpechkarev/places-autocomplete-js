@@ -1,19 +1,9 @@
 {
   "name": "places-autocomplete",
+  "license": "MIT",
+  "type": "module",
   "version": "1.0.0",
   "description": "A flexible and customizable JavaScript component leveraging the Google Maps Places (New) Autocomplete API to provide a user-friendly way to search for and retrieve detailed address information within your applications.",
-  "main": "dist/PacAutocomplete.min.js", 
-  "module": "src/PacAutocomplete.js",    
-  "scripts": {
-    "dev": "vite dev",
-    "build": "vite build", 
-    "preview": "vite preview",
-    "lint": "eslint src/**/*.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alexpechkarev/places-autocomplete.git"
-  },
   "keywords": [
     "google-place-autocomplete",
     "google-places-api",
@@ -29,14 +19,48 @@
     "search",
     "new api"
   ],
-  "author": "Alexander Pechkarev",
-  "license": "MIT",
+  "homepage": "https://github.com/alexpechkarev/places-autocomplete#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpechkarev/places-autocomplete.git"
+  },
   "bugs": {
     "url": "https://github.com/alexpechkarev/places-autocomplete/issues"
   },
-  "homepage": "https://github.com/alexpechkarev/places-autocomplete#readme",
+  "author": {
+    "name": "Alexander Pechkarev",
+    "url": "https://github.com/alexpechkarev"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/PacAutocomplete.js",
+      "require": "./src/PacAutocomplete.js"
+    }
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+		"@alexpechkarev:registry": "https://npm.pkg.github.com",
+		"provenance": true
+	},
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/**/*.js"
+  },
+
   "devDependencies": {
+    "eslint": "^9.26.0",
     "vite": "^6.3.5",
-    "eslint": "^9.26.0"
-  }
+    "@tailwindcss/vite": "^4.1.5",
+    "tailwindcss": "^4.1.5",
+    "@tailwindcss/postcss": "^4.1.5",
+    "postcss": "^8.5.3"
+  },
+  "dependencies": {}
 }

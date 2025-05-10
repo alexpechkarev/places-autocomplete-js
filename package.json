@@ -5,7 +5,8 @@
   "version": "1.0.1",
   "description": "A flexible and customisable vanilla JavaScript library leveraging the Google Maps Places (New) Autocomplete API. This library provides a user-friendly way to search for and retrieve detailed address information in any web application.",
   "keywords": [
-    "place-autocomplete-js",
+    "place-autocomplete",
+    "places-autocomplete-js",
     "google-places-api",
     "google-places-autocomplete-api",
     "autocomplete",
@@ -34,12 +35,12 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/PlacesAutocompleteJs.umd.cjs",
-  "module": "./dist/PlacesAutocompleteJs.js",
+  "main": "./dist/places-autocomplete.umd.cjs",
+  "module": "./dist/places-autocomplete.js",
   "exports": {
     ".": {
-      "import": "./dist/PlacesAutocompleteJs.js",
-      "require": "./dist/PlacesAutocompleteJs.umd.cjs"
+      "import": "./dist/places-autocomplete.js",
+      "require": "./dist/places-autocomplete.umd.cjs"
     }
   },
   "scripts": {

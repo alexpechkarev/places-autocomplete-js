@@ -17,7 +17,7 @@ var e = (l, t, s) => (K(l, t, "read from private field"), s ? s.call(l) : t.get(
  *
  */
 var $, f, D, O, n, P, o, u, r, E, w, k, b, p, q, y, j;
-class J {
+class V {
   /**
    * Class constructor for PacAutocomplete.
    * Initializes the autocomplete widget with the provided configuration.
@@ -429,6 +429,6 @@ class J {
 }
 f = new WeakMap(), D = new WeakMap(), O = new WeakMap(), n = new WeakMap(), P = new WeakMap(), o = new WeakMap(), u = new WeakMap(), r = new WeakMap(), E = new WeakMap(), w = new WeakMap(), k = new WeakMap(), b = new WeakMap(), p = new WeakMap(), q = new WeakMap(), y = new WeakMap(), j = new WeakMap();
 export {
-  J as PlacesAutocompleteJs
+  V as PlacesAutocomplete
 };
-//# sourceMappingURL=places-autocomplete-js.js.map
+//# sourceMappingURL=places-autocomplete.js.map

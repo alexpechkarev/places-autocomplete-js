@@ -54,11 +54,11 @@ yarn add places-autocomplete-js
 
 ```javascript
 <script>
-import { PlacesAutocompleteJs } from 'places-autocomplete-js';
+import { PlacesAutocomplete } from 'places-autocomplete-js';
 
 document.addEventListener('DOMContentLoaded', () => {
   try {
-    const autocomplete = new PlacesAutocompleteJs({
+    const autocomplete = new PlacesAutocomplete({
       containerId: 'autocomplete-container',
       googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your actual key
       onResponse: (placeDetails) => {
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // autocomplete.destroy(); // To clean up
 
   } catch (error) {
-    console.error("Failed to initialize PlacesAutocompleteJs:", error.message);
+    console.error("Failed to initialize PlacesAutocomplete:", error.message);
   }
 });
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 ### Configuration
 
-The `PlacesAutocompleteJs` class is initialized with a configuration object.
+The `PlacesAutocomplete` class is initialized with a configuration object.
 
 | Parameter                | Type     | Required | Description                                                                                                |
 |--------------------------|----------|----------|------------------------------------------------------------------------------------------------------------|
@@ -138,7 +138,7 @@ Passed within the main configuration object under the `requestParams` key. These
 **Example `requestParams`:**
 
 ```javascript
-const autocomplete = new PlacesAutocompleteJs({
+const autocomplete = new PlacesAutocomplete({
   // ... other config
   requestParams: {
     language: 'fr',
@@ -182,7 +182,7 @@ Provide an object where keys are the component parts and values are the class st
 **Example: Overriding Classes**
 
 ```javascript
-const autocomplete = new PlacesAutocompleteJs({
+const autocomplete = new PlacesAutocomplete({
   // ... other config
   options: {
     classes: {
@@ -212,7 +212,7 @@ Then, style these classes in your CSS:
 
 ## Public Methods
 
-Instances of `PlacesAutocompleteJs` have the following public methods:
+Instances of `PlacesAutocomplete` have the following public methods:
 
 *   **`clear()`**: Clears the input field and any visible suggestions, and refreshes the session token.
 *   **`destroy()`**: Removes event listeners and cleans up DOM elements created by the widget. Useful when the component is no longer needed (e.g., in SPAs when a view is unmounted).

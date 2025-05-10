@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./index.css" rel="stylesheet">
     <script type="module">
-        //import { PlacesAutocompleteJs } from './PlacesAutocompleteJs.js';
-        //import { PlacesAutocompleteJs } from '.././dist/places-autocomplete-js.js';
-        import { PlacesAutocompleteJs } from 'places-autocomplete-js';
+        //import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        import { PlacesAutocomplete } from '.././dist/places-autocomplete.js';
+        
+
 
 
         document.addEventListener('DOMContentLoaded', () => {
 
             try {
-                const myPac = new PlacesAutocompleteJs({
+                const myPac = new PlacesAutocomplete({
                     containerId: 'my-pac-container',
                     googleMapsApiKey: 'YOUR_GOOGLE_MAPS_KEY', // Replace with your Google Maps API key
                     onResponse: (placeDetails) => {

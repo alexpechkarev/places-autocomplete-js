@@ -6,12 +6,12 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "lib/PlacesAutocompleteJs.js"),
+      entry: resolve(__dirname, "lib/PlacesAutocomplete.js"),
       //formats: ["es", "umd", "iife"],
-      name: "PlacesAutocompleteJs", // Global variable name for UMD/IIFE builds
+      name: "PlacesAutocomplete", // Global variable name for UMD/IIFE builds
       // the proper extensions will be added
       fileName: (format) =>
-        `places-autocomplete-js.${
+        `places-autocomplete.${
           format === "es" ? "js" : format === "umd" ? "umd.cjs" : format + ".js"
         }`,
     },

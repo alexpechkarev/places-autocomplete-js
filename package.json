@@ -3,7 +3,7 @@
   "license": "MIT",
   "type": "module",
   "version": "1.0.0",
-  "description": "A flexible and customizable JavaScript component leveraging the Google Maps Places (New) Autocomplete API to provide a user-friendly way to search for and retrieve detailed address information within your applications.",
+  "description": "A flexible and customizable vanilla JavaScript library leveraging the Google Maps Places (New) Autocomplete API. This library provides a user-friendly way to search for and retrieve detailed address information in any web application.",
   "keywords": [
     "place-autocomplete-js",
     "google-places-api",

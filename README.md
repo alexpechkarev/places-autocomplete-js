@@ -7,12 +7,9 @@ A flexible and customizable vanilla JavaScript library leveraging the [Google Ma
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
+## Demo
 
-
-## Places (New) Autocomplete – JavaScript Integration
-
-Simply include a single script tag and handle the response in your JavaScript code.
-[View Details](https://pacservice.pages.dev/) 
+See a live demo of the library in action: [Basic Example](https://pacservice.pages.dev/)
 
 
 ## Features
@@ -27,10 +24,6 @@ Simply include a single script tag and handle the response in your JavaScript co
 *   **Dynamic API Loading:** Loads the Google Maps API script on demand.
 
 
-
-## Demo
-
-See a live demo of the library in action: [Basic Example](https://pacservice.pages.dev/)
 
 
 ## Requirements

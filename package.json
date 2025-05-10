@@ -2,7 +2,7 @@
   "name": "places-autocomplete-js",
   "license": "MIT",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A flexible and customisable vanilla JavaScript library leveraging the Google Maps Places (New) Autocomplete API. This library provides a user-friendly way to search for and retrieve detailed address information in any web application.",
   "keywords": [
     "place-autocomplete",
@@ -20,7 +20,7 @@
     "search",
     "new api"
   ],
-  "homepage": "https://github.com/alexpechkarev/places-autocomplete-js#readme",
+  "homepage": "https://pacservice.pages.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexpechkarev/places-autocomplete-js.git"

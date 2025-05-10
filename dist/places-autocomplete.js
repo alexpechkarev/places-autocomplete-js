@@ -142,10 +142,10 @@ class V {
       // Debounce delay (ms) for API requests.
       ...t.options
       // User-defined options override defaults
-    }), t.options && t.options.classes && (e(this, n).classes = {
+    }), t.options && t.options.classes ? e(this, n).classes = {
       ...e(this, j),
       ...t.options.classes
-    }), c(this, q, t.onResponse || ((s) => {
+    } : e(this, n).classes = e(this, j), c(this, q, t.onResponse || ((s) => {
       console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(s, null, 2));
     })), c(this, y, t.onError || ((s) => {
       console.error("---------Default onError not provided---------"), console.error("PAC Error:", s);

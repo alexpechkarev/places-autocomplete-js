@@ -54,7 +54,7 @@ yarn add places-autocomplete-js
 
 ```javascript
 <script>
-import { PlacesAutocompleteJs } from 'places-autocomplete-js;
+import { PlacesAutocompleteJs } from 'places-autocomplete-js';
 
 document.addEventListener('DOMContentLoaded', () => {
   try {

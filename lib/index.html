@@ -6,44 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./index.css" rel="stylesheet">
     <script type="module">
-        import { PacAutocomplete } from './src/PacAutocomplete.js';
+        //import { PlacesAutocompleteJs } from './PlacesAutocompleteJs.js';
+        import { PlacesAutocompleteJs } from '.././dist/places-autocomplete-js.js';
 
 
         document.addEventListener('DOMContentLoaded', () => {
 
             try {
-                const myPac = new PacAutocomplete({
+                const myPac = new PlacesAutocompleteJs({
                     containerId: 'my-pac-container',
-                    googleMapsApiKey: 'YOUR_API_KEY', // Replace with your Google Maps API key
-                    options: { // Optional: Override default options
-                        placeholder: 'Enter an address...',
-                        debounce: 200,
-                        onData: (placeDetails) => {
-                            console.log('Place selected from module:', placeDetails);
-                           let rspContainer = document.getElementById('response-container');
-                            rspContainer.classList.remove('hidden');
-                            rspContainer.classList.add('block');
-                            let responseMessage = document.getElementById('response-message');
-                            responseMessage.innerHTML = `
+                    googleMapsApiKey: 'YOUR_GOOGLE_MAPS_KEY', // Replace with your Google Maps API key
+                    onResponse: (placeDetails) => {
+                        console.log('Place selected from module:', placeDetails);
+                        let rspContainer = document.getElementById('response-container');
+                        rspContainer.classList.remove('hidden');
+                        rspContainer.classList.add('block');
+                        let responseMessage = document.getElementById('response-message');
+                        responseMessage.innerHTML = `
                                         <div class="mt-2 text-sm text-green-700">
                                             <p>${JSON.stringify(placeDetails)}</p>
                                         </div>`;
-                            let errorContainer = document.getElementById('error-container');
-                            errorContainer.classList.remove('block');
-                            errorContainer.classList.add('hidden');
-                        },
-                        onError: (error) => {
-                            console.error('Error from module:', error.message);
-                            let errorContainer = document.getElementById('error-container');
-                            errorContainer.classList.remove('hidden');
-                            errorContainer.classList.add('block');
-                            let errorMessage = document.getElementById('error-message');
-                            errorMessage.innerHTML = `
+                        let errorContainer = document.getElementById('error-container');
+                        errorContainer.classList.remove('block');
+                        errorContainer.classList.add('hidden');
+                    },
+                    onError: (error) => {
+                        console.error('Error from module:', error.message);
+                        let errorContainer = document.getElementById('error-container');
+                        errorContainer.classList.remove('hidden');
+                        errorContainer.classList.add('block');
+                        let errorMessage = document.getElementById('error-message');
+                        errorMessage.innerHTML = `
                                         <div class="mt-2 text-sm text-red-700">
                                             <p>${error.message}</p>
                                         </div>`;
 
-                        },
+                    },
+                    options: { // Optional: Override default options
+                        placeholder: 'Start typing your address...',
+                        debounce: 200,
+
                         classes: { // Override specific classes
                             input:
                                 "border-1 w-full rounded-md border-0 shadow-sm bg-gray-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm",
@@ -58,11 +60,15 @@
                     }
                 });
 
-                // To programmatically clear:
-                // myPac.clear();
+                const btnClear = document.getElementById('btnClear');
+                const btnDestroy = document.getElementById('btnDestroy');
+                btnClear.addEventListener('click', () => {
+                    myPac.clear();
+                });
+                btnDestroy.addEventListener('click', () => {
+                    myPac.destroy();
+                });
 
-                // To destroy and clean up:
-                // myPac.destroy();
 
             } catch (error) {
                 console.error("Failed to initialize PAC:", error.message);
@@ -102,6 +108,18 @@
 
 
         <div id="my-pac-container"></div>
+
+
+        <div id="my-pac-container-two"></div>
+
+        <div class="flex items-center mt-10 gap-10">
+            <div>
+                <button id="btnClear">Clear</button>
+            </div>
+            <div>
+                <button id="btnDestroy">Destroy</button>
+            </div>
+        </div>
 
 
         <div class="rounded-md bg-green-50 p-4 hidden" id="response-container">

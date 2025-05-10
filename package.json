@@ -1,11 +1,11 @@
 {
-  "name": "places-autocomplete",
+  "name": "places-autocomplete-js",
   "license": "MIT",
   "type": "module",
   "version": "1.0.0",
   "description": "A flexible and customizable JavaScript component leveraging the Google Maps Places (New) Autocomplete API to provide a user-friendly way to search for and retrieve detailed address information within your applications.",
   "keywords": [
-    "google-place-autocomplete",
+    "place-autocomplete-js",
     "google-places-api",
     "google-places-autocomplete-api",
     "autocomplete",
@@ -19,47 +19,42 @@
     "search",
     "new api"
   ],
-  "homepage": "https://github.com/alexpechkarev/places-autocomplete#readme",
+  "homepage": "https://github.com/alexpechkarev/places-autocomplete-js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexpechkarev/places-autocomplete.git"
+    "url": "git+https://github.com/alexpechkarev/places-autocomplete-js.git"
   },
   "bugs": {
-    "url": "https://github.com/alexpechkarev/places-autocomplete/issues"
+    "url": "https://github.com/alexpechkarev/places-autocomplete-js/issues"
   },
   "author": {
     "name": "Alexander Pechkarev",
     "url": "https://github.com/alexpechkarev"
   },
-  "exports": {
-    ".": {
-      "import": "./src/PacAutocomplete.js",
-      "require": "./src/PacAutocomplete.js"
-    }
-  },
   "files": [
-    "src",
-    "dist",
-    "README.md",
-    "LICENSE"
+    "dist"
   ],
-  "publishConfig": {
-		"@alexpechkarev:registry": "https://npm.pkg.github.com",
-		"provenance": true
-	},
+  "main": "./dist/PlacesAutocompleteJs.umd.cjs",
+  "module": "./dist/PlacesAutocompleteJs.js",
+    "exports": {
+      ".": {
+        "import": "./dist/PlacesAutocompleteJs.js",
+        "require": "./lib/PlacesAutocompleteJs.umd.cjs"
+      }
+    },
+
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src/**/*.js"
   },
-
   "devDependencies": {
     "eslint": "^9.26.0",
     "vite": "^6.3.5",
-    "@tailwindcss/vite": "^4.1.5",
-    "tailwindcss": "^4.1.5",
-    "@tailwindcss/postcss": "^4.1.5",
+    "@tailwindcss/vite": "^4.1.6",
+    "tailwindcss": "^4.1.6",
+    "@tailwindcss/postcss": "^4.1.6",
     "postcss": "^8.5.3"
   },
   "dependencies": {}

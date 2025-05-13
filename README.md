@@ -12,6 +12,7 @@ It handles API loading, session tokens for cost-effective usage, fetching sugges
 See a live demo of the library in action: [Basic Example](https://pacservice.pages.dev/)
 
 
+
 ## Features
 
 *   Integrates with the modern **Google Places (New) Autocomplete API**.
@@ -75,11 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 
-{#if placesError}
-    <div class="error-message" role="alert">
-        Error: {placesError}
-    </div>
-{/if}
 ...
 <div id="autocomplete-container"></div>
 ...

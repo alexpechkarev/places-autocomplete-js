@@ -1,31 +1,15 @@
----
-# Feel free to add content and custom Front Matter to this file.
-# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-
-layout: default
----
 # Places (New) Autocomplete - JavaScript Library
 
 [![npm version](https://badge.fury.io/js/places-autocomplete-js.svg)](https://badge.fury.io/js/places-autocomplete-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
 A flexible and customizable vanilla JavaScript library leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). This library provides a user-friendly way to search for and retrieve detailed address information in any web application.
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
-## Live Demos
+## Demo
 
-Explore interactive examples of the Google Places Autocomplete JS library:
-
-A quick, editable sandbox to experiment with the core functionality:
-
-[![Try it on CodePen](https://img.shields.io/badge/Try%20it%20on-CodePen-blue?style=for-the-badge&logo=codepen)](https://codepen.io/alexpechkarev/pen/wBaMaMY)
-
-See a more comprehensive live demo of the library in action:  [pacservice.pages.dev](https://pacservice.pages.dev/)
-
-
-
+See a live demo of the library in action: [Basic Example](https://pacservice.pages.dev/)
 
 
 

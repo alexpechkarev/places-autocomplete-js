@@ -7,9 +7,16 @@ A flexible and customizable vanilla JavaScript library leveraging the [Google Ma
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
-## Demo
+## Live Demos
 
-See a live demo of the library in action: [Basic Example](https://pacservice.pages.dev/)
+Explore interactive examples of the Google Places Autocomplete JS library:
+
+A quick, editable sandbox to experiment with the core functionality:
+
+[![Try it on CodePen](https://img.shields.io/badge/Try%20it%20on-CodePen-blue?style=for-the-badge&logo=codepen)](https://codepen.io/alexpechkarev/pen/wBaMaMY)
+
+See a more comprehensive live demo of the library in action:  [pacservice.pages.dev](https://pacservice.pages.dev/)
+
 
 
 

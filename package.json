@@ -50,11 +50,11 @@
     "lint": "eslint src/**/*.js"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
-    "@tailwindcss/vite": "^4.1.7",
-    "eslint": "^9.27.0",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.7",
+    "@tailwindcss/postcss": "^4.1.8",
+    "@tailwindcss/vite": "^4.1.8",
+    "eslint": "^9.28.0",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^4.1.8",
     "vite": "^6.3.5",
     "dotenv": "^16.5.0"
   },

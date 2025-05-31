@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <link href="./index.css" rel="stylesheet">
+
     <script type="module">
         //import { PlacesAutocomplete } from './PlacesAutocomplete.js';
         import { PlacesAutocomplete } from '.././dist/places-autocomplete.js';
@@ -12,21 +15,17 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-
             try {
                 const myPac = new PlacesAutocomplete({
                     containerId: 'my-pac-container',
-                    googleMapsApiKey: 'GOOGLE_MAPSA_PI_KEY', // Replace with your Google Maps API key
+                    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, // Replace with your Google Maps API key
                     onResponse: (placeDetails) => {
                         console.log('Place selected from module:', placeDetails);
                         let rspContainer = document.getElementById('response-container');
                         rspContainer.classList.remove('hidden');
                         rspContainer.classList.add('block');
                         let responseMessage = document.getElementById('response-message');
-                        responseMessage.innerHTML = `
-                                        <div class="mt-2 text-sm text-green-700">
-                                            <p>${JSON.stringify(placeDetails)}</p>
-                                        </div>`;
+                        responseMessage.innerHTML = JSON.stringify(placeDetails, null, 4);
                         let errorContainer = document.getElementById('error-container');
                         errorContainer.classList.remove('block');
                         errorContainer.classList.add('hidden');
@@ -37,10 +36,7 @@
                         errorContainer.classList.remove('hidden');
                         errorContainer.classList.add('block');
                         let errorMessage = document.getElementById('error-message');
-                        errorMessage.innerHTML = `
-                                        <div class="mt-2 text-sm text-red-700">
-                                            <p>${error.message}</p>
-                                        </div>`;
+                        errorMessage.innerHTML = error.message;
 
                     },
                     options: { // Optional: Override default options
@@ -58,7 +54,7 @@
                         includedRegionCodes: ['GB'], // Restrict search to Great Britain.
                         language: 'en-gb', // Preferred language for results.
                         region: 'GB', // Region biasing (GB).
-                             origin: {
+                        origin: {
                             lat: 53.76538654312942,
                             lng: -3.0181503295898438
                         }
@@ -119,34 +115,25 @@
 
         <div class="flex items-center mt-10 gap-10">
             <div>
-                <button id="btnClear">Clear</button>
+                <button type="button" id="btnClear"
+                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Clear</button>
             </div>
             <div>
-                <button id="btnDestroy">Destroy</button>
+                <button type="button" id="btnDestroy"
+                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Destroy</button>
             </div>
         </div>
 
 
-        <div class="rounded-md bg-green-50 p-4 hidden" id="response-container">
-            <div class="flex">
-                <div class="shrink-0">
-                    <svg class="size-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        data-slot="icon">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-green-800">Response</h3>
-                    <div class="mt-2 text-sm text-green-700">
-                        <p id="response-message"></p>
-                    </div>
+        <div class="rounded-md bg-gray-100 mt-4 p-4 hidden" id="response-container">
 
-                </div>
-            </div>
+            <pre class="">
+                <code id="response-message" class="text-sm font-mono"></code>
+            </pre>
+
         </div>
     </div>
+
 
 
 

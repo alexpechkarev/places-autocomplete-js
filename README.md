@@ -100,6 +100,7 @@ The `PlacesAutocomplete` class is initialized with a configuration object.
 | `onError`                | `function` | No       | Callback function triggered when an error occurs. Receives an `Error` object or string. Default logs to console. |
 | `options`                | `object` | No       | Object to customize UI behavior and appearance. See "UI & Behavior Options" below.                         |
 | `requestParams`          | `object` | No       | Object to customize the parameters sent to the Google Places Autocomplete API. See "API Request Parameters" below. |
+| `fetchFields`          | `array` | No       | Array of Place Data Fields to request when a place is selected. Affects API cost. Default 	`['formattedAddress', 'addressComponents']` |
 
 ### UI & Behavior Options (`options`)
 
@@ -144,6 +145,21 @@ const autocomplete = new PlacesAutocomplete({
   }
 });
 ```
+ 
+### Fetch Fields (`fetchFields`)
+The `fetchFields` option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information.
+By default, the library fetches `['formattedAddress', 'addressComponents']`, but you can customize this based on your needs.
+
+**Example `fetchFields`:**
+
+```javascript
+const autocomplete = new PlacesAutocomplete({
+  // ... other config
+  fetchFields: ['formattedAddress', 'addressComponents', 'displayName'] // Fetch additional fields as needed
+});
+```
+
+
 
 ### Styling (`options.classes`)
 

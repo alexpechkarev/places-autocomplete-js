@@ -9,8 +9,8 @@
     <link href="./index.css" rel="stylesheet">
 
     <script type="module">
-        // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
-        import { PlacesAutocomplete } from '.././dist/places-autocomplete.js';
+        import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        // import { PlacesAutocomplete } from '.././dist/places-autocomplete.js';
 
 
         //console.log('PlacesAutocomplete module loaded:', import.meta.env);
@@ -59,7 +59,8 @@
                             lat: 53.76538654312942,
                             lng: -3.0181503295898438
                         }
-                    }
+                    },
+                    fetchFields: ["formattedAddress","addressComponents"], // Optional: Specify which fields to fetch
                 });
 
                 const btnClear = document.getElementById('btnClear');

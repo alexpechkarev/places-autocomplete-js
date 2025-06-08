@@ -18,7 +18,7 @@ A quick, editable sandbox to experiment with the core functionality:
 See a more comprehensive live demo of the library in action:  [pacservice.pages.dev](https://pacservice.pages.dev/)
 
 
-
+<img src="places-autocomplete-js.gif" alt="A video demonstrating the Places Autocomplete JavaScript component in action, showing address suggestions and selection.">
 
 ## Features
 
@@ -116,6 +116,8 @@ Passed within the main configuration object under the `options` key.
 | `autofocus`    | `boolean`                 | `false`                                   | If `true`, automatically focuses the input field on initialization.                                                              |
 | `autocomplete` | `string`                  | `'off'`                                   | Standard HTML `autocomplete` attribute for the input field.                                                                     |
 | `classes`      | `object`                  | *(See default classes below)*             | Object to override default CSS classes for styling. See "Styling" section.                                                      |
+| `clear_input`        | `boolean` | `true`      | If `true` (default), clears the input field after a suggestion is selected. If `false`, the input field retains the `formattedAddress` of the selected place.                                      |
+
 
 ### API Request Parameters (`requestParams`)
 
@@ -159,6 +161,17 @@ const autocomplete = new PlacesAutocomplete({
 });
 ```
 
+### Retain Input Value After Selection
+To keep the selected address visible in the input field after a suggestion is chosen. Set the `options.clear_input = false`.
+
+```javascript
+const autocomplete = new PlacesAutocomplete({
+  // ... other config
+  options: {
+    clear_input: false // Retain the input value after selection
+  }
+});
+```
 
 
 ### Styling (`options.classes`)

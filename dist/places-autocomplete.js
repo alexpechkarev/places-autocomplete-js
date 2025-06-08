@@ -16,7 +16,7 @@ var e = (c, t, s) => (B(c, t, "read from private field"), s ? s.call(c) : t.get(
  * @license MIT
  *
  */
-var H, M, C, O, j, n, A, r, u, l, x, E, w, f, p, F, g, R, z, D;
+var H, M, A, D, j, n, C, r, u, l, x, E, w, f, p, F, g, R, z, O;
 class Z {
   // Fields to fetch for the selected place (can be extended).
   /**
@@ -34,11 +34,11 @@ class Z {
     // --- Private Properties (using # or _ prefix by convention) ---
     h(this, M);
     // Container ID where the autocomplete widget will be rendered.
-    h(this, C);
-    h(this, O);
+    h(this, A);
+    h(this, D);
     h(this, j);
     h(this, n);
-    h(this, A);
+    h(this, C);
     h(this, r);
     h(this, u);
     h(this, l);
@@ -105,7 +105,7 @@ class Z {
       language: "en-gb",
       region: "GB"
     });
-    h(this, D, [
+    h(this, O, [
       // "displayName",
       "formattedAddress",
       "addressComponents"
@@ -119,30 +119,30 @@ class Z {
         this._reset(), e(this, r) && e(this, r).setAttribute("aria-expanded", "false");
         return;
       }
-      e(this, A).input = e(this, r).value;
+      e(this, C).input = e(this, r).value;
       try {
         const { suggestions: t } = (
           // eslint-disable-next-line no-undef
           await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
-            e(this, A)
+            e(this, C)
           )
         );
         t && t.length > 0 ? (e(this, l).replaceChildren(
           ...this._createSuggestionElements(t)
         ), e(this, l).style.display = "block", e(this, r).setAttribute("aria-expanded", "true")) : (this._reset(), e(this, r).setAttribute("aria-expanded", "false"));
       } catch (t) {
-        e(this, g).call(this, t), this._reset(), e(this, r) && e(this, r).setAttribute("aria-expanded", "false");
+        e(this, g).call(this, t), this._reset();
       }
     }, ((H = e(this, n)) == null ? void 0 : H.debounce) ?? 100));
     if (!t || !t.containerId || !t.googleMapsApiKey)
       throw new Error(
         "PacAutocomplete: Missing required configuration (containerId, googleMapsApiKey)."
       );
-    if (o(this, M, t.containerId), o(this, C, document.getElementById(t.containerId)), !e(this, C))
+    if (o(this, M, t.containerId), o(this, A, document.getElementById(t.containerId)), !e(this, A))
       throw new Error(
         `PacAutocomplete: Container element with ID "${t.containerId}" not found.`
       );
-    o(this, O, t.googleMapsApiKey), o(this, j, t.googleMapsApiVersion || "weekly"), o(this, n, {
+    o(this, D, t.googleMapsApiKey), o(this, j, t.googleMapsApiVersion || "weekly"), o(this, n, {
       autofocus: !1,
       // Automatically focus the input on load.
       autocomplete: "off",
@@ -157,27 +157,29 @@ class Z {
       // Optional label text above the input.
       debounce: 100,
       // Debounce delay (ms) for API requests.
+      clear_input: !0,
+      // Clear input button (not implemented in this version).
       ...t.options
       // User-defined options override defaults
     }), t.options && t.options.classes ? e(this, n).classes = {
       ...e(this, R),
       ...t.options.classes
-    } : e(this, n).classes = e(this, R), t.fetchFields && Array.isArray(t.fetchFields) && o(this, D, [
-      .../* @__PURE__ */ new Set([...e(this, D), ...t.fetchFields])
+    } : e(this, n).classes = e(this, R), t.fetchFields && Array.isArray(t.fetchFields) && o(this, O, [
+      .../* @__PURE__ */ new Set([...e(this, O), ...t.fetchFields])
     ].filter((s) => s)), o(this, F, t.onResponse || ((s) => {
       console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(s, null, 2));
     })), o(this, g, t.onError || ((s) => {
       console.error("---------Default onError not provided---------"), console.error("PAC Error:", s);
-    })), t.requestParams && Object.keys(t.requestParams).length > 0 ? o(this, A, {
+    })), t.requestParams && Object.keys(t.requestParams).length > 0 ? o(this, C, {
       ...e(this, z),
       ...t.requestParams
-    }) : o(this, A, { ...e(this, z) }), this._init();
+    }) : o(this, C, { ...e(this, z) }), this._init();
   }
   // --- Private Initialization Method ---
   async _init() {
     try {
       (typeof google > "u" || !google.maps) && await this._loadGoogleMapsApi({
-        key: e(this, O),
+        key: e(this, D),
         v: e(this, j)
       }), this._createPACStructure(), await this._initializeAutocomplete();
     } catch (t) {
@@ -252,7 +254,7 @@ class Z {
     }
     e(this, u).appendChild(e(this, r));
     const a = document.createElement("div");
-    a.className = e(this, n).classes.kbd_container, o(this, x, document.createElement("kbd")), e(this, x).className = e(this, n).classes.kbd_escape, e(this, x).textContent = "Esc", a.appendChild(e(this, x)), o(this, E, document.createElement("kbd")), e(this, E).className = e(this, n).classes.kbd_up, e(this, E).innerHTML = "&#8593;", a.appendChild(e(this, E)), o(this, w, document.createElement("kbd")), e(this, w).className = e(this, n).classes.kbd_down, e(this, w).innerHTML = "&#8595;", a.appendChild(e(this, w)), e(this, u).appendChild(a), o(this, l, document.createElement("ul")), e(this, l).id = "pacSuggestions", e(this, l).className = e(this, n).classes.ul, e(this, l).style.display = "none", e(this, l).setAttribute("role", "listbox"), e(this, u).appendChild(e(this, l)), e(this, C).appendChild(t), t.addEventListener("keydown", this._onKeyDown.bind(this));
+    a.className = e(this, n).classes.kbd_container, o(this, x, document.createElement("kbd")), e(this, x).className = e(this, n).classes.kbd_escape, e(this, x).textContent = "Esc", a.appendChild(e(this, x)), o(this, E, document.createElement("kbd")), e(this, E).className = e(this, n).classes.kbd_up, e(this, E).innerHTML = "&#8593;", a.appendChild(e(this, E)), o(this, w, document.createElement("kbd")), e(this, w).className = e(this, n).classes.kbd_down, e(this, w).innerHTML = "&#8595;", a.appendChild(e(this, w)), e(this, u).appendChild(a), o(this, l, document.createElement("ul")), e(this, l).id = "pacSuggestions", e(this, l).className = e(this, n).classes.ul, e(this, l).style.display = "none", e(this, l).setAttribute("role", "listbox"), e(this, u).appendChild(e(this, l)), e(this, A).appendChild(t), t.addEventListener("keydown", this._onKeyDown.bind(this));
   }
   /**
    * Initializes the core autocomplete functionality after the API is loaded.
@@ -278,8 +280,8 @@ class Z {
    * Resets the autocomplete input field, clears suggestions, and optionally refreshes the session token.
    * @param {boolean} [refresh=false] - Whether to refresh the Google Places session token.
    */
-  _reset(t = !1) {
-    o(this, p, -1), e(this, r) && (e(this, r).value = ""), o(this, f, []), o(this, p, -1), e(this, l) && (e(this, l).innerHTML = "", e(this, l).style.display = "none"), t && this._refreshToken();
+  _reset(t = !1, s = null) {
+    o(this, p, -1), e(this, r) && e(this, n).clear_input == !1 && s && s.formattedAddress ? e(this, r).value = s.formattedAddress : e(this, r) && (e(this, r).value = ""), e(this, r) && (e(this, r).setAttribute("aria-expanded", "false"), e(this, r).blur()), o(this, f, []), o(this, p, -1), e(this, l) && (e(this, l).innerHTML = "", e(this, l).style.display = "none"), t && this._refreshToken();
   }
   /**
    * Removes the 'current' highlighting classes from all suggestion list items (li) and their links (a).
@@ -297,8 +299,17 @@ class Z {
    * @param {KeyboardEvent} e - The keyboard event object.
    */
   _onKeyDown(t) {
-    if (!(!e(this, f).length || !e(this, l) || e(this, l).style.display === "none"))
-      if (this._resetLiClasses(), t.key === "ArrowDown") {
+    if (this._resetLiClasses(), t.key === "Escape" && (t.preventDefault(), e(this, n).classes.kbd_active.split(" ").forEach((s) => {
+      var i;
+      return (i = e(this, x)) == null ? void 0 : i.classList.add(s);
+    }), setTimeout(
+      () => e(this, n).classes.kbd_active.split(" ").forEach((s) => {
+        var i;
+        return (i = e(this, x)) == null ? void 0 : i.classList.remove(s);
+      }),
+      300
+    ), this._reset(!0)), !(!e(this, f).length || !e(this, l) || e(this, l).style.display === "none"))
+      if (t.key === "ArrowDown") {
         t.preventDefault(), o(this, p, Math.min(
           e(this, p) + 1,
           e(this, f).length - 1
@@ -335,18 +346,9 @@ class Z {
           }),
           300
         );
-      } else t.key === "Enter" ? (t.preventDefault(), e(this, p) >= 0 && e(this, p) < e(this, f).length && this._onPlaceSelected(
+      } else t.key === "Enter" && (t.preventDefault(), e(this, p) >= 0 && e(this, p) < e(this, f).length && this._onPlaceSelected(
         e(this, f)[e(this, p)].place
-      )) : t.key === "Escape" && (t.preventDefault(), e(this, n).classes.kbd_active.split(" ").forEach((s) => {
-        var i;
-        return (i = e(this, x)) == null ? void 0 : i.classList.add(s);
-      }), setTimeout(
-        () => e(this, n).classes.kbd_active.split(" ").forEach((s) => {
-          var i;
-          return (i = e(this, x)) == null ? void 0 : i.classList.remove(s);
-        }),
-        300
-      ), this._reset(!0));
+      ));
   }
   /**
    * Creates an array of list item (LI) elements for the suggestions dropdown.
@@ -407,15 +409,16 @@ class Z {
    * @param {google.maps.places.Place} place - The selected Place object.
    */
   async _onPlaceSelected(t) {
+    let s = null;
     try {
       await t.fetchFields({
-        fields: e(this, D)
+        fields: e(this, O)
         //["displayName", "formattedAddress", "addressComponents"], // Add more fields as needed
-      }), e(this, F).call(this, t.toJSON());
-    } catch (s) {
-      console.error("Error fetching place details:", s), e(this, g).call(this, s);
+      }), s = t.toJSON(), e(this, F).call(this, s);
+    } catch (i) {
+      console.error("Error fetching place details:", i), e(this, g).call(this, i);
     } finally {
-      this._reset(!0);
+      this._reset(!0, s);
     }
   }
   /**
@@ -424,7 +427,7 @@ class Z {
    */
   _refreshToken() {
     try {
-      e(this, A).sessionToken = new google.maps.places.AutocompleteSessionToken();
+      e(this, C).sessionToken = new google.maps.places.AutocompleteSessionToken();
     } catch (t) {
       console.error("Error creating session token:", t), e(this, g).call(this, t);
     }
@@ -436,13 +439,13 @@ class Z {
     e(this, r) && e(this, r).removeEventListener(
       "input",
       this._debouncedMakeAcRequest
-    ), e(this, C) && e(this, u) && e(this, C).removeChild(e(this, u).parentElement);
+    ), e(this, A) && e(this, u) && e(this, A).removeChild(e(this, u).parentElement);
     for (const t in this)
       Object.hasOwn(this, t) && (this[t] = null);
     console.log("PacAutocomplete instance destroyed.");
   }
 }
-M = new WeakMap(), C = new WeakMap(), O = new WeakMap(), j = new WeakMap(), n = new WeakMap(), A = new WeakMap(), r = new WeakMap(), u = new WeakMap(), l = new WeakMap(), x = new WeakMap(), E = new WeakMap(), w = new WeakMap(), f = new WeakMap(), p = new WeakMap(), F = new WeakMap(), g = new WeakMap(), R = new WeakMap(), z = new WeakMap(), D = new WeakMap();
+M = new WeakMap(), A = new WeakMap(), D = new WeakMap(), j = new WeakMap(), n = new WeakMap(), C = new WeakMap(), r = new WeakMap(), u = new WeakMap(), l = new WeakMap(), x = new WeakMap(), E = new WeakMap(), w = new WeakMap(), f = new WeakMap(), p = new WeakMap(), F = new WeakMap(), g = new WeakMap(), R = new WeakMap(), z = new WeakMap(), O = new WeakMap();
 export {
   Z as PlacesAutocomplete
 };

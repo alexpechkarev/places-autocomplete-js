@@ -26,7 +26,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/places-autocomplete-js/assets/css/style.css?v=de3fa8995e066c73f0db51b312115071c461a1ad">
+    <link rel="stylesheet" href="/places-autocomplete-js/assets/css/style.css?v=f509ce3007811fb739514f779f9813e064033231">
     <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
 
 <!-- Setup Google Analytics -->
@@ -73,6 +73,8 @@
 <p><a href="https://codepen.io/alexpechkarev/pen/wBaMaMY"><img src="https://img.shields.io/badge/Try%20it%20on-CodePen-blue?style=for-the-badge&amp;logo=codepen" alt="Try it on CodePen" /></a></p>
 
 <p>See a more comprehensive live demo of the library in action:  <a href="https://pacservice.pages.dev/">pacservice.pages.dev</a></p>
+
+<p><img src="places-autocomplete-js.gif" alt="A video demonstrating the Places Autocomplete JavaScript component in action, showing address suggestions and selection." /></p>
 
 <h2 id="features">Features</h2>
 
@@ -196,6 +198,12 @@ yarn add places-autocomplete-js
       <td>No</td>
       <td>Object to customize the parameters sent to the Google Places Autocomplete API. See “API Request Parameters” below.</td>
     </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fetchFields</code></td>
+      <td><code class="language-plaintext highlighter-rouge">array</code></td>
+      <td>No</td>
+      <td>Array of Place Data Fields to request when a place is selected. Affects API cost. Default 	<code class="language-plaintext highlighter-rouge">['formattedAddress', 'addressComponents']</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -261,6 +269,12 @@ yarn add places-autocomplete-js
       <td><em>(See default classes below)</em></td>
       <td>Object to override default CSS classes for styling. See “Styling” section.</td>
     </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">clear_input</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">true</code></td>
+      <td>If <code class="language-plaintext highlighter-rouge">true</code> (default), clears the input field after a suggestion is selected. If <code class="language-plaintext highlighter-rouge">false</code>, the input field retains the <code class="language-plaintext highlighter-rouge">formattedAddress</code> of the selected place.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -290,6 +304,29 @@ yarn add places-autocomplete-js
     <span class="na">region</span><span class="p">:</span> <span class="dl">'</span><span class="s1">ca</span><span class="dl">'</span><span class="p">,</span>
     <span class="na">includedRegionCodes</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">ca</span><span class="dl">'</span><span class="p">],</span>
     <span class="na">origin</span><span class="p">:</span> <span class="p">{</span> <span class="na">lat</span><span class="p">:</span> <span class="mf">45.5019</span><span class="p">,</span> <span class="na">lng</span><span class="p">:</span> <span class="o">-</span><span class="mf">73.5674</span> <span class="p">}</span> <span class="c1">// Montreal</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="fetch-fields-fetchfields">Fetch Fields (<code class="language-plaintext highlighter-rouge">fetchFields</code>)</h3>
+<p>The <code class="language-plaintext highlighter-rouge">fetchFields</code> option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information.
+By default, the library fetches <code class="language-plaintext highlighter-rouge">['formattedAddress', 'addressComponents']</code>, but you can customize this based on your needs.</p>
+
+<p><strong>Example <code class="language-plaintext highlighter-rouge">fetchFields</code>:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">autocomplete</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PlacesAutocomplete</span><span class="p">({</span>
+  <span class="c1">// ... other config</span>
+  <span class="na">fetchFields</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">formattedAddress</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">addressComponents</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">displayName</span><span class="dl">'</span><span class="p">]</span> <span class="c1">// Fetch additional fields as needed</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="retain-input-value-after-selection">Retain Input Value After Selection</h3>
+<p>To keep the selected address visible in the input field after a suggestion is chosen. Set the <code class="language-plaintext highlighter-rouge">options.clear_input = false</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">autocomplete</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PlacesAutocomplete</span><span class="p">({</span>
+  <span class="c1">// ... other config</span>
+  <span class="na">options</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">clear_input</span><span class="p">:</span> <span class="kc">false</span> <span class="c1">// Retain the input value after selection</span>
   <span class="p">}</span>
 <span class="p">});</span>
 </code></pre></div></div>

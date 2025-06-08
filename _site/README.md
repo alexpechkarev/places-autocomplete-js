@@ -7,9 +7,16 @@ A flexible and customizable vanilla JavaScript library leveraging the [Google Ma
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
-## Demo
+## Live Demos
 
-See a live demo of the library in action: [Basic Example](https://pacservice.pages.dev/)
+Explore interactive examples of the Google Places Autocomplete JS library:
+
+A quick, editable sandbox to experiment with the core functionality:
+
+[![Try it on CodePen](https://img.shields.io/badge/Try%20it%20on-CodePen-blue?style=for-the-badge&logo=codepen)](https://codepen.io/alexpechkarev/pen/wBaMaMY)
+
+See a more comprehensive live demo of the library in action:  [pacservice.pages.dev](https://pacservice.pages.dev/)
+
 
 
 
@@ -93,6 +100,7 @@ The `PlacesAutocomplete` class is initialized with a configuration object.
 | `onError`                | `function` | No       | Callback function triggered when an error occurs. Receives an `Error` object or string. Default logs to console. |
 | `options`                | `object` | No       | Object to customize UI behavior and appearance. See "UI & Behavior Options" below.                         |
 | `requestParams`          | `object` | No       | Object to customize the parameters sent to the Google Places Autocomplete API. See "API Request Parameters" below. |
+| `fetchFields`          | `array` | No       | Array of Place Data Fields to request when a place is selected. Affects API cost. Default 	`['formattedAddress', 'addressComponents']` |
 
 ### UI & Behavior Options (`options`)
 
@@ -137,6 +145,21 @@ const autocomplete = new PlacesAutocomplete({
   }
 });
 ```
+ 
+### Fetch Fields (`fetchFields`)
+The `fetchFields` option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information.
+By default, the library fetches `['formattedAddress', 'addressComponents']`, but you can customize this based on your needs.
+
+**Example `fetchFields`:**
+
+```javascript
+const autocomplete = new PlacesAutocomplete({
+  // ... other config
+  fetchFields: ['formattedAddress', 'addressComponents', 'displayName'] // Fetch additional fields as needed
+});
+```
+
+
 
 ### Styling (`options.classes`)
 

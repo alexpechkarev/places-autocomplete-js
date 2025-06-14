@@ -204,14 +204,14 @@ Provide an object where keys are the component parts and values are the class st
 *   `li_a_current`: Class added to the inner element when its `<li>` is current.
 *   `li_div_container`: Container div within the `<a>`/`<button>`.
 *   `li_div_one`: First inner div (usually contains the main text).
-*   `li_div_one_p`: The `<p>` tag containing the main suggestion text (`@html` is used).
+*   `li_div_one_p`: The `<p>` tag containing the main suggestion text.
 *   `li_div_two`: Second inner div (usually contains the distance).
 *   `li_div_two_p`: The `<p>` tag containing the distance text.
 *   `kbd_container`: Container for the keyboard hint keys (Esc, Up, Down).
 *   `kbd_escape`: The `<kbd>` tag for the 'Esc' hint.
 *   `kbd_up`: The `<kbd>` tag for the 'Up Arrow' hint.
 *   `kbd_down`: The `<kbd>` tag for the 'Down Arrow' hint.
-*   `highlight`: **(New)** The class applied to the `<span>` wrapping the matched text within suggestions. Defaults to `'font-bold'`.
+*   `highlight`: The class applied to the `<span>` wrapping the matched text within suggestions. Defaults to `'font-bold'`.
 
 **Example: Overriding Classes**
 

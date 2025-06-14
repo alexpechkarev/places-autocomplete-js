@@ -75,6 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Optional: You can interact with the instance later
     // autocomplete.clear();
     // autocomplete.destroy(); // To clean up
+    // autocomplete.setFetchFields(['types']); // Update fields to fetch
+    // autocomplete.getFetchFields(); // Get current fetch fields
     // autocomplete.setRequestParams({origin: { lat: 48.8566, lng: 2.3522 }}); // Set new request parameters
     // autocomplete.setOptions({ placeholder: 'Search for a place...' }); // Update options
     // autocomplete.getRequestParams(); // Get current request parameters

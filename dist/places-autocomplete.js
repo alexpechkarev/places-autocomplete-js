@@ -1,10 +1,10 @@
-var J = Object.defineProperty;
-var $ = (c) => {
+var U = Object.defineProperty;
+var B = (c) => {
   throw TypeError(c);
 };
-var U = (c, t, i) => t in c ? J(c, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : c[t] = i;
-var B = (c, t, i) => U(c, typeof t != "symbol" ? t + "" : t, i), H = (c, t, i) => t.has(c) || $("Cannot " + i);
-var e = (c, t, i) => (H(c, t, "read from private field"), i ? i.call(c) : t.get(c)), h = (c, t, i) => t.has(c) ? $("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(c) : t.set(c, i), l = (c, t, i, n) => (H(c, t, "write to private field"), n ? n.call(c, i) : t.set(c, i), i);
+var Z = (c, t, i) => t in c ? U(c, t, { enumerable: !0, configurable: !0, writable: !0, value: i }) : c[t] = i;
+var H = (c, t, i) => Z(c, typeof t != "symbol" ? t + "" : t, i), V = (c, t, i) => t.has(c) || B("Cannot " + i);
+var e = (c, t, i) => (V(c, t, "read from private field"), i ? i.call(c) : t.get(c)), h = (c, t, i) => t.has(c) ? B("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(c) : t.set(c, i), l = (c, t, i, n) => (V(c, t, "write to private field"), n ? n.call(c, i) : t.set(c, i), i);
 /**
  * Initializes a Places Autocomplete widget.
  * This script dynamically loads the Google Maps JavaScript API, creates the UI elements
@@ -16,8 +16,8 @@ var e = (c, t, i) => (H(c, t, "read from private field"), i ? i.call(c) : t.get(
  * @license MIT
  *
  */
-var V, N, x, R, F, s, E, a, u, o, f, b, _, g, p, z, k, G, O, j, D;
-class Q {
+var J, N, x, D, R, s, E, a, u, o, f, b, _, g, p, z, k, G, I, O, j, K;
+class W {
   // Fields to fetch for the selected place (can be extended).
   /**
    * Class constructor for PacAutocomplete.
@@ -35,8 +35,8 @@ class Q {
     h(this, N);
     // Container ID where the autocomplete widget will be rendered.
     h(this, x);
+    h(this, D);
     h(this, R);
-    h(this, F);
     h(this, s);
     h(this, E);
     h(this, a);
@@ -70,7 +70,7 @@ class Q {
       clear_input: !0
       // Clear input button (not implemented in this version).
     });
-    h(this, O, {
+    h(this, I, {
       // CSS classes for various parts of the widget.
       section: "",
       // Outer section container.
@@ -115,7 +115,7 @@ class Q {
       highlight: "font-bold"
       // Class for highlighting matched text in suggestions.
     });
-    h(this, j, {
+    h(this, O, {
       // Default parameters for the autocomplete request.
       input: "",
       // Initial input value (empty).
@@ -124,16 +124,13 @@ class Q {
       language: "en-gb",
       region: "GB"
     });
-    h(this, D, [
-      // "displayName",
-      "formattedAddress",
-      "addressComponents"
-    ]);
+    h(this, j, []);
+    h(this, K, ["formattedAddress", "addressComponents"]);
     /**
      * Debounced function to fetch autocomplete suggestions from the Google Places API.
      * Triggered by the 'input' event on the input element.
      */
-    B(this, "_debouncedMakeAcRequest", this._debounce(async () => {
+    H(this, "_debouncedMakeAcRequest", this._debounce(async () => {
       if (!e(this, a) || !e(this, a).value) {
         this._reset(), e(this, a) && e(this, a).setAttribute("aria-expanded", "false");
         return;
@@ -152,7 +149,7 @@ class Q {
       } catch (t) {
         e(this, k).call(this, t), this._reset();
       }
-    }, ((V = e(this, s)) == null ? void 0 : V.debounce) ?? 100));
+    }, ((J = e(this, s)) == null ? void 0 : J.debounce) ?? 100));
     if (!t || !t.containerId || !t.googleMapsApiKey)
       throw new Error(
         "PacAutocomplete: Missing required configuration (containerId, googleMapsApiKey)."
@@ -161,35 +158,42 @@ class Q {
       throw new Error(
         `PacAutocomplete: Container element with ID "${t.containerId}" not found.`
       );
-    l(this, R, t.googleMapsApiKey), l(this, F, t.googleMapsApiVersion || "weekly"), l(this, s, {
+    l(this, D, t.googleMapsApiKey), l(this, R, t.googleMapsApiVersion || "weekly"), l(this, s, {
       ...e(this, G),
       // Default options
       ...t.options
       // User-defined options override defaults
     }), t.options && t.options.classes ? e(this, s).classes = {
-      ...e(this, O),
+      ...e(this, I),
       ...t.options.classes
-    } : e(this, s).classes = e(this, O), t.fetchFields && Array.isArray(t.fetchFields) && l(this, D, [
-      .../* @__PURE__ */ new Set([...e(this, D), ...t.fetchFields])
-    ].filter((i) => i)), l(this, z, t.onResponse || ((i) => {
+    } : e(this, s).classes = e(this, I), t.fetchFields && Array.isArray(t.fetchFields) && this._setFetchFields(t.fetchFields), l(this, z, t.onResponse || ((i) => {
       console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(i, null, 2));
     })), l(this, k, t.onError || ((i) => {
       console.error("---------Default onError not provided---------"), console.error("PAC Error:", i);
     })), t.requestParams && Object.keys(t.requestParams).length > 0 ? l(this, E, {
-      ...e(this, j),
+      ...e(this, O),
       ...t.requestParams
-    }) : l(this, E, { ...e(this, j) }), this._init();
+    }) : l(this, E, { ...e(this, O) }), this._init();
   }
   // --- Private Initialization Method ---
   async _init() {
     try {
       (typeof google > "u" || !google.maps) && await this._loadGoogleMapsApi({
-        key: e(this, R),
-        v: e(this, F)
+        key: e(this, D),
+        v: e(this, R)
       }), this._createPACStructure(), await this._initializeAutocomplete();
     } catch (t) {
       e(this, k).call(this, t);
     }
+  }
+  /**
+   * Sets the fields to fetch for the selected place.
+   * @param {Array<string>} fields - The fields to fetch.
+   */
+  _setFetchFields(t) {
+    Array.isArray(t) && t.length > 0 && l(this, j, [
+      .../* @__PURE__ */ new Set([...e(this, K), ...t])
+    ].filter((i) => i));
   }
   /**
    * Creates a debounced version of a function.
@@ -227,24 +231,24 @@ class Q {
    * @param {object} g - Configuration object for the API loader (key, v, libraries, etc.).
    */
   async _loadGoogleMapsApi(t) {
-    var i, n, r, d = "The Google Maps JavaScript API", y = "google", M = "importLibrary", L = "__ib__", T = document, w = window;
+    var i, n, r, d = "The Google Maps JavaScript API", y = "google", F = "importLibrary", L = "__ib__", M = document, w = window;
     w = w[y] || (w[y] = {});
-    var A = w.maps || (w.maps = {}), S = /* @__PURE__ */ new Set(), q = new URLSearchParams(), I = () => (
+    var A = w.maps || (w.maps = {}), S = /* @__PURE__ */ new Set(), T = new URLSearchParams(), q = () => (
       // Function to initiate API loading (if not already started)
       i || // eslint-disable-next-line no-async-promise-executor
       (i = new Promise(async (C, m) => {
         var P;
-        n = T.createElement("script"), q.set("libraries", [...S].join(","));
+        n = M.createElement("script"), T.set("libraries", [...S].join(","));
         for (r in t)
-          q.set(
+          T.set(
             r.replace(/[A-Z]/g, (v) => "_" + v[0].toLowerCase()),
             // Convert camelCase to snake_case
             t[r]
           );
-        q.set("callback", y + ".maps." + L), n.src = `https://maps.${y}apis.com/maps/api/js?` + q, A[L] = C, n.onerror = () => i = m(Error(d + " could not load.")), n.nonce = ((P = T.querySelector("script[nonce]")) == null ? void 0 : P.nonce) || "", T.head.append(n);
+        T.set("callback", y + ".maps." + L), n.src = `https://maps.${y}apis.com/maps/api/js?` + T, A[L] = C, n.onerror = () => i = m(Error(d + " could not load.")), n.nonce = ((P = M.querySelector("script[nonce]")) == null ? void 0 : P.nonce) || "", M.head.append(n);
       }))
     );
-    A[M] ? console.warn(d + " only loads once. Ignoring:", t) : A[M] = (C, ...m) => S.add(C) && I().then(() => A[M](C, ...m));
+    A[F] ? console.warn(d + " only loads once. Ignoring:", t) : A[F] = (C, ...m) => S.add(C) && q().then(() => A[F](C, ...m));
   }
   // --- UI Creation ---
   _createPACStructure() {
@@ -375,12 +379,12 @@ class Q {
       d.className = e(this, s).classes.li_div_one, r.appendChild(d);
       const y = document.createElement("p");
       y.className = e(this, s).classes.li_div_one_p;
-      const M = i.placePrediction.text, L = M.text, T = M.matches;
+      const F = i.placePrediction.text, L = F.text, M = F.matches;
       let w = 0;
-      T.sort((v, K) => v.startOffset - K.startOffset);
+      M.sort((v, $) => v.startOffset - $.startOffset);
       const A = document.createElement("span"), S = document.createElement("span");
       S.classList = e(this, s).classes.highlight ?? "font-bold";
-      for (const v of T)
+      for (const v of M)
         A.textContent += L.substring(
           w,
           v.startOffset
@@ -388,21 +392,21 @@ class Q {
           v.startOffset,
           v.endOffset
         ), w = v.endOffset;
-      const q = document.createTextNode(
+      const T = document.createTextNode(
         L.substring(w)
       );
-      A.appendChild(S), A.appendChild(q), y.appendChild(A), d.appendChild(y), r.appendChild(d);
-      const I = document.createElement("div");
-      I.className = e(this, s).classes.li_div_two, r.appendChild(I);
+      A.appendChild(S), A.appendChild(T), y.appendChild(A), d.appendChild(y), r.appendChild(d);
+      const q = document.createElement("div");
+      q.className = e(this, s).classes.li_div_two, r.appendChild(q);
       const C = document.createElement("p");
       C.className = e(this, s).classes.li_div_two_p, C.textContent = this._formatDistance(
         i.placePrediction.distanceMeters,
         e(this, s).distance_units ?? "km"
-      ), I.appendChild(C);
+      ), q.appendChild(C);
       const m = document.createElement("a");
       m.href = "javascript:void(0)", m.tabIndex = n + 1, m.className = e(this, s).classes.li_a, m.addEventListener("click", () => {
         this._onPlaceSelected(i.placePrediction.toPlace());
-      }), m.appendChild(r), m.appendChild(I);
+      }), m.appendChild(r), m.appendChild(q);
       const P = document.createElement("li");
       return P.id = `option-${n + 1}`, P.className = e(this, s).classes.li, P.appendChild(m), P;
     });
@@ -417,7 +421,7 @@ class Q {
     let i = null;
     try {
       await t.fetchFields({
-        fields: e(this, D)
+        fields: e(this, j)
         //["displayName", "formattedAddress", "addressComponents"], // Add more fields as needed
       }), i = t.toJSON(), e(this, z).call(this, i);
     } catch (n) {
@@ -438,6 +442,26 @@ class Q {
     }
   }
   /**
+   * Sets the fields to be fetched for the selected place.
+   * This allows you to specify which details you want to retrieve
+   * when a place is selected, such as displayName, formattedAddress,
+   * addressComponents, etc.
+   * @param {Array<string>} fields - Array of field names to fetch.
+   */
+  setFetchFields(t) {
+    this._setFetchFields(t);
+  }
+  /**
+   * Gets the current fields that will be fetched for the selected place.
+   * This is useful for understanding what details will be available
+   * when a place is selected, such as displayName, formattedAddress,
+   * addressComponents, etc.
+   * @returns {Array<string>} The current fetch fields.
+   */
+  getFetchFields() {
+    return e(this, j);
+  }
+  /**
    * Sets the request parameters for the Places Autocomplete instance.
    * This method allows you to update the request parameters dynamically,
    * such as the input value, region codes, language, etc.
@@ -448,7 +472,7 @@ class Q {
    */
   setRequestParams(t) {
     typeof t == "object" && !Array.isArray(t) && t !== null && (t.input && typeof t.input == "string" && (e(this, a).value = t.input), l(this, E, {
-      ...e(this, j),
+      ...e(this, O),
       ...t
     }));
   }
@@ -493,7 +517,7 @@ class Q {
         "aria-activedescendant",
         e(this, s).aria_activedescendant || ""
       ), i && typeof i == "object" && Object.keys(i).length > 0 && (e(this, s).classes = {
-        ...e(this, O),
+        ...e(this, I),
         ...i
       }), e(this, u) && (e(this, u).className = e(this, s).classes.container), e(this, a) && (e(this, a).className = e(this, s).classes.input), e(this, o) && (e(this, o).className = e(this, s).classes.ul), e(this, f) && (e(this, f).className = e(this, s).classes.kbd_escape), e(this, b) && (e(this, b).className = e(this, s).classes.kbd_up), e(this, _) && (e(this, _).className = e(this, s).classes.kbd_down), e(this, x)) {
         const n = e(this, x).querySelector("section");
@@ -535,8 +559,8 @@ class Q {
     console.log("PacAutocomplete instance destroyed.");
   }
 }
-N = new WeakMap(), x = new WeakMap(), R = new WeakMap(), F = new WeakMap(), s = new WeakMap(), E = new WeakMap(), a = new WeakMap(), u = new WeakMap(), o = new WeakMap(), f = new WeakMap(), b = new WeakMap(), _ = new WeakMap(), g = new WeakMap(), p = new WeakMap(), z = new WeakMap(), k = new WeakMap(), G = new WeakMap(), O = new WeakMap(), j = new WeakMap(), D = new WeakMap();
+N = new WeakMap(), x = new WeakMap(), D = new WeakMap(), R = new WeakMap(), s = new WeakMap(), E = new WeakMap(), a = new WeakMap(), u = new WeakMap(), o = new WeakMap(), f = new WeakMap(), b = new WeakMap(), _ = new WeakMap(), g = new WeakMap(), p = new WeakMap(), z = new WeakMap(), k = new WeakMap(), G = new WeakMap(), I = new WeakMap(), O = new WeakMap(), j = new WeakMap(), K = new WeakMap();
 export {
-  Q as PlacesAutocomplete
+  W as PlacesAutocomplete
 };
 //# sourceMappingURL=places-autocomplete.js.map

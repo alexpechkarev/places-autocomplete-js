@@ -153,7 +153,7 @@ const autocomplete = new PlacesAutocomplete({
 ```
  
 ### Fetch Fields (`fetchFields`)
-The `fetchFields` option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information.
+The `fetchFields` option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information. See the [Place Class Data Fields](https://developers.google.com/maps/documentation/javascript/place-class-data-fields) for all available fields.
 By default, the library fetches `['formattedAddress', 'addressComponents']`, but you can customize this based on your needs.
 
 **Example `fetchFields`:**
@@ -162,6 +162,11 @@ By default, the library fetches `['formattedAddress', 'addressComponents']`, but
 const autocomplete = new PlacesAutocomplete({
   // ... other config
   fetchFields: ['formattedAddress', 'addressComponents', 'displayName'] // Fetch additional fields as needed
+});
+
+// Or
+autocomplete.setFetchFields({
+  fetchFields: ['formattedAddress', 'addressComponents', 'displayName'] // Update fetch fields dynamically
 });
 ```
 
@@ -240,7 +245,6 @@ Then, style these classes in your CSS:
 ```
 
 ## Public Methods
-## Public Methods
 
 Instances of `PlacesAutocomplete` have the following public methods:
 
@@ -253,6 +257,24 @@ Instances of `PlacesAutocomplete` have the following public methods:
     ```javascript
     autocomplete.destroy();
     ```
+
+*   **`setFetchFields(fields)`**: Dynamically updates the array of Place Data Fields to request when a place is selected. This allows you to change which details (e.g., `displayName`, `types`, `photos`) are retrieved after the instance has been initialised. Refer to the "Fetch Fields (`fetchFields`)" section and [Place Class Data Fields](https://developers.google.com/maps/documentation/javascript/place-class-data-fields) for available fields.
+    *   `fields` (Array<string>): An array of field names to fetch. These will be merged with the default fields (`formattedAddress`, `addressComponents`) and any existing fetch fields, ensuring uniqueness.
+    ```javascript
+    // Example: Update to fetch displayName and geometry in addition to defaults
+    autocomplete.setFetchFields(['displayName', 'types']);
+
+    // Example: Set a specific list of fields, overriding previous settings (while still including defaults)
+    autocomplete.setFetchFields(['regularOpeningHours', 'websiteURI']);
+    ```
+
+*   **`getFetchFields()`**: Retrieves the current array of Place Data Fields that will be requested when a place is selected.
+    ```javascript
+    const currentFetchFields = autocomplete.getFetchFields();
+    console.log('Current Fetch Fields:', currentFetchFields);
+    // Expected output might be: ['formattedAddress', 'addressComponents', 'regularOpeningHours', 'websiteURI']
+    // (depending on what was set via constructor or setFetchFields)
+    ```    
 
 *   **`setRequestParams(params)`**: Dynamically updates the parameters sent to the Google Places Autocomplete API. This allows you to change search criteria like language, region, or location bias after initialization.
     *   `params` (object): An object containing the API request parameters to update. These will be merged with existing request parameters. Refer to the "API Request Parameters (`requestParams`)" section for available options.

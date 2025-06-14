@@ -9,7 +9,7 @@
     <link href="./index.css" rel="stylesheet">
 
     <script type="module">
-        // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        //  import { PlacesAutocomplete } from './PlacesAutocomplete.js';
         import { PlacesAutocomplete } from '.././dist/places-autocomplete.js';
 
 
@@ -61,30 +61,18 @@
                             lng: -3.0181503295898438
                         }
                     },
-                    fetchFields: ["formattedAddress", "addressComponents"], // Optional: Specify which fields to fetch
+                    fetchFields: ["formattedAddress", "addressComponents",], // Optional: Specify which fields to fetch
                 });
 
                 const btnClear = document.getElementById('btnClear');
                 const btnDestroy = document.getElementById('btnDestroy');
                 const btnRequestParams = document.getElementById('btnRequestParams');
                 btnRequestParams.addEventListener('click', () => {
-                    myPac.setRequestParams({
-                        language: 'fr',
-                        region: 'ca',
-                        includedRegionCodes: ['ca'],
-                        origin: { lat: 45.5019, lng: -73.5674 } // Montreal
-                    });
+                    myPac.setFetchFields(["types", "regularOpeningHours"]);
+                    myPac.setFetchFields(["types"]);
 
-                    console.log('Request parameters updated:', myPac.getRequestParams());
+                    console.log('Request fetchFields updated:', myPac.getFetchFields());
 
-                    myPac.setOptions({
-                        placeholder: 'Enter your address...',
-                        classes: {
-                            input: "border-2 w-full rounded-md border-0 shadow-sm bg-red-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm",
-                        }
-                    });
-
-                    console.log('Options updated:', myPac.getOptions());
                 });
                 btnClear.addEventListener('click', () => {
                     myPac.clear();

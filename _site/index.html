@@ -26,7 +26,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/places-autocomplete-js/assets/css/style.css?v=f509ce3007811fb739514f779f9813e064033231">
+    <link rel="stylesheet" href="/places-autocomplete-js/assets/css/style.css?v=435cc5102e5aa71f06fbdb1e70ad239dfe487371">
     <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
 
 <!-- Setup Google Analytics -->
@@ -130,6 +130,12 @@ yarn add places-autocomplete-js
     <span class="c1">// Optional: You can interact with the instance later</span>
     <span class="c1">// autocomplete.clear();</span>
     <span class="c1">// autocomplete.destroy(); // To clean up</span>
+    <span class="c1">// autocomplete.setFetchFields(['types']); // Update fields to fetch</span>
+    <span class="c1">// autocomplete.getFetchFields(); // Get current fetch fields</span>
+    <span class="c1">// autocomplete.setRequestParams({origin: { lat: 48.8566, lng: 2.3522 }}); // Set new request parameters</span>
+    <span class="c1">// autocomplete.getRequestParams(); // Get current request parameters</span>
+    <span class="c1">// autocomplete.setOptions({ placeholder: 'Search for a place...' }); // Update options</span>
+    <span class="c1">// autocomplete.getOptions(); // Get current options</span>
 
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="dl">"</span><span class="s2">Failed to initialize PlacesAutocomplete:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
@@ -309,7 +315,7 @@ yarn add places-autocomplete-js
 </code></pre></div></div>
 
 <h3 id="fetch-fields-fetchfields">Fetch Fields (<code class="language-plaintext highlighter-rouge">fetchFields</code>)</h3>
-<p>The <code class="language-plaintext highlighter-rouge">fetchFields</code> option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information.
+<p>The <code class="language-plaintext highlighter-rouge">fetchFields</code> option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information. See the <a href="https://developers.google.com/maps/documentation/javascript/place-class-data-fields">Place Class Data Fields</a> for all available fields.
 By default, the library fetches <code class="language-plaintext highlighter-rouge">['formattedAddress', 'addressComponents']</code>, but you can customize this based on your needs.</p>
 
 <p><strong>Example <code class="language-plaintext highlighter-rouge">fetchFields</code>:</strong></p>
@@ -317,6 +323,11 @@ By default, the library fetches <code class="language-plaintext highlighter-roug
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">autocomplete</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PlacesAutocomplete</span><span class="p">({</span>
   <span class="c1">// ... other config</span>
   <span class="na">fetchFields</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">formattedAddress</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">addressComponents</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">displayName</span><span class="dl">'</span><span class="p">]</span> <span class="c1">// Fetch additional fields as needed</span>
+<span class="p">});</span>
+
+<span class="c1">// Or</span>
+<span class="nx">autocomplete</span><span class="p">.</span><span class="nx">setFetchFields</span><span class="p">({</span>
+  <span class="na">fetchFields</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">formattedAddress</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">addressComponents</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">displayName</span><span class="dl">'</span><span class="p">]</span> <span class="c1">// Update fetch fields dynamically</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
@@ -353,14 +364,14 @@ By default, the library fetches <code class="language-plaintext highlighter-roug
   <li><code class="language-plaintext highlighter-rouge">li_a_current</code>: Class added to the inner element when its <code class="language-plaintext highlighter-rouge">&lt;li&gt;</code> is current.</li>
   <li><code class="language-plaintext highlighter-rouge">li_div_container</code>: Container div within the <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code>/<code class="language-plaintext highlighter-rouge">&lt;button&gt;</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">li_div_one</code>: First inner div (usually contains the main text).</li>
-  <li><code class="language-plaintext highlighter-rouge">li_div_one_p</code>: The <code class="language-plaintext highlighter-rouge">&lt;p&gt;</code> tag containing the main suggestion text (<code class="language-plaintext highlighter-rouge">@html</code> is used).</li>
+  <li><code class="language-plaintext highlighter-rouge">li_div_one_p</code>: The <code class="language-plaintext highlighter-rouge">&lt;p&gt;</code> tag containing the main suggestion text.</li>
   <li><code class="language-plaintext highlighter-rouge">li_div_two</code>: Second inner div (usually contains the distance).</li>
   <li><code class="language-plaintext highlighter-rouge">li_div_two_p</code>: The <code class="language-plaintext highlighter-rouge">&lt;p&gt;</code> tag containing the distance text.</li>
   <li><code class="language-plaintext highlighter-rouge">kbd_container</code>: Container for the keyboard hint keys (Esc, Up, Down).</li>
   <li><code class="language-plaintext highlighter-rouge">kbd_escape</code>: The <code class="language-plaintext highlighter-rouge">&lt;kbd&gt;</code> tag for the ‘Esc’ hint.</li>
   <li><code class="language-plaintext highlighter-rouge">kbd_up</code>: The <code class="language-plaintext highlighter-rouge">&lt;kbd&gt;</code> tag for the ‘Up Arrow’ hint.</li>
   <li><code class="language-plaintext highlighter-rouge">kbd_down</code>: The <code class="language-plaintext highlighter-rouge">&lt;kbd&gt;</code> tag for the ‘Down Arrow’ hint.</li>
-  <li><code class="language-plaintext highlighter-rouge">highlight</code>: <strong>(New)</strong> The class applied to the <code class="language-plaintext highlighter-rouge">&lt;span&gt;</code> wrapping the matched text within suggestions. Defaults to <code class="language-plaintext highlighter-rouge">'font-bold'</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">highlight</code>: The class applied to the <code class="language-plaintext highlighter-rouge">&lt;span&gt;</code> wrapping the matched text within suggestions. Defaults to <code class="language-plaintext highlighter-rouge">'font-bold'</code>.</li>
 </ul>
 
 <p><strong>Example: Overriding Classes</strong></p>
@@ -397,8 +408,80 @@ By default, the library fetches <code class="language-plaintext highlighter-roug
 <p>Instances of <code class="language-plaintext highlighter-rouge">PlacesAutocomplete</code> have the following public methods:</p>
 
 <ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">clear()</code></strong>: Clears the input field and any visible suggestions, and refreshes the session token.</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">destroy()</code></strong>: Removes event listeners and cleans up DOM elements created by the widget. Useful when the component is no longer needed (e.g., in SPAs when a view is unmounted).</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">clear()</code></strong>: Clears the input field and any visible suggestions, and refreshes the session token.
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">autocomplete</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">destroy()</code></strong>: Removes event listeners and cleans up DOM elements created by the widget. Useful when the component is no longer needed (e.g., in SPAs when a view is unmounted).
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">autocomplete</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">setFetchFields(fields)</code></strong>: Dynamically updates the array of Place Data Fields to request when a place is selected. This allows you to change which details (e.g., <code class="language-plaintext highlighter-rouge">displayName</code>, <code class="language-plaintext highlighter-rouge">types</code>, <code class="language-plaintext highlighter-rouge">photos</code>) are retrieved after the instance has been initialised. Refer to the “Fetch Fields (<code class="language-plaintext highlighter-rouge">fetchFields</code>)” section and <a href="https://developers.google.com/maps/documentation/javascript/place-class-data-fields">Place Class Data Fields</a> for available fields.
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">fields</code> (Array<string>): An array of field names to fetch. These will be merged with the default fields (`formattedAddress`, `addressComponents`) and any existing fetch fields, ensuring uniqueness.
+```javascript
+// Example: Update to fetch displayName and geometry in addition to defaults
+autocomplete.setFetchFields(['displayName', 'types']);</string></li>
+    </ul>
+
+    <p>// Example: Set a specific list of fields, overriding previous settings (while still including defaults)
+autocomplete.setFetchFields([‘regularOpeningHours’, ‘websiteURI’]);
+```</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">getFetchFields()</code></strong>: Retrieves the current array of Place Data Fields that will be requested when a place is selected.
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">currentFetchFields</span> <span class="o">=</span> <span class="nx">autocomplete</span><span class="p">.</span><span class="nx">getFetchFields</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Current Fetch Fields:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">currentFetchFields</span><span class="p">);</span>
+<span class="c1">// Expected output might be: ['formattedAddress', 'addressComponents', 'regularOpeningHours', 'websiteURI']</span>
+<span class="c1">// (depending on what was set via constructor or setFetchFields)</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">setRequestParams(params)</code></strong>: Dynamically updates the parameters sent to the Google Places Autocomplete API. This allows you to change search criteria like language, region, or location bias after initialization.
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">params</code> (object): An object containing the API request parameters to update. These will be merged with existing request parameters. Refer to the “API Request Parameters (<code class="language-plaintext highlighter-rouge">requestParams</code>)” section for available options.
+```javascript
+// Example: Change the search region and language
+autocomplete.setRequestParams({
+  region: ‘fr’,
+  language: ‘fr’,
+  includedRegionCodes: [‘fr’]
+});</li>
+    </ul>
+
+    <p>// Example: Set an origin for distance calculations
+autocomplete.setRequestParams({
+  origin: { lat: 48.8566, lng: 2.3522 } // Paris
+});
+```</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">getRequestParams()</code></strong>: Retrieves the current API request parameters being used by the instance.
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">currentRequestParams</span> <span class="o">=</span> <span class="nx">autocomplete</span><span class="p">.</span><span class="nx">getRequestParams</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Current API Request Params:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">currentRequestParams</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">setOptions(options)</code></strong>: Dynamically updates the UI behavior and appearance options of the widget. This allows you to change things like the placeholder text, debounce timing, or CSS classes after initialization.
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">options</code> (object): An object containing the UI and behavior options to update. These will be merged with existing options. Refer to the “UI &amp; Behavior Options (<code class="language-plaintext highlighter-rouge">options</code>)” section for available options.
+```javascript
+// Example: Change the placeholder text and debounce time
+autocomplete.setOptions({
+  placeholder: ‘Search for a location in France…’,
+  debounce: 250
+});</li>
+    </ul>
+
+    <p>// Example: Update CSS classes for the input
+autocomplete.setOptions({
+  classes: {
+    input: ‘new-custom-input-style’
+  }
+});
+```</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">getOptions()</code></strong>: Retrieves the current UI and behavior options being used by the instance.
+    <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">currentOptions</span> <span class="o">=</span> <span class="nx">autocomplete</span><span class="p">.</span><span class="nx">getOptions</span><span class="p">();</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Current UI Options:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">currentOptions</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
 </ul>
 
 <h2 id="google-places-api--billing">Google Places API &amp; Billing</h2>

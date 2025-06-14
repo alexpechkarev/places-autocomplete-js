@@ -2,7 +2,7 @@
   "name": "places-autocomplete-js",
   "license": "MIT",
   "type": "module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A flexible and customisable vanilla JavaScript library leveraging the Google Maps Places (New) Autocomplete API. This library provides a user-friendly way to search for and retrieve detailed address information in any web application.",
   "keywords": [
     "place-autocomplete",
@@ -50,11 +50,11 @@
     "lint": "eslint src/**/*.js"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.8",
-    "@tailwindcss/vite": "^4.1.8",
-    "eslint": "^9.28.0",
-    "postcss": "^8.5.4",
-    "tailwindcss": "^4.1.8",
+    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/vite": "^4.1.10",
+    "eslint": "^9.29.0",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^4.1.10",
     "vite": "^6.3.5",
     "dotenv": "^16.5.0"
   },

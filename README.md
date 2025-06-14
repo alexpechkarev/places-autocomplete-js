@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Optional: You can interact with the instance later
     // autocomplete.clear();
     // autocomplete.destroy(); // To clean up
+    // autocomplete.setRequestParams({origin: { lat: 48.8566, lng: 2.3522 }}); // Set new request parameters
+    // autocomplete.setOptions({ placeholder: 'Search for a place...' }); // Update options
+    // autocomplete.getRequestParams(); // Get current request parameters
+    // autocomplete.getOptions(); // Get current options
 
   } catch (error) {
     console.error("Failed to initialize PlacesAutocomplete:", error.message);
@@ -236,11 +240,64 @@ Then, style these classes in your CSS:
 ```
 
 ## Public Methods
+## Public Methods
 
 Instances of `PlacesAutocomplete` have the following public methods:
 
 *   **`clear()`**: Clears the input field and any visible suggestions, and refreshes the session token.
+    ```javascript
+    autocomplete.clear();
+    ```
+
 *   **`destroy()`**: Removes event listeners and cleans up DOM elements created by the widget. Useful when the component is no longer needed (e.g., in SPAs when a view is unmounted).
+    ```javascript
+    autocomplete.destroy();
+    ```
+
+*   **`setRequestParams(params)`**: Dynamically updates the parameters sent to the Google Places Autocomplete API. This allows you to change search criteria like language, region, or location bias after initialization.
+    *   `params` (object): An object containing the API request parameters to update. These will be merged with existing request parameters. Refer to the "API Request Parameters (`requestParams`)" section for available options.
+    ```javascript
+    // Example: Change the search region and language
+    autocomplete.setRequestParams({
+      region: 'fr',
+      language: 'fr',
+      includedRegionCodes: ['fr']
+    });
+
+    // Example: Set an origin for distance calculations
+    autocomplete.setRequestParams({
+      origin: { lat: 48.8566, lng: 2.3522 } // Paris
+    });
+    ```
+
+*   **`getRequestParams()`**: Retrieves the current API request parameters being used by the instance.
+    ```javascript
+    const currentRequestParams = autocomplete.getRequestParams();
+    console.log('Current API Request Params:', currentRequestParams);
+    ```
+
+*   **`setOptions(options)`**: Dynamically updates the UI behavior and appearance options of the widget. This allows you to change things like the placeholder text, debounce timing, or CSS classes after initialization.
+    *   `options` (object): An object containing the UI and behavior options to update. These will be merged with existing options. Refer to the "UI & Behavior Options (`options`)" section for available options.
+    ```javascript
+    // Example: Change the placeholder text and debounce time
+    autocomplete.setOptions({
+      placeholder: 'Search for a location in France...',
+      debounce: 250
+    });
+
+    // Example: Update CSS classes for the input
+    autocomplete.setOptions({
+      classes: {
+        input: 'new-custom-input-style'
+      }
+    });
+    ```
+
+*   **`getOptions()`**: Retrieves the current UI and behavior options being used by the instance.
+    ```javascript
+    const currentOptions = autocomplete.getOptions();
+    console.log('Current UI Options:', currentOptions);
+    ```
 
 ## Google Places API & Billing
 

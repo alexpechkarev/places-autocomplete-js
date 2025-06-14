@@ -124,7 +124,7 @@ class W {
       language: "en-gb",
       region: "GB"
     });
-    h(this, j, []);
+    h(this, j, ["formattedAddress", "addressComponents"]);
     h(this, K, ["formattedAddress", "addressComponents"]);
     /**
      * Debounced function to fetch autocomplete suggestions from the Google Places API.

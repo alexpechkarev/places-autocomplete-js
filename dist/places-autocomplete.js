@@ -16,7 +16,7 @@ var e = (c, t, i) => (V(c, t, "read from private field"), i ? i.call(c) : t.get(
  * @license MIT
  *
  */
-var J, M, A, D, R, s, C, a, u, o, y, v, x, k, p, z, L, G, I, O, j, K;
+var J, M, A, D, R, s, C, a, u, o, y, v, x, k, p, z, L, G, T, O, j, K;
 class W {
   // Fields to fetch for the selected place (can be extended).
   /**
@@ -70,7 +70,7 @@ class W {
       clear_input: !0
       // Clear input button (not implemented in this version).
     });
-    h(this, I, {
+    h(this, T, {
       // CSS classes for various parts of the widget.
       section: "",
       // Outer section container.
@@ -164,9 +164,9 @@ class W {
       ...t.options
       // User-defined options override defaults
     }), t.options && t.options.classes ? e(this, s).classes = {
-      ...e(this, I),
+      ...e(this, T),
       ...t.options.classes
-    } : e(this, s).classes = e(this, I), t.fetchFields && Array.isArray(t.fetchFields) && this._setFetchFields(t.fetchFields), l(this, z, t.onResponse || ((i) => {
+    } : e(this, s).classes = e(this, T), t.fetchFields && Array.isArray(t.fetchFields) && this._setFetchFields(t.fetchFields), l(this, z, t.onResponse || ((i) => {
       console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(i, null, 2));
     })), l(this, L, t.onError || ((i) => {
       console.error("---------Default onError not provided---------"), console.error("PAC Error:", i);
@@ -233,22 +233,22 @@ class W {
   async _loadGoogleMapsApi(t) {
     var i, n, r, d = "The Google Maps JavaScript API", m = "google", S = "importLibrary", E = "__ib__", _ = document, f = window;
     f = f[m] || (f[m] = {});
-    var b = f.maps || (f.maps = {}), N = /* @__PURE__ */ new Set(), T = new URLSearchParams(), q = () => (
+    var b = f.maps || (f.maps = {}), N = /* @__PURE__ */ new Set(), q = new URLSearchParams(), I = () => (
       // Function to initiate API loading (if not already started)
       i || // eslint-disable-next-line no-async-promise-executor
       (i = new Promise(async (P, g) => {
         var F;
-        n = _.createElement("script"), T.set("libraries", [...N].join(","));
+        n = _.createElement("script"), q.set("libraries", [...N].join(","));
         for (r in t)
-          T.set(
+          q.set(
             r.replace(/[A-Z]/g, (w) => "_" + w[0].toLowerCase()),
             // Convert camelCase to snake_case
             t[r]
           );
-        T.set("callback", m + ".maps." + E), n.src = `https://maps.${m}apis.com/maps/api/js?` + T, b[E] = P, n.onerror = () => i = g(Error(d + " could not load.")), n.nonce = ((F = _.querySelector("script[nonce]")) == null ? void 0 : F.nonce) || "", _.head.append(n);
+        q.set("callback", m + ".maps." + E), n.src = `https://maps.${m}apis.com/maps/api/js?` + q, b[E] = P, n.onerror = () => i = g(Error(d + " could not load.")), n.nonce = ((F = _.querySelector("script[nonce]")) == null ? void 0 : F.nonce) || "", _.head.append(n);
       }))
     );
-    b[S] ? console.warn(d + " only loads once. Ignoring:", t) : b[S] = (P, ...g) => N.add(P) && q().then(() => b[S](P, ...g));
+    b[S] ? console.warn(d + " only loads once. Ignoring:", t) : b[S] = (P, ...g) => N.add(P) && I().then(() => b[S](P, ...g));
   }
   // --- UI Creation ---
   _createPACStructure() {
@@ -392,21 +392,21 @@ class W {
           w.startOffset,
           w.endOffset
         ), f = w.endOffset;
-      const T = document.createTextNode(
+      const q = document.createTextNode(
         E.substring(f)
       );
-      b.appendChild(N), b.appendChild(T), m.appendChild(b), d.appendChild(m), r.appendChild(d);
-      const q = document.createElement("div");
-      q.className = e(this, s).classes.li_div_two, r.appendChild(q);
+      b.appendChild(N), b.appendChild(q), m.appendChild(b), d.appendChild(m), r.appendChild(d);
+      const I = document.createElement("div");
+      I.className = e(this, s).classes.li_div_two, r.appendChild(I);
       const P = document.createElement("p");
       P.className = e(this, s).classes.li_div_two_p, P.textContent = this._formatDistance(
         i.placePrediction.distanceMeters,
         e(this, s).distance_units ?? "km"
-      ), q.appendChild(P);
+      ), I.appendChild(P);
       const g = document.createElement("a");
       g.href = "javascript:void(0)", g.tabIndex = n + 1, g.className = e(this, s).classes.li_a, g.addEventListener("click", () => {
         this._onPlaceSelected(i.placePrediction.toPlace());
-      }), g.appendChild(r), g.appendChild(q);
+      }), g.appendChild(r), g.appendChild(I);
       const F = document.createElement("li");
       return F.id = `option-${n + 1}`, F.className = e(this, s).classes.li, F.appendChild(g), F;
     });
@@ -517,10 +517,10 @@ class W {
       ), e(this, a).setAttribute(
         "aria-activedescendant",
         e(this, s).aria_activedescendant || ""
-      ), _ && typeof _ == "object" && Object.keys(_).length > 0 && (e(this, s).classes = {
-        ...e(this, I),
+      ), _ && typeof _ == "object" && Object.keys(_).length > 0 ? e(this, s).classes = {
+        ...e(this, T),
         ..._
-      }), e(this, u) && ((i = e(this, s).classes) != null && i.container) && (e(this, u).className = e(this, s).classes.container), e(this, a) && ((n = e(this, s).classes) != null && n.input) && (e(this, a).className = e(this, s).classes.input), e(this, o) && ((r = e(this, s).classes) != null && r.ul) && (e(this, o).className = e(this, s).classes.ul), e(this, y) && ((d = e(this, s).classes) != null && d.kbd_escape) && (e(this, y).className = e(this, s).classes.kbd_escape), e(this, v) && ((m = e(this, s).classes) != null && m.kbd_up) && (e(this, v).className = e(this, s).classes.kbd_up), e(this, x) && ((S = e(this, s).classes) != null && S.kbd_down) && (e(this, x).className = e(this, s).classes.kbd_down), e(this, A)) {
+      } : e(this, s).classes = { ...e(this, T) }, e(this, u) && ((i = e(this, s).classes) != null && i.container) && (e(this, u).className = e(this, s).classes.container), e(this, a) && ((n = e(this, s).classes) != null && n.input) && (e(this, a).className = e(this, s).classes.input), e(this, o) && ((r = e(this, s).classes) != null && r.ul) && (e(this, o).className = e(this, s).classes.ul), e(this, y) && ((d = e(this, s).classes) != null && d.kbd_escape) && (e(this, y).className = e(this, s).classes.kbd_escape), e(this, v) && ((m = e(this, s).classes) != null && m.kbd_up) && (e(this, v).className = e(this, s).classes.kbd_up), e(this, x) && ((S = e(this, s).classes) != null && S.kbd_down) && (e(this, x).className = e(this, s).classes.kbd_down), e(this, A)) {
         const f = e(this, A).querySelector("section");
         f && ((E = e(this, s).classes) != null && E.section) && e(this, s).classes.section.split(" ").forEach((b) => b && f.classList.add(b));
       }
@@ -560,7 +560,7 @@ class W {
     console.log("PacAutocomplete instance destroyed.");
   }
 }
-M = new WeakMap(), A = new WeakMap(), D = new WeakMap(), R = new WeakMap(), s = new WeakMap(), C = new WeakMap(), a = new WeakMap(), u = new WeakMap(), o = new WeakMap(), y = new WeakMap(), v = new WeakMap(), x = new WeakMap(), k = new WeakMap(), p = new WeakMap(), z = new WeakMap(), L = new WeakMap(), G = new WeakMap(), I = new WeakMap(), O = new WeakMap(), j = new WeakMap(), K = new WeakMap();
+M = new WeakMap(), A = new WeakMap(), D = new WeakMap(), R = new WeakMap(), s = new WeakMap(), C = new WeakMap(), a = new WeakMap(), u = new WeakMap(), o = new WeakMap(), y = new WeakMap(), v = new WeakMap(), x = new WeakMap(), k = new WeakMap(), p = new WeakMap(), z = new WeakMap(), L = new WeakMap(), G = new WeakMap(), T = new WeakMap(), O = new WeakMap(), j = new WeakMap(), K = new WeakMap();
 export {
   W as PlacesAutocomplete
 };

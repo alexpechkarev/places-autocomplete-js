@@ -1,10 +1,3 @@
-var J = Object.defineProperty;
-var B = (c) => {
-  throw TypeError(c);
-};
-var U = (c, t, s) => t in c ? J(c, t, { enumerable: !0, configurable: !0, writable: !0, value: s }) : c[t] = s;
-var H = (c, t, s) => U(c, typeof t != "symbol" ? t + "" : t, s), V = (c, t, s) => t.has(c) || B("Cannot " + s);
-var e = (c, t, s) => (V(c, t, "read from private field"), s ? s.call(c) : t.get(c)), h = (c, t, s) => t.has(c) ? B("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(c) : t.set(c, s), o = (c, t, s, i) => (V(c, t, "write to private field"), i ? i.call(c, s) : t.set(c, s), s);
 /**
  * Initializes a Places Autocomplete widget.
  * This script dynamically loads the Google Maps JavaScript API, creates the UI elements
@@ -16,8 +9,106 @@ var e = (c, t, s) => (V(c, t, "read from private field"), s ? s.call(c) : t.get(
  * @license MIT
  *
  */
-var M, C, R, j, n, f, a, p, l, x, w, k, _, u, z, y, G, q, O, D, K;
-class Q {
+class v {
+  // --- Private Properties (using # or _ prefix by convention) ---
+  #u;
+  // Container ID where the autocomplete widget will be rendered.
+  #d;
+  #m;
+  #f;
+  #e;
+  #a;
+  #t;
+  #n;
+  #s;
+  #o;
+  #c;
+  #h;
+  #r = [];
+  #i = -1;
+  #_;
+  // For user-provided data callback
+  #l;
+  // For user-provided error callback
+  _debouncedMakeAcRequest;
+  // Declare without initializing here
+  #y = {
+    // Default options for the autocomplete widget.
+    autofocus: !1,
+    // Automatically focus the input on load.
+    autocomplete: "off",
+    // HTML autocomplete attribute for the input.
+    placeholder: "Start typing your address ...",
+    // Placeholder text for the input.
+    distance: !0,
+    // Show distance in suggestions (requires origin in request).
+    distance_units: "km",
+    // Units for distance ('km' or 'miles').
+    label: "",
+    // Optional label text above the input.
+    debounce: 100,
+    // Debounce delay (ms) for API requests.
+    clear_input: !0,
+    // Clear input button (not implemented in this version).
+    debug: !1
+    // Enable debug mode (not implemented in this version).
+  };
+  #p = {
+    // CSS classes for various parts of the widget.
+    section: "",
+    // Outer section container.
+    container: "relative z-10 transform rounded-xl mt-4",
+    // Main container div.
+    icon_container: "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3",
+    // Container for the search icon.
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>',
+    // SVG for the search icon.
+    input: "border-1 w-full rounded-md border-0 shadow-sm bg-gray-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm",
+    // Input field.
+    kbd_container: "absolute inset-y-0 right-0 flex py-1.5 pr-1.5",
+    // Container for keyboard hints.
+    kbd_escape: "inline-flex items-center rounded border border-gray-300 px-1 font-sans text-xs text-gray-500 w-8 mr-1",
+    // Escape key hint.
+    kbd_up: "inline-flex items-center justify-center rounded border border-gray-300 px-1 font-sans text-xs text-gray-500 w-6",
+    // Up arrow key hint.
+    kbd_down: "inline-flex items-center rounded border border-gray-400 px-1 font-sans text-xs text-gray-500 justify-center w-6",
+    // Down arrow key hint.
+    kbd_active: "bg-indigo-500 text-white",
+    // Class for active keyboard hint.
+    ul: "absolute z-50 -mb-2 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm divide-y divide-gray-100",
+    // Suggestions list (ul).
+    li: "z-50 cursor-default select-none py-2 px-2 lg:px-4 text-gray-900 hover:bg-indigo-500 hover:text-white",
+    // Suggestion item (li).
+    li_current: "bg-indigo-500",
+    // Class for the currently selected suggestion item.
+    li_a: "block w-full flex justify-between",
+    // Link element within a suggestion item.
+    li_a_current: "text-white",
+    // Class for the link in the currently selected suggestion item.
+    li_div_container: "flex min-w-0 gap-x-4",
+    // Container div within the suggestion link.
+    li_div_one: "min-w-0 flex-auto",
+    // First inner div (for place name).
+    li_div_one_p: "text-sm/6",
+    // Paragraph for the place name.
+    li_div_two: "shrink-0 flex flex-col items-end min-w-16",
+    // Second inner div (for distance).
+    li_div_two_p: "mt-1 text-xs/5",
+    // Paragraph for the distance.
+    highlight: "font-bold"
+    // Class for highlighting matched text in suggestions.
+  };
+  #b = {
+    // Default parameters for the autocomplete request.
+    input: "",
+    // Initial input value (empty).
+    includedRegionCodes: ["GB"],
+    // Default region codes to include in suggestions.
+    language: "en-gb",
+    region: "GB"
+  };
+  #g = ["formattedAddress", "addressComponents"];
+  #v = ["formattedAddress", "addressComponents"];
   // Fields to fetch for the selected place (can be extended).
   /**
    * Class constructor for PacAutocomplete.
@@ -30,140 +121,41 @@ class Q {
    * @param {Object} [config.requestParams] - Parameters for the autocomplete request (e.g., input, region).
    * @param {*} config
    */
-  constructor(t) {
-    // --- Private Properties (using # or _ prefix by convention) ---
-    h(this, M);
-    // Container ID where the autocomplete widget will be rendered.
-    h(this, C);
-    h(this, R);
-    h(this, j);
-    h(this, n);
-    h(this, f);
-    h(this, a);
-    h(this, p);
-    h(this, l);
-    h(this, x);
-    h(this, w);
-    h(this, k);
-    h(this, _, []);
-    h(this, u, -1);
-    h(this, z);
-    // For user-provided data callback
-    h(this, y);
-    // For user-provided error callback
-    H(this, "_debouncedMakeAcRequest");
-    // Declare without initializing here
-    h(this, G, {
-      // Default options for the autocomplete widget.
-      autofocus: !1,
-      // Automatically focus the input on load.
-      autocomplete: "off",
-      // HTML autocomplete attribute for the input.
-      placeholder: "Start typing your address ...",
-      // Placeholder text for the input.
-      distance: !0,
-      // Show distance in suggestions (requires origin in request).
-      distance_units: "km",
-      // Units for distance ('km' or 'miles').
-      label: "",
-      // Optional label text above the input.
-      debounce: 100,
-      // Debounce delay (ms) for API requests.
-      clear_input: !0,
-      // Clear input button (not implemented in this version).
-      debug: !1
-      // Enable debug mode (not implemented in this version).
-    });
-    h(this, q, {
-      // CSS classes for various parts of the widget.
-      section: "",
-      // Outer section container.
-      container: "relative z-10 transform rounded-xl mt-4",
-      // Main container div.
-      icon_container: "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3",
-      // Container for the search icon.
-      icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>',
-      // SVG for the search icon.
-      input: "border-1 w-full rounded-md border-0 shadow-sm bg-gray-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm",
-      // Input field.
-      kbd_container: "absolute inset-y-0 right-0 flex py-1.5 pr-1.5",
-      // Container for keyboard hints.
-      kbd_escape: "inline-flex items-center rounded border border-gray-300 px-1 font-sans text-xs text-gray-500 w-8 mr-1",
-      // Escape key hint.
-      kbd_up: "inline-flex items-center justify-center rounded border border-gray-300 px-1 font-sans text-xs text-gray-500 w-6",
-      // Up arrow key hint.
-      kbd_down: "inline-flex items-center rounded border border-gray-400 px-1 font-sans text-xs text-gray-500 justify-center w-6",
-      // Down arrow key hint.
-      kbd_active: "bg-indigo-500 text-white",
-      // Class for active keyboard hint.
-      ul: "absolute z-50 -mb-2 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm divide-y divide-gray-100",
-      // Suggestions list (ul).
-      li: "z-50 cursor-default select-none py-2 px-2 lg:px-4 text-gray-900 hover:bg-indigo-500 hover:text-white",
-      // Suggestion item (li).
-      li_current: "bg-indigo-500",
-      // Class for the currently selected suggestion item.
-      li_a: "block w-full flex justify-between",
-      // Link element within a suggestion item.
-      li_a_current: "text-white",
-      // Class for the link in the currently selected suggestion item.
-      li_div_container: "flex min-w-0 gap-x-4",
-      // Container div within the suggestion link.
-      li_div_one: "min-w-0 flex-auto",
-      // First inner div (for place name).
-      li_div_one_p: "text-sm/6",
-      // Paragraph for the place name.
-      li_div_two: "shrink-0 flex flex-col items-end min-w-16",
-      // Second inner div (for distance).
-      li_div_two_p: "mt-1 text-xs/5",
-      // Paragraph for the distance.
-      highlight: "font-bold"
-      // Class for highlighting matched text in suggestions.
-    });
-    h(this, O, {
-      // Default parameters for the autocomplete request.
-      input: "",
-      // Initial input value (empty).
-      includedRegionCodes: ["GB"],
-      // Default region codes to include in suggestions.
-      language: "en-gb",
-      region: "GB"
-    });
-    h(this, D, ["formattedAddress", "addressComponents"]);
-    h(this, K, ["formattedAddress", "addressComponents"]);
-    if (!t || !t.containerId || !t.googleMapsApiKey)
+  constructor(e) {
+    if (!e || !e.containerId || !e.googleMapsApiKey)
       throw new Error(
         "PacAutocomplete: Missing required configuration (containerId, googleMapsApiKey)."
       );
-    if (o(this, M, t.containerId), o(this, C, document.getElementById(t.containerId)), !e(this, C))
+    if (this.#u = e.containerId, this.#d = document.getElementById(e.containerId), !this.#d)
       throw new Error(
-        `PacAutocomplete: Container element with ID "${t.containerId}" not found.`
+        `PacAutocomplete: Container element with ID "${e.containerId}" not found.`
       );
-    o(this, R, t.googleMapsApiKey), o(this, j, t.googleMapsApiVersion || "weekly"), o(this, n, {
-      ...e(this, G),
+    this.#m = e.googleMapsApiKey, this.#f = e.googleMapsApiVersion || "weekly", this.#e = {
+      ...this.#y,
       // Default options
-      ...t.options
+      ...e.options
       // User-defined options override defaults
-    }), t.options && t.options.classes ? e(this, n).classes = {
-      ...e(this, q),
-      ...t.options.classes
-    } : e(this, n).classes = e(this, q), e(this, n).debug && (console.log("___debug constructor options:"), console.log(e(this, n))), t.fetchFields && Array.isArray(t.fetchFields) && this._setFetchFields(t.fetchFields), o(this, z, t.onResponse || ((s) => {
-      console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(s, null, 2));
-    })), o(this, y, t.onError || ((s) => {
-      console.error("---------Default onError not provided---------"), console.error("PAC Error:", s);
-    })), t.requestParams && Object.keys(t.requestParams).length > 0 ? o(this, f, {
-      ...e(this, O),
-      ...t.requestParams
-    }) : o(this, f, { ...e(this, O) }), e(this, n).debug && console.log("___debug constructor requestParams:", e(this, f)), this._initialiseDebouncedRequest(), this._init();
+    }, e.options && e.options.classes ? this.#e.classes = {
+      ...this.#p,
+      ...e.options.classes
+    } : this.#e.classes = this.#p, this.#e.debug && (console.log("___debug constructor options:"), console.log(this.#e)), e.fetchFields && Array.isArray(e.fetchFields) && this._setFetchFields(e.fetchFields), this.#_ = e.onResponse || ((t) => {
+      console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(t, null, 2));
+    }), this.#l = e.onError || ((t) => {
+      console.error("---------Default onError not provided---------"), console.error("PAC Error:", t);
+    }), e.requestParams && Object.keys(e.requestParams).length > 0 ? this.#a = {
+      ...this.#b,
+      ...e.requestParams
+    } : this.#a = { ...this.#b }, this.#e.debug && console.log("___debug constructor requestParams:", this.#a), this._initialiseDebouncedRequest(), this._init();
   }
   // --- Private Initialization Method ---
   async _init() {
     try {
       (typeof google > "u" || !google.maps) && await this._loadGoogleMapsApi({
-        key: e(this, R),
-        v: e(this, j)
+        key: this.#m,
+        v: this.#f
       }), this._createPACStructure(), await this._initializeAutocomplete();
-    } catch (t) {
-      e(this, y).call(this, t);
+    } catch (e) {
+      this.#l(e);
     }
   }
   /**
@@ -176,34 +168,34 @@ class Q {
    */
   _initialiseDebouncedRequest() {
     this._debouncedMakeAcRequest = this._debounce(async () => {
-      if (!e(this, a) || !e(this, a).value) {
-        this._reset(), e(this, a) && e(this, a).setAttribute("aria-expanded", "false");
+      if (!this.#t || !this.#t.value) {
+        this._reset(), this.#t && this.#t.setAttribute("aria-expanded", "false");
         return;
       }
-      e(this, f).input = e(this, a).value;
+      this.#a.input = this.#t.value;
       try {
-        const { suggestions: t } = (
+        const { suggestions: e } = (
           // eslint-disable-next-line no-undef
           await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
-            e(this, f)
+            this.#a
           )
         );
-        t && t.length > 0 ? (e(this, l).replaceChildren(
-          ...this._createSuggestionElements(t)
-        ), e(this, l).style.display = "block", e(this, a).setAttribute("aria-expanded", "true")) : (this._reset(), e(this, a).setAttribute("aria-expanded", "false"));
-      } catch (t) {
-        e(this, y).call(this, t), this._reset();
+        e && e.length > 0 ? (this.#s.replaceChildren(
+          ...this._createSuggestionElements(e)
+        ), this.#s.style.display = "block", this.#t.setAttribute("aria-expanded", "true")) : (this._reset(), this.#t.setAttribute("aria-expanded", "false"));
+      } catch (e) {
+        this.#l(e), this._reset();
       }
-    }, e(this, n).debounce);
+    }, this.#e.debounce);
   }
   /**
    * Sets the fields to fetch for the selected place.
    * @param {Array<string>} fields - The fields to fetch.
    */
-  _setFetchFields(t) {
-    Array.isArray(t) && t.length > 0 && o(this, D, [
-      .../* @__PURE__ */ new Set([...e(this, K), ...t])
-    ].filter((s) => s));
+  _setFetchFields(e) {
+    Array.isArray(e) && e.length > 0 && (this.#g = [
+      .../* @__PURE__ */ new Set([...this.#v, ...e])
+    ].filter((t) => t));
   }
   /**
    * Creates a debounced version of a function.
@@ -213,14 +205,14 @@ class Q {
    * @param {number} wait - The number of milliseconds to delay.
    * @returns {Function} The new debounced function.
    */
-  _debounce(t, s) {
-    e(this, n).debug && console.log("___debug debounce function called with wait:", s);
-    let i = null;
-    return function(...d) {
-      const b = () => {
-        i = null, t(...d);
+  _debounce(e, t) {
+    this.#e.debug && console.log("___debug debounce function called with wait:", t);
+    let s = null;
+    return function(...n) {
+      const r = () => {
+        s = null, e(...n);
       };
-      i !== null && clearTimeout(i), i = setTimeout(b, s ?? 100);
+      s !== null && clearTimeout(s), s = setTimeout(r, t ?? 100);
     };
   }
   /**
@@ -229,11 +221,11 @@ class Q {
    * @param {'km' | 'miles'} units - The desired output units.
    * @returns {string | null} Formatted distance string (e.g., "1.23 km") or null if input is invalid.
    */
-  _formatDistance(t, s) {
-    if (typeof t != "number" || !e(this, n).distance)
+  _formatDistance(e, t) {
+    if (typeof e != "number" || !this.#e.distance)
       return null;
-    let i, r;
-    return s === "km" ? (i = (t / 1e3).toFixed(2), r = "km") : (i = (t / 1609.34).toFixed(2), r = "miles"), i = i.replace(/\.00$/, ""), `${i} ${r}`;
+    let s, i;
+    return t === "km" ? (s = (e / 1e3).toFixed(2), i = "km") : (s = (e / 1609.34).toFixed(2), i = "miles"), s = s.replace(/\.00$/, ""), `${s} ${i}`;
   }
   /**
    * Dynamically loads the Google Maps JavaScript API using the importLibrary method.
@@ -241,62 +233,65 @@ class Q {
    * @see https://developers.google.com/maps/documentation/javascript/load-maps-js-api
    * @param {object} g - Configuration object for the API loader (key, v, libraries, etc.).
    */
-  async _loadGoogleMapsApi(t) {
-    var s, i, r, d = "The Google Maps JavaScript API", b = "google", F = "importLibrary", L = "__ib__", T = document, v = window;
-    v = v[b] || (v[b] = {});
-    var E = v.maps || (v.maps = {}), P = /* @__PURE__ */ new Set(), I = new URLSearchParams(), N = () => (
+  async _loadGoogleMapsApi(e) {
+    var t, s, i, n = "The Google Maps JavaScript API", r = "google", p = "importLibrary", d = "__ib__", m = document, l = window;
+    l = l[r] || (l[r] = {});
+    var o = l.maps || (l.maps = {}), u = /* @__PURE__ */ new Set(), f = new URLSearchParams(), _ = () => (
       // Function to initiate API loading (if not already started)
-      s || // eslint-disable-next-line no-async-promise-executor
-      (s = new Promise(async (A, m) => {
-        var S;
-        i = T.createElement("script"), I.set("libraries", [...P].join(","));
-        for (r in t)
-          I.set(
-            r.replace(/[A-Z]/g, (g) => "_" + g[0].toLowerCase()),
+      t || // eslint-disable-next-line no-async-promise-executor
+      (t = new Promise(async (c, a) => {
+        s = m.createElement("script"), f.set("libraries", [...u].join(","));
+        for (i in e)
+          f.set(
+            i.replace(/[A-Z]/g, (b) => "_" + b[0].toLowerCase()),
             // Convert camelCase to snake_case
-            t[r]
+            e[i]
           );
-        I.set("callback", b + ".maps." + L), i.src = `https://maps.${b}apis.com/maps/api/js?` + I, E[L] = A, i.onerror = () => s = m(Error(d + " could not load.")), i.nonce = ((S = T.querySelector("script[nonce]")) == null ? void 0 : S.nonce) || "", T.head.append(i);
+        f.set("callback", r + ".maps." + d), s.src = `https://maps.${r}apis.com/maps/api/js?` + f, o[d] = c, s.onerror = () => t = a(
+          new Error(
+            `${n} could not load. Check your API key and network connection.`
+          )
+        ), s.nonce = m.querySelector("script[nonce]")?.nonce || "", m.head.append(s);
       }))
     );
-    E[F] ? console.warn(d + " only loads once. Ignoring:", t) : E[F] = (A, ...m) => P.add(A) && N().then(() => E[F](A, ...m));
+    o[p] ? console.warn(n + " only loads once. Ignoring:", e) : o[p] = (c, ...a) => u.add(c) && _().then(() => o[p](c, ...a));
   }
   // --- UI Creation ---
   _createPACStructure() {
-    const t = document.createElement("section");
-    e(this, n).classes.section.split(" ").forEach((d) => d && t.classList.add(d)), o(this, p, document.createElement("div")), e(this, p).className = e(this, n).classes.container, e(this, p).setAttribute("id", e(this, M) + "-div"), t.appendChild(e(this, p));
+    const e = document.createElement("section");
+    e.className = this.#e.classes.section, this.#n = document.createElement("div"), this.#n.className = this.#e.classes.container, this.#n.setAttribute("id", this.#u + "-div"), e.appendChild(this.#n);
+    const t = document.createElement("div");
+    t.className = this.#e.classes.icon_container, this.#n.appendChild(t);
     const s = document.createElement("div");
-    s.className = e(this, n).classes.icon_container, e(this, p).appendChild(s);
-    const i = document.createElement("div");
-    if (i.innerHTML = e(this, n).classes.icon, s.appendChild(i.firstElementChild), o(this, a, document.createElement("input")), e(this, a).id = e(this, M) + "-input", e(this, a).type = "text", e(this, a).name = "search", e(this, a).placeholder = e(this, n).placeholder, e(this, a).autocomplete = e(this, n).autocomplete, e(this, a).className = e(this, n).classes.input, e(this, a).setAttribute("role", "combobox"), e(this, a).setAttribute("aria-autocomplete", "list"), e(this, a).setAttribute("aria-expanded", "false"), e(this, a).setAttribute("aria-controls", "pacSuggestions"), e(this, n).autofocus && (e(this, a).autofocus = !0), e(this, n).label) {
-      const d = document.createElement("label");
-      d.htmlFor = e(this, M) + "-labelInput", d.textContent = e(this, n).label, e(this, p).appendChild(d);
+    if (s.innerHTML = this.#e.classes.icon, t.appendChild(s.firstElementChild), this.#t = document.createElement("input"), this.#t.id = this.#u + "-input", this.#t.type = "text", this.#t.name = "search", this.#t.placeholder = this.#e.placeholder, this.#t.autocomplete = this.#e.autocomplete, this.#t.className = this.#e.classes.input, this.#t.setAttribute("role", "combobox"), this.#t.setAttribute("aria-autocomplete", "list"), this.#t.setAttribute("aria-expanded", "false"), this.#t.setAttribute("aria-controls", "pacSuggestions"), this.#t.setAttribute("aria-activedescendant", ""), this.#e.autofocus && (this.#t.autofocus = !0), this.#e.label) {
+      const n = document.createElement("label");
+      n.htmlFor = this.#t.id, n.textContent = this.#e.label, e.prepend(n);
     }
-    e(this, p).appendChild(e(this, a));
-    const r = document.createElement("div");
-    r.className = e(this, n).classes.kbd_container, o(this, x, document.createElement("kbd")), e(this, x).className = e(this, n).classes.kbd_escape, e(this, x).textContent = "Esc", r.appendChild(e(this, x)), o(this, w, document.createElement("kbd")), e(this, w).className = e(this, n).classes.kbd_up, e(this, w).innerHTML = "&#8593;", r.appendChild(e(this, w)), o(this, k, document.createElement("kbd")), e(this, k).className = e(this, n).classes.kbd_down, e(this, k).innerHTML = "&#8595;", r.appendChild(e(this, k)), e(this, p).appendChild(r), o(this, l, document.createElement("ul")), e(this, l).id = "pacSuggestions", e(this, l).className = e(this, n).classes.ul, e(this, l).style.display = "none", e(this, l).setAttribute("role", "listbox"), e(this, p).appendChild(e(this, l)), e(this, C).appendChild(t), t.addEventListener("keydown", this._onKeyDown.bind(this));
+    this.#n.appendChild(this.#t);
+    const i = document.createElement("div");
+    i.className = this.#e.classes.kbd_container, this.#o = document.createElement("kbd"), this.#o.className = this.#e.classes.kbd_escape, this.#o.textContent = "Esc", i.appendChild(this.#o), this.#c = document.createElement("kbd"), this.#c.className = this.#e.classes.kbd_up, this.#c.innerHTML = "&#8593;", i.appendChild(this.#c), this.#h = document.createElement("kbd"), this.#h.className = this.#e.classes.kbd_down, this.#h.innerHTML = "&#8595;", i.appendChild(this.#h), this.#n.appendChild(i), this.#s = document.createElement("ul"), this.#s.id = "pacSuggestions", this.#s.className = this.#e.classes.ul, this.#s.style.display = "none", this.#s.setAttribute("role", "listbox"), this.#s.setAttribute("aria-labelledby", this.#t.id), this.#n.appendChild(this.#s), this.#d.appendChild(e), e.addEventListener("keydown", this._onKeyDown.bind(this));
   }
   /**
    * Attaches event listeners to the input element for handling user input.
    * This includes debounced input handling, focus/blur events, and keyboard navigation.
    */
   _attachedEventListeners() {
-    e(this, a).addEventListener(
+    this.#t.addEventListener(
       "input",
-      this._debouncedMakeAcRequest.bind(this)
-    ), e(this, a).addEventListener("blur", () => {
+      this._debouncedMakeAcRequest
+    ), this.#t.addEventListener("blur", () => {
       setTimeout(() => {
-        e(this, l) && !e(this, l).contains(document.activeElement) && (e(this, l).style.display = "none", e(this, a).setAttribute("aria-expanded", "false"));
+        this.#s && !this.#s.contains(document.activeElement) && (this.#s.style.display = "none", this.#t.setAttribute("aria-expanded", "false"));
       }, 200);
-    }), e(this, a).addEventListener("focus", () => {
-      e(this, a).value && e(this, _).length > 0 && (e(this, l).style.display = "block", e(this, a).setAttribute("aria-expanded", "true"));
+    }), this.#t.addEventListener("focus", () => {
+      this.#t.value && this.#r.length > 0 && (this.#s.style.display = "block", this.#t.setAttribute("aria-expanded", "true"));
     });
   }
   _detachEventListeners() {
-    e(this, a) && e(this, a).removeEventListener(
+    this.#t && this.#t.removeEventListener(
       "input",
       this._debouncedMakeAcRequest
-    ), e(this, C) && e(this, p) && e(this, C).removeChild(e(this, p).parentElement);
+    ), this.#d && this.#n && this.#d.removeChild(this.#n.parentElement);
   }
   /**
    * Initializes the core autocomplete functionality after the API is loaded.
@@ -304,26 +299,30 @@ class Q {
    */
   async _initializeAutocomplete() {
     try {
-      await google.maps.importLibrary("places"), this._refreshToken(), e(this, a) ? this._attachedEventListeners() : e(this, y).call(this, new Error("Input element not found during initialization."));
-    } catch (t) {
-      console.error("Error initializing Google Places Autocomplete:", t), e(this, y).call(this, new Error("Google Maps Places library not available."));
+      await google.maps.importLibrary("places"), this._refreshToken(), this.#t ? this._attachedEventListeners() : this.#l(
+        new Error("Input element not found during initialization.")
+      );
+    } catch (e) {
+      console.error("Error initializing Google Places Autocomplete:", e), this.#l(
+        new Error("Google Maps Places library not available.")
+      );
     }
   }
   /**
    * Resets the autocomplete input field, clears suggestions, and optionally refreshes the session token.
    * @param {boolean} [refresh=false] - Whether to refresh the Google Places session token.
    */
-  _reset(t = !1, s = null) {
-    o(this, u, -1), e(this, a) && e(this, n).clear_input == !1 && s && s.formattedAddress ? e(this, a).value = s.formattedAddress : e(this, a) && (e(this, a).value = ""), e(this, a) && (e(this, a).setAttribute("aria-expanded", "false"), e(this, a).blur()), o(this, _, []), o(this, u, -1), e(this, l) && (e(this, l).innerHTML = "", e(this, l).style.display = "none"), t && this._refreshToken();
+  _reset(e = !1, t = null) {
+    this.#i = -1, this.#t && this.#e.clear_input == !1 && t && t.formattedAddress ? this.#t.value = t.formattedAddress : this.#t && (this.#t.value = ""), this.#t && (this.#t.setAttribute("aria-expanded", "false"), this.#t.setAttribute("aria-activedescendant", ""), this.#t.blur()), this.#r = [], this.#i = -1, this.#s && (this.#s.innerHTML = "", this.#s.style.display = "none"), e && this._refreshToken();
   }
   /**
    * Removes the 'current' highlighting classes from all suggestion list items (li) and their links (a).
    */
   _resetLiClasses() {
-    e(this, l) && Array.from(e(this, l).children).forEach((t) => {
-      e(this, n).classes.li_current.split(" ").forEach((i) => t.classList.remove(i));
-      const s = t.querySelector("a");
-      s && e(this, n).classes.li_a_current.split(" ").forEach((i) => s.classList.remove(i));
+    this.#s && Array.from(this.#s.children).forEach((e) => {
+      this.#e.classes.li_current.split(" ").forEach((s) => e.classList.remove(s));
+      const t = e.querySelector("a");
+      t && this.#e.classes.li_a_current.split(" ").forEach((s) => t.classList.remove(s));
     });
   }
   /**
@@ -331,56 +330,38 @@ class Q {
    * and selecting suggestions or closing the list.
    * @param {KeyboardEvent} e - The keyboard event object.
    */
-  _onKeyDown(t) {
-    if (this._resetLiClasses(), t.key === "Escape" && (t.preventDefault(), e(this, n).classes.kbd_active.split(" ").forEach((s) => {
-      var i;
-      return (i = e(this, x)) == null ? void 0 : i.classList.add(s);
-    }), setTimeout(
-      () => e(this, n).classes.kbd_active.split(" ").forEach((s) => {
-        var i;
-        return (i = e(this, x)) == null ? void 0 : i.classList.remove(s);
-      }),
+  _onKeyDown(e) {
+    if (this._resetLiClasses(), e.key === "Escape" && (e.preventDefault(), this.#e.classes.kbd_active.split(" ").forEach((t) => this.#o?.classList.add(t)), setTimeout(
+      () => this.#e.classes.kbd_active.split(" ").forEach((t) => this.#o?.classList.remove(t)),
       300
-    ), this._reset(!0)), !(!e(this, _).length || !e(this, l) || e(this, l).style.display === "none"))
-      if (t.key === "ArrowDown") {
-        t.preventDefault(), o(this, u, Math.min(
-          e(this, u) + 1,
-          e(this, _).length - 1
-        )), e(this, u) < 0 && o(this, u, 0);
-        const s = e(this, l).children.item(e(this, u));
-        if (s) {
-          const i = s.querySelector("a");
-          e(this, n).classes.li_current.split(" ").forEach((r) => s.classList.add(r)), i && e(this, n).classes.li_a_current.split(" ").forEach((r) => i.classList.add(r)), s.scrollIntoView({ block: "nearest" });
+    ), this._reset(!0)), !(!this.#r.length || !this.#s || this.#s.style.display === "none"))
+      if (e.key === "ArrowDown") {
+        e.preventDefault(), this.#i = Math.min(
+          this.#i + 1,
+          this.#r.length - 1
+        ), this.#i < 0 && (this.#i = 0);
+        const t = this.#s.children.item(this.#i);
+        if (t) {
+          const s = t.querySelector("a");
+          this.#e.classes.li_current.split(" ").forEach((i) => t.classList.add(i)), s && this.#e.classes.li_a_current.split(" ").forEach((i) => s.classList.add(i)), t.scrollIntoView({ block: "nearest" }), this.#t.setAttribute("aria-activedescendant", t.id);
         }
-        e(this, n).classes.kbd_active.split(" ").forEach((i) => {
-          var r;
-          return (r = e(this, k)) == null ? void 0 : r.classList.add(i);
-        }), setTimeout(
-          () => e(this, n).classes.kbd_active.split(" ").forEach((i) => {
-            var r;
-            return (r = e(this, k)) == null ? void 0 : r.classList.remove(i);
-          }),
+        this.#e.classes.kbd_active.split(" ").forEach((s) => this.#h?.classList.add(s)), setTimeout(
+          () => this.#e.classes.kbd_active.split(" ").forEach((s) => this.#h?.classList.remove(s)),
           300
         );
-      } else if (t.key === "ArrowUp") {
-        t.preventDefault(), o(this, u, Math.max(e(this, u) - 1, 0));
-        const s = e(this, l).children.item(e(this, u));
-        if (s) {
-          const i = s.querySelector("a");
-          e(this, n).classes.li_current.split(" ").forEach((r) => s.classList.add(r)), i && e(this, n).classes.li_a_current.split(" ").forEach((r) => i.classList.add(r)), s.scrollIntoView({ block: "nearest" });
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault(), this.#i = Math.max(this.#i - 1, 0);
+        const t = this.#s.children.item(this.#i);
+        if (t) {
+          const s = t.querySelector("a");
+          this.#e.classes.li_current.split(" ").forEach((i) => t.classList.add(i)), s && this.#e.classes.li_a_current.split(" ").forEach((i) => s.classList.add(i)), t.scrollIntoView({ block: "nearest" });
         }
-        e(this, n).classes.kbd_active.split(" ").forEach((i) => {
-          var r;
-          return (r = e(this, w)) == null ? void 0 : r.classList.add(i);
-        }), setTimeout(
-          () => e(this, n).classes.kbd_active.split(" ").forEach((i) => {
-            var r;
-            return (r = e(this, w)) == null ? void 0 : r.classList.remove(i);
-          }),
+        this.#e.classes.kbd_active.split(" ").forEach((s) => this.#c?.classList.add(s)), setTimeout(
+          () => this.#e.classes.kbd_active.split(" ").forEach((s) => this.#c?.classList.remove(s)),
           300
         );
-      } else t.key === "Enter" && (t.preventDefault(), e(this, u) >= 0 && e(this, u) < e(this, _).length && this._onPlaceSelected(
-        e(this, _)[e(this, u)].place
+      } else e.key === "Enter" && (e.preventDefault(), this.#i >= 0 && this.#i < this.#r.length && this._onPlaceSelected(
+        this.#r[this.#i].place
       ));
   }
   /**
@@ -390,49 +371,49 @@ class Q {
    * @param {Array<google.maps.places.AutocompleteSuggestion>} suggestions - Array of suggestion objects from the API.
    * @returns {Array<HTMLLIElement>} An array of LI elements to be added to the suggestions UL.
    */
-  _createSuggestionElements(t) {
-    return o(this, _, []), t.map((s, i) => {
-      e(this, _).push({
-        id: i + 1,
-        description: s.placePrediction.toString(),
-        place: s.placePrediction.toPlace()
+  _createSuggestionElements(e) {
+    return this.#r = [], e.map((t, s) => {
+      this.#r.push({
+        id: s + 1,
+        description: t.placePrediction.toString(),
+        place: t.placePrediction.toPlace()
       });
-      const r = document.createElement("div");
-      r.className = e(this, n).classes.li_div_container;
-      const d = document.createElement("div");
-      d.className = e(this, n).classes.li_div_one, r.appendChild(d);
-      const b = document.createElement("p");
-      b.className = e(this, n).classes.li_div_one_p;
-      const F = s.placePrediction.text, L = F.text, T = F.matches;
-      let v = 0;
-      T.sort((g, $) => g.startOffset - $.startOffset);
-      const E = document.createElement("span"), P = document.createElement("span");
-      P.classList = e(this, n).classes.highlight ?? "font-bold";
-      for (const g of T)
-        E.textContent += L.substring(
-          v,
-          g.startOffset
-        ), g.startOffset > 0 && L.charAt(g.startOffset - 1) == " " && (P.textContent += " "), P.textContent += L.substring(
-          g.startOffset,
-          g.endOffset
-        ), v = g.endOffset;
-      const I = document.createTextNode(
-        L.substring(v)
+      const i = document.createElement("div");
+      i.className = this.#e.classes.li_div_container;
+      const n = document.createElement("div");
+      n.className = this.#e.classes.li_div_one, i.appendChild(n);
+      const r = document.createElement("p");
+      r.className = this.#e.classes.li_div_one_p;
+      const p = t.placePrediction.text, d = p.text, m = p.matches;
+      let l = 0;
+      m.sort((h, g) => h.startOffset - g.startOffset);
+      const o = document.createElement("span"), u = document.createElement("span");
+      u.classList = this.#e.classes.highlight ?? "font-bold";
+      for (const h of m)
+        o.textContent += d.substring(
+          l,
+          h.startOffset
+        ), h.startOffset > 0 && d.charAt(h.startOffset - 1) == " " && (u.textContent += " "), u.textContent += d.substring(
+          h.startOffset,
+          h.endOffset
+        ), l = h.endOffset;
+      const f = document.createTextNode(
+        d.substring(l)
       );
-      E.appendChild(P), E.appendChild(I), b.appendChild(E), d.appendChild(b), r.appendChild(d);
-      const N = document.createElement("div");
-      N.className = e(this, n).classes.li_div_two, r.appendChild(N);
-      const A = document.createElement("p");
-      A.className = e(this, n).classes.li_div_two_p, A.textContent = this._formatDistance(
-        s.placePrediction.distanceMeters,
-        e(this, n).distance_units ?? "km"
-      ), N.appendChild(A);
-      const m = document.createElement("a");
-      m.href = "javascript:void(0)", m.tabIndex = i + 1, m.className = e(this, n).classes.li_a, m.addEventListener("click", () => {
-        this._onPlaceSelected(s.placePrediction.toPlace());
-      }), m.appendChild(r), m.appendChild(N);
-      const S = document.createElement("li");
-      return S.id = `option-${i + 1}`, S.className = e(this, n).classes.li, S.appendChild(m), S;
+      o.appendChild(u), o.appendChild(f), r.appendChild(o), n.appendChild(r), i.appendChild(n);
+      const _ = document.createElement("div");
+      _.className = this.#e.classes.li_div_two, i.appendChild(_);
+      const c = document.createElement("p");
+      c.className = this.#e.classes.li_div_two_p, c.textContent = this._formatDistance(
+        t.placePrediction.distanceMeters,
+        this.#e.distance_units ?? "km"
+      ), _.appendChild(c);
+      const a = document.createElement("a");
+      a.href = "javascript:void(0)", a.tabIndex = s + 1, a.className = this.#e.classes.li_a, a.addEventListener("click", () => {
+        this._onPlaceSelected(t.placePrediction.toPlace());
+      }), a.appendChild(i), a.appendChild(_);
+      const b = document.createElement("li");
+      return b.id = `option-${s + 1}`, b.className = this.#e.classes.li, b.appendChild(a), b;
     });
   }
   /**
@@ -441,17 +422,17 @@ class Q {
    * user-defined `onPacData` callback.
    * @param {google.maps.places.Place} place - The selected Place object.
    */
-  async _onPlaceSelected(t) {
-    let s = null;
+  async _onPlaceSelected(e) {
+    let t = null;
     try {
-      await t.fetchFields({
-        fields: e(this, D)
+      await e.fetchFields({
+        fields: this.#g
         //["displayName", "formattedAddress", "addressComponents"], // Add more fields as needed
-      }), s = t.toJSON(), e(this, z).call(this, s);
-    } catch (i) {
-      console.error("Error fetching place details:", i), e(this, y).call(this, i);
+      }), t = e.toJSON(), this.#_(t);
+    } catch (s) {
+      console.error("Error fetching place details:", s), this.#l(s);
     } finally {
-      this._reset(!0, s);
+      this._reset(!0, t);
     }
   }
   /**
@@ -460,9 +441,9 @@ class Q {
    */
   _refreshToken() {
     try {
-      e(this, f).sessionToken = new google.maps.places.AutocompleteSessionToken();
-    } catch (t) {
-      console.error("Error creating session token:", t), e(this, y).call(this, t);
+      this.#a.sessionToken = new google.maps.places.AutocompleteSessionToken();
+    } catch (e) {
+      console.error("Error creating session token:", e), this.#l(e);
     }
   }
   /**
@@ -472,8 +453,8 @@ class Q {
    * addressComponents, etc.
    * @param {Array<string>} fields - Array of field names to fetch.
    */
-  setFetchFields(t) {
-    this._setFetchFields(t);
+  setFetchFields(e) {
+    this._setFetchFields(e);
   }
   /**
    * Gets the current fields that will be fetched for the selected place.
@@ -483,7 +464,7 @@ class Q {
    * @returns {Array<string>} The current fetch fields.
    */
   getFetchFields() {
-    return e(this, D);
+    return this.#g;
   }
   /**
    * Sets the request parameters for the Places Autocomplete instance.
@@ -494,11 +475,11 @@ class Q {
    * This is useful for updating the search criteria without needing to recreate the instance.
    * @param {*} params
    */
-  setRequestParams(t) {
-    typeof t == "object" && !Array.isArray(t) && t !== null && (t.input && typeof t.input == "string" && (e(this, a).value = t.input), o(this, f, {
-      ...e(this, O),
-      ...t
-    }));
+  setRequestParams(e) {
+    typeof e == "object" && !Array.isArray(e) && e !== null && (e.input && typeof e.input == "string" && (this.#t.value = e.input), this.#a = {
+      ...this.#b,
+      ...e
+    });
   }
   /**
    * Returns the current request parameters used by the Places Autocomplete instance.
@@ -507,7 +488,7 @@ class Q {
    * @returns {Object} The current request parameters.
    */
   getRequestParams() {
-    return e(this, f);
+    return this.#a;
   }
   /**
    * Sets the options for the Places Autocomplete instance.
@@ -518,17 +499,17 @@ class Q {
    * This is useful for updating the widget's configuration without needing to recreate the instance.
    * @param {*} options
    */
-  setOptions(t) {
-    if (typeof t == "object" && !Array.isArray(t) && t !== null) {
+  setOptions(e) {
+    if (typeof e == "object" && !Array.isArray(e) && e !== null) {
       this._detachEventListeners();
-      const s = t.classes || {};
-      delete t.classes, o(this, n, {
-        ...e(this, G),
+      const t = e.classes || {};
+      delete e.classes, this.#e = {
+        ...this.#y,
+        ...e
+      }, t && typeof t == "object" && Object.keys(t).length > 0 ? this.#e.classes = {
+        ...this.#p,
         ...t
-      }), s && typeof s == "object" && Object.keys(s).length > 0 ? e(this, n).classes = {
-        ...e(this, q),
-        ...s
-      } : e(this, n).classes = { ...e(this, q) }, this._initialiseDebouncedRequest(), this._createPACStructure(), e(this, a) && this._attachedEventListeners();
+      } : this.#e.classes = { ...this.#p }, this._initialiseDebouncedRequest(), this._createPACStructure(), this.#t && this._attachedEventListeners();
     }
   }
   /**
@@ -536,7 +517,7 @@ class Q {
    * @returns {Object} The current options.
    */
   getOptions() {
-    return e(this, n);
+    return this.#e;
   }
   /**
    * Clears the autocomplete input field and suggestions list.
@@ -556,14 +537,10 @@ class Q {
    * @returns {void}
    */
   destroy() {
-    this._detachEventListeners();
-    for (const t in this)
-      Object.hasOwn(this, t) && (this[t] = null);
-    console.log("PacAutocomplete instance destroyed.");
+    this._detachEventListeners(), this.#u = null, this.#d = null, this.#m = null, this.#f = null, this.#e = null, this.#a = null, this.#t = null, this.#n = null, this.#s = null, this.#o = null, this.#c = null, this.#h = null, this.#r = null, this.#i = -1, this.#_ = null, this.#l = null, this._debouncedMakeAcRequest = null, console.log("PacAutocomplete instance destroyed.");
   }
 }
-M = new WeakMap(), C = new WeakMap(), R = new WeakMap(), j = new WeakMap(), n = new WeakMap(), f = new WeakMap(), a = new WeakMap(), p = new WeakMap(), l = new WeakMap(), x = new WeakMap(), w = new WeakMap(), k = new WeakMap(), _ = new WeakMap(), u = new WeakMap(), z = new WeakMap(), y = new WeakMap(), G = new WeakMap(), q = new WeakMap(), O = new WeakMap(), D = new WeakMap(), K = new WeakMap();
 export {
-  Q as PlacesAutocomplete
+  v as PlacesAutocomplete
 };
 //# sourceMappingURL=places-autocomplete.js.map

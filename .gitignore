@@ -8,6 +8,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 Gemfile.lock
 lib/.env
+.gemini
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -135,3 +136,9 @@ out
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

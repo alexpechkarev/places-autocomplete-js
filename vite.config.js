@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "lib/PlacesAutocomplete.js"),
+      entry: resolve(__dirname, "PlacesAutocomplete.js"),
       //formats: ["es", "umd", "iife"],
       name: "PlacesAutocomplete", // Global variable name for UMD/IIFE builds
       // the proper extensions will be added
@@ -21,5 +21,12 @@ export default defineConfig({
     // minify: 'terser', // Default is 'esbuild' which is faster. 'terser' can be smaller.
   },
   plugins: [tailwindcss()],
-  root: resolve(__dirname, "lib"),
+  root: __dirname,
+  //root: resolve(__dirname, "lib"),
+  test: {
+    globals: true,
+    environment: "jsdom",
+    include: ["./tests/**/*.test.js"],
+    //exclude: ['./lib/_tests_/**'],
+  },
 });

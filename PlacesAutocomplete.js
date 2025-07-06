@@ -180,8 +180,8 @@ export class PlacesAutocomplete {
           v: this.#googleMapsApiVersion,
         });
       }
-      this._createPACStructure(); // Pass this.#options
-      await this._initializeAutocomplete(); // Pass this.#options
+      this._createPACStructure();
+      await this._initializeAutocomplete();
     } catch (error) {
       this.#onErrorCallback(error);
     }
@@ -333,7 +333,12 @@ export class PlacesAutocomplete {
           a.src = `https://maps.${c}apis.com/maps/api/js?` + e; // Construct the API URL
           d[q] = f; // Assign the promise resolver to the callback name on google.maps
           // Error handling for script loading failure
-          a.onerror = () => (h = n(Error(p + " could not load."))); // Use onerror for load failures
+          a.onerror = () =>
+            (h = n(
+              new Error(
+                `${p} could not load. Check your API key and network connection.`
+              )
+            )); // Use onerror for load failures
           // Nonce for Content Security Policy
           a.nonce = m.querySelector("script[nonce]")?.nonce || "";
           m.head.append(a); // Append the script to the document head
@@ -348,9 +353,7 @@ export class PlacesAutocomplete {
   // --- UI Creation ---
   _createPACStructure() {
     const section = document.createElement("section");
-    this.#options.classes.section
-      .split(" ")
-      .forEach((cl) => cl && section.classList.add(cl));
+    section.className = this.#options.classes.section;
 
     // Main container
     this.#container = document.createElement("div");
@@ -378,16 +381,17 @@ export class PlacesAutocomplete {
     this.#inputElement.setAttribute("aria-autocomplete", "list");
     this.#inputElement.setAttribute("aria-expanded", "false"); // Will be updated dynamically
     this.#inputElement.setAttribute("aria-controls", "pacSuggestions"); // Links to the suggestions list
+    this.#inputElement.setAttribute("aria-activedescendant", ""); // Will be updated dynamically
 
     if (this.#options.autofocus) {
       this.#inputElement.autofocus = true;
     }
     if (this.#options.label) {
       const label = document.createElement("label");
-      label.htmlFor = this.#containerId + "-labelInput"; // Assuming inputElement gets this ID
+      label.htmlFor = this.#inputElement.id; // Correctly link label to input by ID
       label.textContent = this.#options.label;
       // Add label classes if needed from opts.classes
-      this.#container.appendChild(label); // Append label before input or adjust structure
+      section.prepend(label); // Append label before input or adjust structure
     }
     this.#container.appendChild(this.#inputElement);
 
@@ -414,6 +418,7 @@ export class PlacesAutocomplete {
     this.#ul.className = this.#options.classes.ul;
     this.#ul.style.display = "none";
     this.#ul.setAttribute("role", "listbox");
+    this.#ul.setAttribute("aria-labelledby", this.#inputElement.id); // Link listbox to input for accessibility
     this.#container.appendChild(this.#ul);
 
     this.#pacEl.appendChild(section);
@@ -427,7 +432,7 @@ export class PlacesAutocomplete {
   _attachedEventListeners() {
     this.#inputElement.addEventListener(
       "input",
-      this._debouncedMakeAcRequest.bind(this)
+      this._debouncedMakeAcRequest
     );
     // Add focus/blur listeners if needed to manage suggestion visibility
     this.#inputElement.addEventListener("blur", () => {
@@ -524,6 +529,7 @@ export class PlacesAutocomplete {
 
     if (this.#inputElement) {
       this.#inputElement.setAttribute("aria-expanded", "false");
+      this.#inputElement.setAttribute("aria-activedescendant", ""); // Clear aria-activedescendant
       this.#inputElement.blur();
     }
 
@@ -607,6 +613,7 @@ export class PlacesAutocomplete {
             .forEach((cl) => currentA.classList.add(cl));
         }
         currentLi.scrollIntoView({ block: "nearest" }); // Ensure visible
+        this.#inputElement.setAttribute("aria-activedescendant", currentLi.id); // Update aria-activedescendant
       }
 
       // Visual feedback for key press
@@ -904,18 +911,7 @@ export class PlacesAutocomplete {
       !Array.isArray(options) &&
       options !== null
     ) {
-      // Remove event listeners, remove elements from DOM
       this._detachEventListeners(); // Detach event listeners
-      // if (this.#inputElement) {
-      //   this.#inputElement.removeEventListener(
-      //     "input",
-      //     this._debouncedMakeAcRequest
-      //   );
-      //   // remove other listeners
-      // }
-      // if (this.#pacEl && this.#container) {
-      //   this.#pacEl.removeChild(this.#container.parentElement); // remove the whole section
-      // } // Destroy the current instance to reset everything
 
       // // Ensure classes are deeply merged if user provides partial classes
       const tmpClasses = options.classes || {};
@@ -989,11 +985,23 @@ export class PlacesAutocomplete {
     // Remove event listeners, remove elements from DOM
     this._detachEventListeners(); // Detach event listeners
     // Nullify properties
-    for (const prop in this) {
-      if (Object.hasOwn(this, prop)) {
-        this[prop] = null;
-      }
-    }
+    this.#containerId = null;
+    this.#pacEl = null;
+    this.#googleMapsApiKey = null;
+    this.#googleMapsApiVersion = null;
+    this.#options = null;
+    this.#request = null;
+    this.#inputElement = null;
+    this.#container = null;
+    this.#ul = null;
+    this.#kbdEscape = null;
+    this.#kbdUp = null;
+    this.#kbdDown = null;
+    this.#allSuggestions = null;
+    this.#currentSuggestion = -1;
+    this.#onDataCallback = null;
+    this.#onErrorCallback = null;
+    this._debouncedMakeAcRequest = null;
     console.log("PacAutocomplete instance destroyed.");
   }
 }

@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/places-autocomplete-js.svg)](https://badge.fury.io/js/places-autocomplete-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A flexible and customizable vanilla JavaScript library leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). This library provides a user-friendly way to search for and retrieve detailed address information in any web application.
+A flexible and customizable vanilla JavaScript library for frontend web applications, leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). This library provides a user-friendly way to search for and retrieve detailed address and location information in any web application.
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
@@ -22,17 +22,22 @@ See a more comprehensive live demo of the library in action:  [pacservice.pages.
 
 ## Features
 
-*   Integrates with the modern **Google Places (New) Autocomplete API**.
-*   Automatically handles **session tokens** for cost management per Google's guidelines.
-*   **Debounced Input:** Limits API calls while the user is typing (configurable).
-*   **Suggestion Highlighting:** Automatically highlights the portion of text matching the user's input.
-*   **Customizable Styling:** Easily override default styles or apply your own using CSS classes passed in options. Built with sensible defaults (Tailwind CSS utility classes by default but can be entirely replaced).
-*   **Event Handling:** Provides `onResponse` and `onError` callbacks.
-*   **Configurable:** Control API parameters (`requestParams`) and component behavior/appearance (`options`).
-*   **Dynamic API Loading:** Loads the Google Maps API script on demand.
+*   **Seamless Google Places Integration:** Directly connects with the modern **Google Places (New) Autocomplete API** for accurate and up-to-date address suggestions.
+*   **Cost-Effective API Usage:** Automatically handles **session tokens** to optimize your Google Maps API costs per Google's guidelines.
+*   **Optimized User Experience:** Implements **Debounced Input** to limit API calls while the user is typing, ensuring a smooth and responsive search experience.
+*   **Enhanced Readability:** Provides **Suggestion Highlighting** to automatically bold the portion of text matching the user's input, making suggestions easier to scan.
+*   **Flexible Styling:** Offers **Customizable Styling** allowing you to easily override default styles or apply your own using CSS classes. Built with sensible defaults (Tailwind CSS utility classes by default but can be entirely replaced).
+*   **Robust Event Handling:** Provides `onResponse` and `onError` callbacks for comprehensive control over successful place selections and error scenarios.
+*   **Highly Configurable:** Allows you to control API parameters (`requestParams`) and component behavior/appearance (`options`) to fit your specific application needs.
+*   **Efficient API Loading:** Dynamically loads the Google Maps API script on demand, reducing initial page load times.
 
+## Benefits
 
-
+*   **Accelerate Development:** Quickly integrate powerful address autocomplete functionality into your web application with minimal setup.
+*   **Improve User Experience:** Provide a fast, intuitive, and accurate address entry experience for your users.
+*   **Reduce API Costs:** Leverage automatic session token management to optimize your Google Maps API billing.
+*   **Maintain Brand Consistency:** Easily customize the look and feel of the autocomplete component to match your application's design system.
+*   **Future-Proof:** Built on the latest Google Places (New) Autocomplete API, ensuring compatibility and access to new features.
 
 ## Requirements
 
@@ -329,6 +334,26 @@ Instances of `PlacesAutocomplete` have the following public methods:
 *   An API key enabled for the "Places API" (and "Maps JavaScript API") is required.
 *   The library uses **Session Tokens** automatically to group Autocomplete requests, which can lead to significant cost savings compared to per-request billing. See [Google's Session Token Pricing](https://developers.google.com/maps/documentation/places/web-service/usage-and-billing#session-pricing).
 *   Place Details requests (made when a suggestion is selected to get `displayName`, `formattedAddress`, etc.) are billed separately. The library currently fetches `displayName`, `formattedAddress`, and `addressComponents` by default. This can be expanded if needed, but be mindful of [Place Data Fields Pricing](https://developers.google.com/maps/documentation/javascript/usage-and-billing#data-pricing).
+
+## Testing
+
+This project includes both unit tests (using Vitest) and end-to-end tests (using Playwright).
+
+### Unit Tests
+
+Unit tests are located in the `tests/` directory and are run using Vitest. To execute the unit tests, use the following command:
+
+```bash
+npm run test:vitest
+```
+
+### End-to-End Tests
+
+End-to-end tests are located in the `e2e/` directory and are run using Playwright. To execute the end-to-end tests, ensure your development server is running (e.g., `npm run dev`) and then use the following command:
+
+```bash
+npm run test:e2e
+```
 
 ## Contributing
 

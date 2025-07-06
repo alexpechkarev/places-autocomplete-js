@@ -2,7 +2,7 @@
   "name": "places-autocomplete-js",
   "license": "MIT",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A flexible and customisable vanilla JavaScript library leveraging the Google Maps Places (New) Autocomplete API. This library provides a user-friendly way to search for and retrieve detailed address information in any web application.",
   "keywords": [
     "place-autocomplete",
@@ -18,7 +18,16 @@
     "address-input",
     "input",
     "search",
-    "new api"
+    "vanilla-js",
+    "frontend",
+    "web-component",
+    "address-lookup",
+    "location-search",
+    "google-maps-platform",
+    "google-places-api-new",
+    "javascript-library",
+    "address-autocomplete",
+    "location-autocomplete"
   ],
   "homepage": "https://pacservice.pages.dev",
   "repository": {
@@ -47,17 +56,24 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint src/**/*.js",
+    "test:vitest": "vitest",
+    "test:e2e": "playwright test",
+    "test": "npm run test:vitest && npm run test:e2e"
   },
   "devDependencies": {
+    "@playwright/test": "^1.53.2",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/vite": "^4.1.11",
+    "@types/node": "^24.0.10",
+    "@vitest/ui": "^3.2.4",
+    "dotenv": "^17.0.1",
     "eslint": "^9.30.1",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.53.2",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
     "vite": "^7.0.2",
-    "dotenv": "^17.0.1"
-  },
-  "dependencies": {
+    "vitest": "^3.2.4"
   }
 }

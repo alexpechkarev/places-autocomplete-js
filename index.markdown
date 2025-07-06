@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/places-autocomplete-js.svg)](https://badge.fury.io/js/places-autocomplete-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A flexible and customizable vanilla JavaScript library leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). This library provides a user-friendly way to search for and retrieve detailed address information in any web application.
+A flexible and customisable vanilla JavaScript library leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). This library provides a user-friendly way to search for and retrieve detailed address information in any web application.
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
@@ -26,7 +26,7 @@ See a more comprehensive live demo of the library in action:  [pacservice.pages.
 *   Automatically handles **session tokens** for cost management per Google's guidelines.
 *   **Debounced Input:** Limits API calls while the user is typing (configurable).
 *   **Suggestion Highlighting:** Automatically highlights the portion of text matching the user's input.
-*   **Customizable Styling:** Easily override default styles or apply your own using CSS classes passed in options. Built with sensible defaults (Tailwind CSS utility classes by default but can be entirely replaced).
+*   **Customisable Styling:** Easily override default styles or apply your own using CSS classes passed in options. Built with sensible defaults (Tailwind CSS utility classes by default but can be entirely replaced).
 *   **Event Handling:** Provides `onResponse` and `onError` callbacks.
 *   **Configurable:** Control API parameters (`requestParams`) and component behavior/appearance (`options`).
 *   **Dynamic API Loading:** Loads the Google Maps API script on demand.
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // autocomplete.getOptions(); // Get current options
 
   } catch (error) {
-    console.error("Failed to initialize PlacesAutocomplete:", error.message);
+    console.error("Failed to initialise PlacesAutocomplete:", error.message);
   }
 });
 
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 ### Configuration
 
-The `PlacesAutocomplete` class is initialized with a configuration object.
+The `PlacesAutocomplete` class is initialised with a configuration object.
 
 | Parameter                | Type     | Required | Description                                                                                                |
 |--------------------------|----------|----------|------------------------------------------------------------------------------------------------------------|
@@ -104,8 +104,8 @@ The `PlacesAutocomplete` class is initialized with a configuration object.
 | `googleMapsApiVersion`   | `string` | No       | The version of the Google Maps API to load (e.g., "weekly", "quarterly", "beta"). Defaults to "weekly".      |
 | `onResponse`             | `function` | No       | Callback function triggered with selected place details. Receives a `Place` object (see Google's docs). Default logs to console. |
 | `onError`                | `function` | No       | Callback function triggered when an error occurs. Receives an `Error` object or string. Default logs to console. |
-| `options`                | `object` | No       | Object to customize UI behavior and appearance. See "UI & Behavior Options" below.                         |
-| `requestParams`          | `object` | No       | Object to customize the parameters sent to the Google Places Autocomplete API. See "API Request Parameters" below. |
+| `options`                | `object` | No       | Object to customise UI behavior and appearance. See "UI & Behavior Options" below.                         |
+| `requestParams`          | `object` | No       | Object to customise the parameters sent to the Google Places Autocomplete API. See "API Request Parameters" below. |
 | `fetchFields`          | `array` | No       | Array of Place Data Fields to request when a place is selected. Affects API cost. Default 	`['formattedAddress', 'addressComponents']` |
 
 ### UI & Behavior Options (`options`)
@@ -119,7 +119,7 @@ Passed within the main configuration object under the `options` key.
 | `distance`     | `boolean`                 | `true`                                    | Whether to attempt to show distance in suggestions (requires `origin` in `requestParams`).                                      |
 | `distance_units`| `'km' \| 'miles'`         | `'km'`                                    | Units to display distance in if `distance` is true.                                                                             |
 | `label`        | `string`                  | `""`                                      | Optional label text displayed above the input field.                                                                            |
-| `autofocus`    | `boolean`                 | `false`                                   | If `true`, automatically focuses the input field on initialization.                                                              |
+| `autofocus`    | `boolean`                 | `false`                                   | If `true`, automatically focuses the input field on initialisation.                                                              |
 | `autocomplete` | `string`                  | `'off'`                                   | Standard HTML `autocomplete` attribute for the input field.                                                                     |
 | `classes`      | `object`                  | *(See default classes below)*             | Object to override default CSS classes for styling. See "Styling" section.                                                      |
 | `clear_input`        | `boolean` | `true`      | If `true` (default), clears the input field after a suggestion is selected. If `false`, the input field retains the `formattedAddress` of the selected place.                                      |
@@ -156,7 +156,7 @@ const autocomplete = new PlacesAutocomplete({
  
 ### Fetch Fields (`fetchFields`)
 The `fetchFields` option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information. See the [Place Class Data Fields](https://developers.google.com/maps/documentation/javascript/place-class-data-fields) for all available fields.
-By default, the library fetches `['formattedAddress', 'addressComponents']`, but you can customize this based on your needs.
+By default, the library fetches `['formattedAddress', 'addressComponents']`, but you can customise this based on your needs.
 
 **Example `fetchFields`:**
 
@@ -187,7 +187,7 @@ const autocomplete = new PlacesAutocomplete({
 
 ### Styling (`options.classes`)
 
-You can customize the appearance of the component by providing your own CSS classes via the `options.classes` object. The library uses a default set of classes (many are Tailwind CSS utility classes but can be entirely replaced).
+You can customise the appearance of the component by providing your own CSS classes via the `options.classes` object. The library uses a default set of classes (many are Tailwind CSS utility classes but can be entirely replaced).
 
 Provide an object where keys are the component parts and values are the class strings you want to apply.
 
@@ -278,7 +278,7 @@ Instances of `PlacesAutocomplete` have the following public methods:
     // (depending on what was set via constructor or setFetchFields)
     ```    
 
-*   **`setRequestParams(params)`**: Dynamically updates the parameters sent to the Google Places Autocomplete API. This allows you to change search criteria like language, region, or location bias after initialization.
+*   **`setRequestParams(params)`**: Dynamically updates the parameters sent to the Google Places Autocomplete API. This allows you to change search criteria like language, region, or location bias after initialisation.
     *   `params` (object): An object containing the API request parameters to update. These will be merged with existing request parameters. Refer to the "API Request Parameters (`requestParams`)" section for available options.
     ```javascript
     // Example: Change the search region and language
@@ -300,7 +300,7 @@ Instances of `PlacesAutocomplete` have the following public methods:
     console.log('Current API Request Params:', currentRequestParams);
     ```
 
-*   **`setOptions(options)`**: Dynamically updates the UI behavior and appearance options of the widget. This allows you to change things like the placeholder text, debounce timing, or CSS classes after initialization.
+*   **`setOptions(options)`**: Dynamically updates the UI behavior and appearance options of the widget. This allows you to change things like the placeholder text, debounce timing, or CSS classes after initialisation.
     *   `options` (object): An object containing the UI and behavior options to update. These will be merged with existing options. Refer to the "UI & Behavior Options (`options`)" section for available options.
     ```javascript
     // Example: Change the placeholder text and debounce time

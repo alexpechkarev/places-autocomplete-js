@@ -6,7 +6,7 @@ test.describe("Places Autocomplete Basic Rendering", () => {
   }) => {
     // IMPORTANT: Replace 'http://localhost:3000' with the actual URL where your Places Autocomplete component is rendered.
     // This could be your development server (e.g., 'npm run dev') or a static HTML file.
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     setTimeout(async () => {
       // Locate the input element. Assuming it has a placeholder or a specific ID.
@@ -29,7 +29,7 @@ test.describe("Places Autocomplete Basic Rendering", () => {
   test("2: should display suggestions when typing into the input field", async ({
     page,
   }) => {
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     const autocompleteInput = page.getByPlaceholder(
       "Start typing your address..."
@@ -56,7 +56,7 @@ test.describe("Places Autocomplete Basic Rendering", () => {
   test("3: should select a suggestion by click and update the input field", async ({
     page,
   }) => {
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     const autocompleteInput = page.getByPlaceholder(
       "Start typing your address..."
@@ -95,7 +95,7 @@ test.describe("Places Autocomplete Basic Rendering", () => {
   test("4: should select a suggestion using keyboard navigation (ArrowDown + Enter)", async ({
     page,
   }) => {
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     const autocompleteInput = page.getByPlaceholder(
       "Start typing your address..."
@@ -141,7 +141,7 @@ test.describe("Places Autocomplete Basic Rendering", () => {
   test("5: should clear input and hide suggestions when Escape key is pressed", async ({
     page,
   }) => {
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     const autocompleteInput = page.getByPlaceholder(
       "Start typing your address..."
@@ -172,7 +172,7 @@ test.describe("Places Autocomplete Basic Rendering", () => {
   test("6: should not display suggestions for a query with no results", async ({
     page,
   }) => {
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     const autocompleteInput = page.getByPlaceholder(
       "Start typing your address..."

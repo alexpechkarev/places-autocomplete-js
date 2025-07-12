@@ -3,6 +3,10 @@ import { resolve } from "path";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  server: {
+    port: 1573,
+    strictPort: true,
+  },
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points

@@ -430,10 +430,7 @@ export class PlacesAutocomplete {
    * This includes debounced input handling, focus/blur events, and keyboard navigation.
    */
   _attachedEventListeners() {
-    this.#inputElement.addEventListener(
-      "input",
-      this._debouncedMakeAcRequest
-    );
+    this.#inputElement.addEventListener("input", this._debouncedMakeAcRequest);
     // Add focus/blur listeners if needed to manage suggestion visibility
     this.#inputElement.addEventListener("blur", () => {
       // Delay hiding suggestions to allow click events on them

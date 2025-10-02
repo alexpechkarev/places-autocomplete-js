@@ -276,10 +276,7 @@ class v {
    * This includes debounced input handling, focus/blur events, and keyboard navigation.
    */
   _attachedEventListeners() {
-    this.#t.addEventListener(
-      "input",
-      this._debouncedMakeAcRequest
-    ), this.#t.addEventListener("blur", () => {
+    this.#t.addEventListener("input", this._debouncedMakeAcRequest), this.#t.addEventListener("blur", () => {
       setTimeout(() => {
         this.#s && !this.#s.contains(document.activeElement) && (this.#s.style.display = "none", this.#t.setAttribute("aria-expanded", "false"));
       }, 200);

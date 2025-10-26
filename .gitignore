@@ -9,6 +9,7 @@ lerna-debug.log*
 Gemfile.lock
 lib/.env
 .gemini
+GEMINI.md
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

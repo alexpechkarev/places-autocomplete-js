@@ -1,5 +1,5 @@
 (function(p,y){typeof exports=="object"&&typeof module<"u"?y(exports):typeof define=="function"&&define.amd?define(["exports"],y):(p=typeof globalThis<"u"?globalThis:p||self,y(p.PlacesAutocomplete={}))})(this,(function(p){"use strict";/**
- * Initializes a Places Autocomplete widget.
+ * Initialises a Places Autocomplete widget.
  * This script dynamically loads the Google Maps JavaScript API, creates the UI elements
  * for the autocomplete input and suggestions list, handles user input with debouncing,
  * fetches suggestions, manages keyboard navigation, and calls user-defined callbacks

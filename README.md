@@ -138,24 +138,7 @@ The component is built with flexibility in mind and can be styled in a couple of
 
 A standalone CSS file is included in the package (`dist/places-autocomplete-js.css`). This file contains all the necessary styles for the component to look and work correctly out-of-the-box.
 
-You can include it in your project in one of two ways:
-
-**A) Import into your JavaScript/TypeScript:**
-
-If you are using a bundler like Vite, Webpack, or Parcel, you can import the CSS file directly into your main JavaScript file.
-
-```javascript
-import { PlacesAutocomplete } from 'places-autocomplete-js';
-import 'places-autocomplete-js/dist/places-autocomplete-js.css'; // <-- Add this line
-
-document.addEventListener('DOMContentLoaded', () => {
-  const autocomplete = new PlacesAutocomplete({
-    // ... your configuration
-  });
-});
-```
-
-**B) Link in your HTML file:**
+**Link in your HTML file:**
 
 Alternatively, you can link the stylesheet directly in the `<head>` of your HTML file. Make sure the path correctly points to the file within your `node_modules` directory, or copy the file to your public assets folder during your build process.
 

@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <link href="./index.css" rel="stylesheet">
+    <!-- <link href="./dist/places-autocomplete-js.css" rel="stylesheet"> -->
+    <!-- <link href="./index.css" rel="stylesheet"> -->
 
 
     <script type="module">
-        //import { PlacesAutocomplete } from './PlacesAutocomplete.js';
-         import { PlacesAutocomplete } from './dist/places-autocomplete.js';
+        // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        import { PlacesAutocomplete } from './dist/places-autocomplete.js';
+        import './dist/places-autocomplete-js.css';
         //console.log('PlacesAutocomplete module loaded:', import.meta.env);
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -26,18 +28,10 @@
                         rspContainer.classList.add('block');
                         let responseMessage = document.getElementById('response-message');
                         responseMessage.innerHTML = JSON.stringify(placeDetails, null, 4);
-                        let errorContainer = document.getElementById('error-container');
-                        errorContainer.classList.remove('block');
-                        errorContainer.classList.add('hidden');
+
                     },
                     onError: (error) => {
                         console.error('Error from module:', error.message);
-                        let errorContainer = document.getElementById('error-container');
-                        errorContainer.classList.remove('hidden');
-                        errorContainer.classList.add('block');
-                        let errorMessage = document.getElementById('error-message');
-                        errorMessage.innerHTML = error.message;
-
                     },
                     options: { // Optional: Override default options
                         placeholder: 'Start typing your address...',
@@ -114,65 +108,44 @@
 
 <body>
 
-    <div class="p-10">
-
-        <div class="rounded-md bg-red-50 p-4 hidden" id="error-container">
-            <div class="flex">
-                <div class="shrink-0">
-                    <svg class="size-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        data-slot="icon">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-red-800">Response Error</h3>
-                    <div class="mt-2 text-sm text-red-700 font-semibold" id="error-message">
-
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
 
 
-
-
+    <div class="container max-w-5xl px-10 py-5 mx-auto mt-10">
         <div id="my-pac-container"></div>
+    
 
-        <textarea name="textm" id="" class="my-4 mx-auto w-full border-2 border-gray-300 rounded-md p-2"></textarea>
 
 
-        <div class="flex items-center mt-10 gap-10">
-            <div>
-                <button type="button" id="btnClear"
-                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Clear</button>
-            </div>
-            <div>
-                <button type="button" id="btnDestroy"
-                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Destroy</button>
-            </div>
-
-            <div>
-                <button type="button" id="btnRequestParams"
-                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Set
-                    Params</button>
-            </div>
+    <div class="flex items-center mt-10 gap-10">
+        <div>
+            <button type="button" id="btnClear"
+                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Clear</button>
+        </div>
+        <div>
+            <button type="button" id="btnDestroy"
+                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Destroy</button>
         </div>
 
-
-        <div class="rounded-md bg-gray-100 mt-4 p-4 hidden" id="response-container">
-
-            <pre class="">
-                <code id="response-message" class="text-sm font-mono"></code>
-            </pre>
-
+        <div>
+            <button type="button" id="btnRequestParams"
+                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Set
+                Params</button>
         </div>
     </div>
 
 
+    <div class="rounded-md bg-gray-100 mt-4 p-4 hidden" id="response-container">
+
+        <pre class="">
+            <code id="response-message" class="text-sm font-mono"></code>
+        </pre>
+
+    </div>
+    </div>
+
+</div>
 
 
 </body>

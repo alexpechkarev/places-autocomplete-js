@@ -130,6 +130,107 @@ Passed within the main configuration object under the `options` key.
 | `clear_input`        | `boolean` | `true`      | If `true` (default), clears the input field after a suggestion is selected. If `false`, the input field retains the `formattedAddress` of the selected place.                                      |
 
 
+### Styling
+
+The component is built with flexibility in mind and can be styled in a couple of ways. The default appearance is based on Tailwind CSS, but you are not required to use Tailwind in your project.
+
+#### 1. Using the Pre-built CSS File
+
+A standalone CSS file is included in the package (`dist/places-autocomplete-js.css`). This file contains all the necessary styles for the component to look and work correctly out-of-the-box.
+
+You can include it in your project in one of two ways:
+
+**A) Import into your JavaScript/TypeScript:**
+
+If you are using a bundler like Vite, Webpack, or Parcel, you can import the CSS file directly into your main JavaScript file.
+
+```javascript
+import { PlacesAutocomplete } from 'places-autocomplete-js';
+import 'places-autocomplete-js/dist/places-autocomplete-js.css'; // <-- Add this line
+
+document.addEventListener('DOMContentLoaded', () => {
+  const autocomplete = new PlacesAutocomplete({
+    // ... your configuration
+  });
+});
+```
+
+**B) Link in your HTML file:**
+
+Alternatively, you can link the stylesheet directly in the `<head>` of your HTML file. Make sure the path correctly points to the file within your `node_modules` directory, or copy the file to your public assets folder during your build process.
+
+```html
+<head>
+  <!-- ... other head elements -->
+  <link rel="stylesheet" href="node_modules/places-autocomplete-js/dist/places-autocomplete-js.css">
+</head>
+<body>
+  <div id="autocomplete-container"></div>
+  <!-- ... your scripts -->
+</body>
+```
+
+### CSS Classes (`options.classes`)
+
+You can customise the appearance of the component by providing your own CSS classes via the `options.classes` object. The library uses a default set of classes (many are Tailwind CSS utility classes but can be entirely replaced).
+
+Provide an object where keys are the component parts and values are the class strings you want to apply.
+
+**Default Class Keys & Structure:**
+
+*   `section`: The main container section.
+*   `container`: The div containing the input and suggestions list.
+*   `label`: The label element (if `options.label` is provided).
+*   `input`: The main text input element.
+*   `icon_container`: Container for the optional icon.
+*   `icon`: SVG string for the icon.
+*   `ul`: The `<ul>` element for the suggestions list.
+*   `li`: Each `<li>` suggestion item.
+*   `li_current`: Class added to the currently highlighted/selected `<li>` (keyboard/mouse).
+*   `li_a`: The inner `<a>` or `<button>` element within each `<li>`.
+*   `li_a_current`: Class added to the inner element when its `<li>` is current.
+*   `li_div_container`: Container div within the `<a>`/`<button>`.
+*   `li_div_one`: First inner div (usually contains the main text).
+*   `li_div_one_p`: The `<p>` tag containing the main suggestion text.
+*   `li_div_two`: Second inner div (usually contains the distance).
+*   `li_div_two_p`: The `<p>` tag containing the distance text.
+*   `kbd_container`: Container for the keyboard hint keys (Esc, Up, Down).
+*   `kbd_escape`: The `<kbd>` tag for the 'Esc' hint.
+*   `kbd_up`: The `<kbd>` tag for the 'Up Arrow' hint.
+*   `kbd_down`: The `<kbd>` tag for the 'Down Arrow' hint.
+*   `highlight`: The class applied to the `<span>` wrapping the matched text within suggestions. Defaults to `'font-bold'`.
+
+**Example: Overriding Classes**
+
+```javascript
+const autocomplete = new PlacesAutocomplete({
+  // ... other config
+  options: {
+    classes: {
+      input: 'my-custom-input form-control', // Replace default input style
+      ul: 'my-custom-dropdown-styles',        // Custom dropdown style
+      li_current: 'my-active-suggestion',     // Custom highlight for selected item
+      highlight: 'my-search-highlight'        // Custom style for matched text
+    }
+  }
+});
+```
+
+Then, style these classes in your CSS:
+
+```css
+.my-custom-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.my-search-highlight {
+  background-color: yellow;
+  color: black;
+}
+/* etc. */
+```
+
 ### API Request Parameters (`requestParams`)
 
 Passed within the main configuration object under the `requestParams` key. These parameters are sent to the Google Places Autocomplete API. Refer to the [AutocompleteRequest documentation](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompleteRequest) for all available options.
@@ -190,66 +291,7 @@ const autocomplete = new PlacesAutocomplete({
 ```
 
 
-### Styling (`options.classes`)
 
-You can customise the appearance of the component by providing your own CSS classes via the `options.classes` object. The library uses a default set of classes (many are Tailwind CSS utility classes but can be entirely replaced).
-
-Provide an object where keys are the component parts and values are the class strings you want to apply.
-
-**Default Class Keys & Structure:**
-
-*   `section`: The main container section.
-*   `container`: The div containing the input and suggestions list.
-*   `label`: The label element (if `options.label` is provided).
-*   `input`: The main text input element.
-*   `icon_container`: Container for the optional icon.
-*   `icon`: SVG string for the icon.
-*   `ul`: The `<ul>` element for the suggestions list.
-*   `li`: Each `<li>` suggestion item.
-*   `li_current`: Class added to the currently highlighted/selected `<li>` (keyboard/mouse).
-*   `li_a`: The inner `<a>` or `<button>` element within each `<li>`.
-*   `li_a_current`: Class added to the inner element when its `<li>` is current.
-*   `li_div_container`: Container div within the `<a>`/`<button>`.
-*   `li_div_one`: First inner div (usually contains the main text).
-*   `li_div_one_p`: The `<p>` tag containing the main suggestion text.
-*   `li_div_two`: Second inner div (usually contains the distance).
-*   `li_div_two_p`: The `<p>` tag containing the distance text.
-*   `kbd_container`: Container for the keyboard hint keys (Esc, Up, Down).
-*   `kbd_escape`: The `<kbd>` tag for the 'Esc' hint.
-*   `kbd_up`: The `<kbd>` tag for the 'Up Arrow' hint.
-*   `kbd_down`: The `<kbd>` tag for the 'Down Arrow' hint.
-*   `highlight`: The class applied to the `<span>` wrapping the matched text within suggestions. Defaults to `'font-bold'`.
-
-**Example: Overriding Classes**
-
-```javascript
-const autocomplete = new PlacesAutocomplete({
-  // ... other config
-  options: {
-    classes: {
-      input: 'my-custom-input form-control', // Replace default input style
-      ul: 'my-custom-dropdown-styles',        // Custom dropdown style
-      li_current: 'my-active-suggestion',     // Custom highlight for selected item
-      highlight: 'my-search-highlight'        // Custom style for matched text
-    }
-  }
-});
-```
-
-Then, style these classes in your CSS:
-
-```css
-.my-custom-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.my-search-highlight {
-  background-color: yellow;
-  color: black;
-}
-/* etc. */
-```
 
 ## Public Methods
 

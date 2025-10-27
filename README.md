@@ -137,7 +137,7 @@ Passed within the main configuration object under the `options` key.
 
 The component is built with flexibility in mind and can be styled in a couple of ways. The default appearance is based on Tailwind CSS, but you are not required to use Tailwind in your project.
 
-#### 1. Using the Pre-built CSS File
+#### Using the Pre-built CSS File
 
 A standalone CSS file is included in the package (`dist/places-autocomplete-js.css`). This file contains all the necessary styles for the component to look and work correctly out-of-the-box.
 

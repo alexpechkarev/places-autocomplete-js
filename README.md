@@ -60,7 +60,7 @@ yarn add places-autocomplete-js
   <head>
   <!-- ... other head elements -->
     <link rel="stylesheet" href="node_modules/places-autocomplete-js/dist/places-autocomplete-js.css">
-    <script>
+    <script type="module">
       import { PlacesAutocomplete } from 'places-autocomplete-js';
 
       document.addEventListener('DOMContentLoaded', () => {

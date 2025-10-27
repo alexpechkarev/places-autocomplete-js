@@ -5,16 +5,6 @@
   that can be used as a fallback for users who are not using Tailwind CSS.
 */
 @reference "tailwindcss";
-/* *, :after, :before, ::backdrop {
-    box-sizing: border-box;
-    border: 0 solid;
-    margin: 0;
-    padding: 0;
-} */
-a {
-  -webkit-text-decoration: inherit;
-  text-decoration: inherit;
-}
 
 :root,
 :host {
@@ -113,6 +103,9 @@ a {
 /* The anchor tag (<a>) inside a suggestion item. */
 .pac-li-a {
   @apply flex w-full justify-between;
+  color: inherit;
+  -webkit-text-decoration: inherit;
+  text-decoration: inherit;
 }
 
 /* Class for the anchor tag of the currently highlighted suggestion item. */

@@ -23,6 +23,17 @@ export default defineConfig({
     emptyOutDir: true, // Clean the output directory before building
     sourcemap: true, // Generate source maps for easier debugging
     // minify: 'terser', // Default is 'esbuild' which is faster. 'terser' can be smaller.
+    // rename file places-autocomplete-js.css to places-autocomplete.css
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === "places-autocomplete-js.css") {
+            return "places-autocomplete.css";
+          }
+          return assetInfo.name;
+        },
+      },
+    },
   },
   plugins: [tailwindcss()],
   root: __dirname,

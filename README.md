@@ -42,7 +42,15 @@ See a more comprehensive live demo of the library in action: [pacservice.pages.d
 
 - **Google Maps API Key** with the Places API (New) enabled. Refer to [Use API Keys](https://developers.google.com/maps/documentation/javascript/get-api-key) for detailed instructions.
 
-## Installation
+## Installation & Usage
+
+This library can be used in two primary ways: by installing it as an npm package for use with a bundler (like Vite or Webpack), or by linking to it directly from a CDN in a static HTML file.
+
+### 1. With a Bundler (Recommended)
+
+This is the recommended approach for modern web applications.
+
+**Step 1: Install the package**
 
 ```bash
 npm install places-autocomplete-js
@@ -50,57 +58,88 @@ npm install places-autocomplete-js
 yarn add places-autocomplete-js
 ```
 
-## Basic Usage
+**Step 2: Import and initialise the component**
 
-1. Replace `'___YOUR_API_KEY___'` with your actual **Google Maps API Key**.
-2. Use the `onResponse` callback to **handle the response**.
+In your main JavaScript or TypeScript file, import both the library and its stylesheet.
 
 ```javascript
+import { PlacesAutocomplete } from 'places-autocomplete-js';
+import 'places-autocomplete-js/dist/places-autocomplete.css'; // Import the default stylesheet
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const autocomplete = new PlacesAutocomplete({
+      containerId: 'autocomplete-container',
+      googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your key
+      onResponse: (placeDetails) => {
+        console.log('Place Selected:', placeDetails);
+        // Your code to handle the selected place...
+      },
+      onError: (error) => {
+        console.error('Autocomplete Error:', error.message || error);
+      }
+    });
+  } catch (error) {
+    console.error("Failed to initialise PlacesAutocomplete:", error.message);
+  }
+});
+```
+
+Then, add the container element to your HTML:
+
+```html
+<div id="autocomplete-container"></div>
+```
+
+### 2. With a CDN Link (for Static HTML)
+
+For quick prototyping or use in projects without a build step, you can use a CDN like jsDelivr.
+
+**Step 1: Add the stylesheet and script to your HTML**
+
+Add the following lines to your HTML file. The stylesheet goes in the `<head>` and the script goes at the end of the `<body>`.
+
+```html
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-  <!-- ... other head elements -->
-    <link rel="stylesheet" href="node_modules/places-autocomplete-js/dist/places-autocomplete-js.css">
-    <script type="module">
-      import { PlacesAutocomplete } from 'places-autocomplete-js';
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Places Autocomplete Demo</title>
+  
+  <!-- 1. Link to the stylesheet -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css">
+  
+</head>
+<body>
 
-      document.addEventListener('DOMContentLoaded', () => {
-        try {
-          const autocomplete = new PlacesAutocomplete({
-            containerId: 'autocomplete-container',
-            googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your actual key
-            onResponse: (placeDetails) => {
-              console.log('Place Selected:', placeDetails);
-              // Example: document.getElementById('address-field').value = placeDetails.formattedAddress;
-              // Example: document.getElementById('place-name').textContent = placeDetails.displayName;
-            },
-            onError: (error) => {
-              console.error('Autocomplete Error:', error.message || error);
-            }
-          });
+  <!-- 2. Add the container for the component -->
+  <div id="autocomplete-container"></div>
 
-          // Optional: You can interact with the instance later
-          // autocomplete.clear();
-          // autocomplete.destroy(); // To clean up
-          // autocomplete.setFetchFields(['types']); // Update fields to fetch
-          // autocomplete.getFetchFields(); // Get current fetch fields
-          // autocomplete.setRequestParams({origin: { lat: 48.8566, lng: 2.3522 }}); // Set new request parameters
-          // autocomplete.getRequestParams(); // Get current request parameters
-          // autocomplete.setOptions({ placeholder: 'Search for a place...' }); // Update options
-          // autocomplete.getOptions(); // Get current options
+  <!-- 3. Link to the library's script -->
+  <script type="module">
+    // 4. Import the class from the script
+    import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
 
-        } catch (error) {
-          console.error("Failed to initialise PlacesAutocomplete:", error.message);
-        }
-      });
-    </script>
-  </head>
-  <body>
-  ...
-    <div id="autocomplete-container"></div>
-  ...
-  </body>
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const autocomplete = new PlacesAutocomplete({
+          containerId: 'autocomplete-container',
+          googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY', // Replace with your key
+          onResponse: (placeDetails) => {
+            console.log('Place Selected:', placeDetails);
+          }
+        });
+      } catch (error) {
+        console.error("Failed to initialise PlacesAutocomplete:", error.message);
+      }
+    });
+  </script>
+
+</body>
 </html>
 ```
+> **Note for Production:** For stability, it's recommended to pin the CDN links to a specific version instead of using `@latest`. For example: `.../places-autocomplete-js@1.1.8/...`
 
 ### Configuration
 

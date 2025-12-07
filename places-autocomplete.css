@@ -138,16 +138,16 @@
 
 /* The paragraph container */
 .pac-li-div-p-container {
-  @apply flex justify-center items-start flex-col;
+  @apply flex justify-center items-start flex-col min-h-10;
 }
 
 /* The paragraph element holding the suggestion text. */
 .pac-li-div-one-p {
-  @apply text-sm leading-0; /* text-sm/6 */
+  @apply text-sm; /* text-sm/6 */
 }
 
 .pac-li-div-one-p-secondaryText {
-  @apply text-xs leading-0 mt-1; /* text-xs/2 */
+  @apply text-xs; 
 }
 
 /* The container for the distance information on the right side of the suggestion. */

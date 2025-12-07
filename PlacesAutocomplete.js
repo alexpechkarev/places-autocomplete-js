@@ -1,19 +1,17 @@
 import "./places-autocomplete.css";
+
 /**
- * Initialises a Places Autocomplete widget.
- * This script dynamically loads the Google Maps JavaScript API, creates the UI elements
- * for the autocomplete input and suggestions list, handles user input with debouncing,
- * fetches suggestions, manages keyboard navigation, and calls user-defined callbacks
- * on place selection or error.
+ * A flexible and customisable Places Autocomplete widget powered by the Google Maps Places API.
+ *
+ * Features:
+ * - Dynamic Google Maps API loading
+ * - Debounced input for optimized API requests
+ * - Keyboard navigation (Arrow keys, Enter, Escape)
+ * - Session token management for cost-effective API usage
+ * - Customizable styling and behavior
  *
  * @author Alexander Pechkarev <alexpechkarev@gmail.com>
  * @license MIT
- *
- */
-
-/**
- * PacAutocomplete class
- * This class provides a Places Autocomplete widget.
  */
 export class PlacesAutocomplete {
   // --- Private Properties (using # or _ prefix by convention) ---
@@ -33,7 +31,7 @@ export class PlacesAutocomplete {
   #currentSuggestion = -1;
   #onDataCallback; // For user-provided data callback
   #onErrorCallback; // For user-provided error callback
-  _debouncedMakeAcRequest; // Declare without initializing here
+  #debouncedMakeAcRequest; // Declare without initializing here
   #defaultOptions = {
     // Default options for the autocomplete widget.
     autofocus: false, // Automatically focus the input on load.
@@ -62,10 +60,16 @@ export class PlacesAutocomplete {
     li: "pac-li", //"z-50 cursor-default select-none py-2 px-2 lg:px-4 text-gray-900 hover:bg-indigo-500 hover:text-white", // Suggestion item (li).
     li_current: "pac-li-current", //"bg-indigo-500", // Class for the currently selected suggestion item.
     li_a: "pac-li-a", //"block w-full flex justify-between", // Link element within a suggestion item.
-    li_a_current: "pac-li-a-current", //"text-white", // Class for the link in the currently selected suggestion item.
+    li_button: "pac-li-button", //"block w-full flex justify-between", // Link element within a suggestion item.
+    li_button_current: "pac-li-button-current", //"text-white", // Class for the link in the currently selected suggestion item.
     li_div_container: "pac-li-div-container", //"flex min-w-0 gap-x-4", // Container div within the suggestion link.
+    li_div_p_container: "pac-li-div-p-container",
     li_div_one: "pac-li-div-one", //"min-w-0 flex-auto", // First inner div (for place name).
     li_div_one_p: "pac-li-div-one-p", //"text-sm/6", // Paragraph for the place name.
+    map_icon_svg: "pac-map-icon-svg",
+    map_pin_icon:
+      '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+    li_div_one_p_secondaryText: "pac-li-div-one-p-secondaryText",
     li_div_two: "pac-li-div-two", //"shrink-0 flex flex-col items-end min-w-16", // Second inner div (for distance).
     li_div_two_p: "pac-li-div-two-p", //"mt-1 text-xs/5", // Paragraph for the distance.
     highlight: "pac-highlight", //"font-bold", // Class for highlighting matched text in suggestions.
@@ -185,14 +189,12 @@ export class PlacesAutocomplete {
 
   /**
    * Initializes the debounced request function for fetching autocomplete suggestions.
+   * This function is called on initialization and when options are updated.
    *
-   * Debounced function to fetch autocomplete suggestions from the Google Places API.
-   * Triggered by the 'input' event on the input element.
-   *
-   *
+   * @private
    */
   _initialiseDebouncedRequest() {
-    this._debouncedMakeAcRequest = this._debounce(async () => {
+    this.#debouncedMakeAcRequest = this._debounce(async () => {
       if (!this.#inputElement || !this.#inputElement.value) {
         this._reset();
         if (this.#inputElement)
@@ -211,9 +213,10 @@ export class PlacesAutocomplete {
 
         // Display suggestions
         if (suggestions && suggestions.length > 0) {
-          this.#ul.replaceChildren(
-            ...this._createSuggestionElements(suggestions)
+          const suggestionElements = await Promise.all(
+            this._createSuggestionElements(suggestions)
           );
+          this.#ul.replaceChildren(...suggestionElements);
           this.#ul.style.display = "block";
           this.#inputElement.setAttribute("aria-expanded", "true");
         } else {
@@ -242,17 +245,13 @@ export class PlacesAutocomplete {
 
   /**
    * Creates a debounced version of a function.
-   * The debounced function delays invoking `func` until after `wait` milliseconds have
-   * elapsed since the last time the debounced function was invoked.
-   * @param {Function} func - The function to debounce.
-   * @param {number} wait - The number of milliseconds to delay.
-   * @returns {Function} The new debounced function.
+   *
+   * @private
+   * @param {Function} func - The function to debounce
+   * @param {number} wait - Delay in milliseconds
+   * @returns {Function} Debounced function
    */
   _debounce(func, wait) {
-    if (this.#options.debug) {
-      console.log("___debug debounce function called with wait:", wait);
-    }
-
     let timeout = null;
     return function executedFunction(...args) {
       const later = () => {
@@ -266,10 +265,12 @@ export class PlacesAutocomplete {
     };
   }
   /**
-   * Formats a distance in meters into kilometers or miles.
-   * @param {number | null | undefined} distance - Distance in meters.
-   * @param {'km' | 'miles'} units - The desired output units.
-   * @returns {string | null} Formatted distance string (e.g., "1.23 km") or null if input is invalid.
+   * Formats a distance value from meters to the specified unit.
+   *
+   * @private
+   * @param {number|null|undefined} distance - Distance in meters
+   * @param {('km'|'miles')} units - Target unit for conversion
+   * @returns {string|null} Formatted distance string or null if invalid
    */
   _formatDistance(distance, units) {
     if (typeof distance !== "number" || !this.#options.distance) {
@@ -426,7 +427,7 @@ export class PlacesAutocomplete {
    * This includes debounced input handling, focus/blur events, and keyboard navigation.
    */
   _attachedEventListeners() {
-    this.#inputElement.addEventListener("input", this._debouncedMakeAcRequest);
+    this.#inputElement.addEventListener("input", this.#debouncedMakeAcRequest);
     // Add focus/blur listeners if needed to manage suggestion visibility
     this.#inputElement.addEventListener("blur", () => {
       // Delay hiding suggestions to allow click events on them
@@ -452,7 +453,7 @@ export class PlacesAutocomplete {
     if (this.#inputElement) {
       this.#inputElement.removeEventListener(
         "input",
-        this._debouncedMakeAcRequest
+        this.#debouncedMakeAcRequest
       );
       // remove other listeners
     }
@@ -545,9 +546,9 @@ export class PlacesAutocomplete {
       this.#options.classes.li_current
         .split(" ")
         .forEach((cl) => li.classList.remove(cl));
-      const link = li.querySelector("a");
+      const link = li.querySelector("button");
       if (link) {
-        this.#options.classes.li_a_current
+        this.#options.classes.li_button_current
           .split(" ")
           .forEach((cl) => link.classList.remove(cl));
       }
@@ -596,14 +597,14 @@ export class PlacesAutocomplete {
 
       const currentLi = this.#ul.children.item(this.#currentSuggestion);
       if (currentLi) {
-        const currentA = currentLi.querySelector("a");
+        const currentButton = currentLi.querySelector("button");
         this.#options.classes.li_current
           .split(" ")
           .forEach((cl) => currentLi.classList.add(cl));
-        if (currentA) {
-          this.#options.classes.li_a_current
+        if (currentButton) {
+          this.#options.classes.li_button_current
             .split(" ")
-            .forEach((cl) => currentA.classList.add(cl));
+            .forEach((cl) => currentButton.classList.add(cl));
         }
         currentLi.scrollIntoView({ block: "nearest" }); // Ensure visible
         this.#inputElement.setAttribute("aria-activedescendant", currentLi.id); // Update aria-activedescendant
@@ -626,14 +627,14 @@ export class PlacesAutocomplete {
 
       const currentLi = this.#ul.children.item(this.#currentSuggestion);
       if (currentLi) {
-        const currentA = currentLi.querySelector("a");
+        const currentButton = currentLi.querySelector("button");
         this.#options.classes.li_current
           .split(" ")
           .forEach((cl) => currentLi.classList.add(cl));
-        if (currentA) {
-          this.#options.classes.li_a_current
+        if (currentButton) {
+          this.#options.classes.li_button_current
             .split(" ")
-            .forEach((cl) => currentA.classList.add(cl));
+            .forEach((cl) => currentButton.classList.add(cl));
         }
         currentLi.scrollIntoView({ block: "nearest" }); // Ensure visible
       }
@@ -663,6 +664,87 @@ export class PlacesAutocomplete {
     }
   }
 
+  // Helper function to find a specific address component
+  _getAddressComponent(response, type) {
+    return (
+      response.addressComponents?.find((c) => c.types.includes(type))
+        ?.longText || ""
+    );
+  }
+
+  // Helper function to get secondary text from address components
+  _getSecondaryText(place) {
+    const locality = this._getAddressComponent(place, "locality");
+    const adminArea = this._getAddressComponent(
+      place,
+      "administrative_area_level_1"
+    );
+    const postalCode = this._getAddressComponent(place, "postal_code");
+    const country = this._getAddressComponent(place, "country");
+    let components = [locality, adminArea, country, postalCode].filter(Boolean);
+    return components.join(", ");
+  }
+
+  /**
+   * Creates a button element for a suggestion item.
+   * @returns {HTMLButtonElement} The created button element.
+   */
+  _createButtonElement(index) {
+    const button = document.createElement("button");
+    button.tabIndex = index + 1;
+    button.className = this.#options.classes.li_button; // block w-full flex justify-between
+    return button;
+  }
+
+  /**
+   * Creates a div container for suggestion item.
+   * @returns {HTMLDivElement} The created div container element.
+   */
+  _createDivElement(className) {
+    // create div elements pac-li-div-container
+    const divContainer = document.createElement("div");
+    if (className) {
+      divContainer.className = className;
+    }
+    return divContainer;
+  }
+
+  /**
+   * Creates an SVG element representing a map pin icon.
+   * @returns {SVGSVGElement} The created SVG element.
+   */
+  _createMapPinIconElement() {
+    const svgIcon = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    svgIcon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    svgIcon.setAttribute("width", "24");
+    svgIcon.setAttribute("height", "24");
+    svgIcon.setAttribute("viewBox", "0 0 24 24");
+    svgIcon.setAttribute("fill", "none");
+    svgIcon.setAttribute("stroke", "currentColor");
+    svgIcon.setAttribute("stroke-width", "2");
+    svgIcon.setAttribute("stroke-linecap", "round");
+    svgIcon.setAttribute("stroke-linejoin", "round");
+    svgIcon.setAttribute("class", this.#options.classes.map_icon_svg);
+    // insert map pin icon path
+    svgIcon.innerHTML = this.#options.classes.map_pin_icon;
+    return svgIcon;
+  }
+
+  /**
+   * Creates a paragraph (P) element with an optional class name.
+   * @param {string} className
+   * @returns {HTMLParagraphElement}
+   */
+  _createPElement(className) {
+    const p = document.createElement("p");
+    if (className) {
+      p.className = className;
+    }
+    return p;
+  }
   /**
    * Creates an array of list item (LI) elements for the suggestions dropdown.
    * Each LI contains a link (A) with the place prediction details and distance.
@@ -672,26 +754,71 @@ export class PlacesAutocomplete {
    */
   _createSuggestionElements(suggestions) {
     this.#allSuggestions = []; // Reset before populating
-    return suggestions.map((suggestion, index) => {
-      this.#allSuggestions.push({
-        id: index + 1,
-        description: suggestion.placePrediction.toString(),
-        place: suggestion.placePrediction.toPlace(),
+    // Map suggestions to LI elements
+    return suggestions.map(async (suggestion, index) => {
+      // Fetch place details for each suggestion
+      let place = suggestion.placePrediction.toPlace();
+      // Fetch address components for the place
+      await place.fetchFields({ fields: ["addressComponents"] });
+
+      const li = document.createElement("li");
+      li.id = `option-${index + 1}`;
+      li.className = this.#options.classes.li;
+
+      // create button element
+      const button = this._createButtonElement(index);
+      // Add click event listener to handle selection
+      button.addEventListener("click", () => {
+        this._onPlaceSelected(suggestion.placePrediction.toPlace());
       });
 
-      // create div elements
-      const divContainer = document.createElement("div");
-      divContainer.className = this.#options.classes.li_div_container; // flex min-w-0 gap-x-4
-      // create inner div element - place name
-      const divInner = document.createElement("div");
-      divInner.className = this.#options.classes.li_div_one; // min-w-0 flex-auto
-      divContainer.appendChild(divInner);
+      // create div elements pac-li-div-container
+      const divContainer = this._createDivElement(
+        this.#options.classes.li_div_container
+      );
+
+      // create li div one element - place name
+      const liDivOne = this._createDivElement(this.#options.classes.li_div_one);
+      const liDivTwo = this._createDivElement(this.#options.classes.li_div_two);
+      // create map pin icon element
+      const mapPinIcon = this._createMapPinIconElement();
+      // append map pin icon to liDivOne
+      liDivOne.appendChild(mapPinIcon);
+
+      // create div p container
+      const divPContainer = this._createDivElement(
+        this.#options.classes.li_div_p_container
+      );
+      // append div p container to liDivOne
+      liDivOne.appendChild(divPContainer);
+
       // create p element - place name
-      const p = document.createElement("p");
-      p.className = this.#options.classes.li_div_one_p; // text-sm/6
+      const pOne = this._createPElement(this.#options.classes.li_div_one_p);
+      // create p element - secondary text
+      const pTwo = this._createPElement(
+        this.#options.classes.li_div_one_p_secondaryText
+      );
+      // create p element - distance
+      const pThree = this._createPElement(this.#options.classes.li_div_two_p);
+      pThree.textContent = this._formatDistance(
+        suggestion.placePrediction.distanceMeters,
+        this.#options.distance_units ?? "km"
+      );
+      // append p element to div p container
+      divPContainer.appendChild(pOne);
+      divPContainer.appendChild(pTwo);
+      liDivTwo.appendChild(pThree);
+
+      // append liDivOne to divContainer
+      divContainer.appendChild(liDivOne);
+      divContainer.appendChild(liDivTwo);
+      // append divContainer to button
+      button.appendChild(divContainer);
+      // append button to li
+      li.appendChild(button);
 
       // get prediction text
-      const predictionText = suggestion.placePrediction.text;
+      const predictionText = suggestion.placePrediction.mainText;
       const originalText = predictionText.text;
       // Array of objects with startOffset, endOffset
       const matches = predictionText.matches;
@@ -743,46 +870,24 @@ export class PlacesAutocomplete {
       outerSpan.appendChild(remainingText);
 
       // 5. Append the outer span to the paragraph element
-      p.appendChild(outerSpan);
+      pOne.appendChild(outerSpan);
 
-      divInner.appendChild(p);
-      divContainer.appendChild(divInner);
+      // set secondary text
+      const secondaryText = this._getSecondaryText(place);
 
-      // create inner div element - distance
-      const divInner2 = document.createElement("div");
-      divInner2.className = this.#options.classes.li_div_two; //'shrink-0 flex flex-col items-end min-w-16';
-      divContainer.appendChild(divInner2);
-      // create p element - distance
-      const p2 = document.createElement("p");
-      p2.className = this.#options.classes.li_div_two_p; //'mt-1 text-xs/5 ';
-      p2.textContent = this._formatDistance(
-        suggestion.placePrediction.distanceMeters,
-        this.#options.distance_units ?? "km"
-      );
-      divInner2.appendChild(p2);
+      if (secondaryText) {
+        pTwo.textContent = secondaryText;
+      }
 
-      // // create a link element
-      const a = document.createElement("a");
-      a.href = "javascript:void(0)";
-      a.tabIndex = index + 1;
-      a.className = this.#options.classes.li_a; // block w-full flex justify-between
-
-      a.addEventListener("click", () => {
-        this._onPlaceSelected(suggestion.placePrediction.toPlace());
+      this.#allSuggestions.push({
+        id: index + 1,
+        place: place,
+        mainText: suggestion.placePrediction.mainText.text,
+        secondaryText: this._getSecondaryText(place),
+        description: suggestion.placePrediction.toString(),
       });
 
-      // ...
-      // a.addEventListener("click", () => {
-      //   this._fetchPlaceDetails(prediction.place_id);
-      // });
-      a.appendChild(divContainer);
-      a.appendChild(divInner2);
-
-      const li = document.createElement("li");
-      li.id = `option-${index + 1}`;
-      li.className = this.#options.classes.li;
-
-      li.appendChild(a);
+      li.appendChild(button);
       return li;
     });
   }
@@ -994,7 +1099,6 @@ export class PlacesAutocomplete {
     this.#currentSuggestion = -1;
     this.#onDataCallback = null;
     this.#onErrorCallback = null;
-    this._debouncedMakeAcRequest = null;
-    console.log("PacAutocomplete instance destroyed.");
+    this.#debouncedMakeAcRequest = null;
   }
 }

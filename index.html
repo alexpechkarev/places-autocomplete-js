@@ -6,15 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <!-- <link href="./dist/places-autocomplete-js.css" rel="stylesheet"> -->
+    <!-- <link href="./places-autocomplete-js.css" rel="stylesheet"> -->
+     <!-- <link href="./dist/places-autocomplete.css" rel="stylesheet"> -->
     <!-- <link href="./index.css" rel="stylesheet"> -->
-
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css">
+    <!-- 
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"> -->
 
     <script type="module">
         // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
-        // import { PlacesAutocomplete } from './dist/places-autocomplete.js';
-        import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
+        import { PlacesAutocomplete } from './dist/places-autocomplete.js';
+        import './dist/places-autocomplete.css';
+        // import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
         // import 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css';
         //console.log('PlacesAutocomplete module loaded:', import.meta.env);
 
@@ -57,7 +59,7 @@
                             lng: -3.0181503295898438
                         }
                     },
-                    fetchFields: ["formattedAddress", "addressComponents",], // Optional: Specify which fields to fetch
+                    fetchFields: ["formattedAddress", "addressComponents"], // Optional: Specify which fields to fetch
                 });
 
                 //console.log('PlacesAutocomplete instance created:', myPac.getOptions());
@@ -115,39 +117,38 @@
 
 
     <div class="container max-w-5xl px-10 py-5 mx-auto mt-10">
+
         <div id="my-pac-container"></div>
-    
 
 
+        <div class="flex items-center mt-10 gap-10">
+            <div>
+                <button type="button" id="btnClear"
+                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Clear</button>
+            </div>
+            <div>
+                <button type="button" id="btnDestroy"
+                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Destroy</button>
+            </div>
 
-    <div class="flex items-center mt-10 gap-10">
-        <div>
-            <button type="button" id="btnClear"
-                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Clear</button>
+            <div>
+                <button type="button" id="btnRequestParams"
+                    class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Set
+                    Params</button>
+            </div>
         </div>
-        <div>
-            <button type="button" id="btnDestroy"
-                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Destroy</button>
-        </div>
 
-        <div>
-            <button type="button" id="btnRequestParams"
-                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 min-w-20 hover:bg-gray-50">Set
-                Params</button>
+
+        <div class="rounded-md bg-gray-100 mt-4 p-4 hidden" id="response-container">
+
+            <pre class="">
+                <code id="response-message" class="text-sm font-mono"></code>
+            </pre>
+
         </div>
     </div>
 
-
-    <div class="rounded-md bg-gray-100 mt-4 p-4 hidden" id="response-container">
-
-        <pre class="">
-            <code id="response-message" class="text-sm font-mono"></code>
-        </pre>
-
     </div>
-    </div>
-
-</div>
 
 
 </body>

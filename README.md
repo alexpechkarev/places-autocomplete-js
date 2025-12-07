@@ -64,7 +64,7 @@ In your main JavaScript or TypeScript file, import both the library and its styl
 
 ```javascript
 import { PlacesAutocomplete } from 'places-autocomplete-js';
-import 'places-autocomplete-js/dist/places-autocomplete.css'; // Import the default stylesheet
+import 'places-autocomplete-js/places-autocomplete.css'; // Import the default stylesheet
 
 document.addEventListener('DOMContentLoaded', () => {
   try {
@@ -108,7 +108,7 @@ Add the following lines to your HTML file. The stylesheet goes in the `<head>` a
   <title>Places Autocomplete Demo</title>
   
   <!-- 1. Link to the stylesheet -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete-js.css">
   
 </head>
 <body>
@@ -174,228 +174,290 @@ Passed within the main configuration object under the `options` key.
 
 ### Styling
 
-The component is built with flexibility in mind and can be styled in a couple of ways. The default appearance is based on Tailwind CSS, but you are not required to use Tailwind in your project.
+The component is built with flexibility in mind and can be styled in two ways. The default appearance is based on Tailwind CSS, but you are not required to use Tailwind in your project.
 
-#### Using the Pre-built CSS File
+#### 1. Using the Pre-built CSS File (Recommended)
 
-A standalone CSS file is included in the package (`dist/places-autocomplete-js.css`). This file contains all the necessary styles for the component to look and work correctly out-of-the-box.
+A standalone CSS file is included in the package and contains all necessary styles for the component to work correctly out-of-the-box.
 
+**For bundler-based projects:**
+```javascript
+import 'places-autocomplete-js/style.css';
+```
 
-### CSS Classes (`options.classes`)
+**For CDN usage:**
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete-js.css">
+```
 
-You can customise the appearance of the component by providing your own CSS classes via the `options.classes` object. The library uses a default set of classes (many are Tailwind CSS utility classes but can be entirely replaced).
+#### 2. Custom CSS Classes (`options.classes`)
 
-Provide an object where keys are the component parts and values are the class strings you want to apply.
+You can customise the appearance by providing your own CSS classes via the `options.classes` object. This allows you to override default styles or integrate with your own design system.
 
-**Default Class Keys & Structure:**
+**Available Class Keys:**
 
-- `section`: The main container section.
-- `container`: The div containing the input and suggestions list.
-- `label`: The label element (if `options.label` is provided).
-- `input`: The main text input element.
-- `icon_container`: Container for the optional icon.
-- `icon`: SVG string for the icon.
-- `ul`: The `<ul>` element for the suggestions list.
-- `li`: Each `<li>` suggestion item.
-- `li_current`: Class added to the currently highlighted/selected `<li>` (keyboard/mouse).
-- `li_a`: The inner `<a>` or `<button>` element within each `<li>`.
-- `li_a_current`: Class added to the inner element when its `<li>` is current.
-- `li_div_container`: Container div within the `<a>`/`<button>`.
-- `li_div_one`: First inner div (usually contains the main text).
-- `li_div_one_p`: The `<p>` tag containing the main suggestion text.
-- `li_div_two`: Second inner div (usually contains the distance).
-- `li_div_two_p`: The `<p>` tag containing the distance text.
-- `kbd_container`: Container for the keyboard hint keys (Esc, Up, Down).
-- `kbd_escape`: The `<kbd>` tag for the 'Esc' hint.
-- `kbd_up`: The `<kbd>` tag for the 'Up Arrow' hint.
-- `kbd_down`: The `<kbd>` tag for the 'Down Arrow' hint.
-- `highlight`: The class applied to the `<span>` wrapping the matched text within suggestions. Defaults to `'font-bold'`.
+| Class Key | Description |
+|-----------|-------------|
+| `section` | Main container section |
+| `container` | Div containing the input and suggestions list |
+| `label` | Label element (if `options.label` is provided) |
+| `input` | Main text input element |
+| `icon_container` | Container for the search icon |
+| `icon` | SVG string for the search icon |
+| `ul` | Suggestions list (`<ul>` element) |
+| `li` | Individual suggestion item |
+| `li_current` | Class for the currently highlighted suggestion |
+| `li_button` | Button element within each suggestion |
+| `li_button_current` | Class for the button in the highlighted suggestion |
+| `li_div_container` | Container div within the button |
+| `li_div_one` | First inner div (contains place name and icon) |
+| `li_div_one_p` | Paragraph containing the main suggestion text |
+| `li_div_two` | Second inner div (contains distance) |
+| `li_div_two_p` | Paragraph containing the distance text |
+| `kbd_container` | Container for keyboard hint keys |
+| `kbd_escape` | Escape key hint |
+| `kbd_up` | Up arrow key hint |
+| `kbd_down` | Down arrow key hint |
+| `kbd_active` | Class applied when a keyboard key is pressed |
+| `highlight` | Class for matched text highlighting (defaults to `pac-highlight`) |
 
-**Example: Overriding Classes**
+**Example:**
 
 ```javascript
 const autocomplete = new PlacesAutocomplete({
-  // ... other config
+  containerId: 'autocomplete-container',
+  googleMapsApiKey: 'YOUR_API_KEY',
   options: {
     classes: {
-      input: "my-custom-input form-control", // Replace default input style
-      ul: "my-custom-dropdown-styles", // Custom dropdown style
-      li_current: "my-active-suggestion", // Custom highlight for selected item
-      highlight: "my-search-highlight", // Custom style for matched text
+      input: 'my-custom-input',
+      ul: 'my-dropdown',
+      li_current: 'active',
+      highlight: 'text-highlight',
     },
   },
 });
 ```
 
-Then, style these classes in your CSS:
+Then define these classes in your stylesheet:
 
 ```css
 .my-custom-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
 }
-.my-search-highlight {
-  background-color: yellow;
-  color: black;
+
+.my-dropdown {
+  max-height: 20rem;
+  overflow-y: auto;
 }
-/* etc. */
+
+.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.text-highlight {
+  font-weight: 600;
+  color: #4f46e5;
+}
 ```
 
 ### API Request Parameters (`requestParams`)
 
 Passed within the main configuration object under the `requestParams` key. These parameters are sent to the Google Places Autocomplete API. Refer to the [AutocompleteRequest documentation](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompleteRequest) for all available options.
 
-**Common `requestParams`:**
+**Common Parameters:**
 
-- `input`: (string) Automatically handled by the library based on user typing.
-- `language`: (string) The language code, indicating in which language the results should be returned, if possible.
-- `region`: (string) The region code, specified as a ccTLD ("top-level domain") two-character value.
-- `includedRegionCodes`: (string[]) An array of up to 5 CLDR region codes to limit results to.
-- `locationBias`: (google.maps.places.LocationBias)
-- `locationRestriction`: (google.maps.places.LocationRestriction)
-- `origin`: (google.maps.LatLngLiteral) The origin point from which to calculate straight-line distances to predictions (if `options.distance` is true).
-- `sessionToken`: Automatically managed by this library.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `input` | `string` | Automatically handled by the library (user's typed value) |
+| `language` | `string` | Language code for returned results (e.g., `"en"`, `"fr"`, `"de"`) |
+| `region` | `string` | Region code as ccTLD two-character value (e.g., `"GB"`, `"US"`) |
+| `includedRegionCodes` | `string[]` | Array of up to 5 CLDR region codes to restrict results |
+| `locationBias` | `google.maps.places.LocationBias` | Area to bias results towards |
+| `locationRestriction` | `google.maps.places.LocationRestriction` | Area to strictly restrict results to |
+| `origin` | `google.maps.LatLngLiteral` | Origin point for distance calculations (requires `options.distance: true`) |
+| `sessionToken` | `AutocompleteSessionToken` | Automatically managed by the library |
 
-**Example `requestParams`:**
+**Example:**
 
 ```javascript
 const autocomplete = new PlacesAutocomplete({
-  // ... other config
+  containerId: 'autocomplete-container',
+  googleMapsApiKey: 'YOUR_API_KEY',
   requestParams: {
-    language: "fr",
-    region: "ca",
-    includedRegionCodes: ["ca"],
-    origin: { lat: 45.5019, lng: -73.5674 }, // Montreal
+    language: 'en-GB',
+    region: 'GB',
+    includedRegionCodes: ['GB'],
+    origin: { lat: 51.5074, lng: -0.1278 }, // London
   },
 });
 ```
 
-### Working with Fetch Fields (`fetchFields`)
+### Fetch Fields (`fetchFields`)
 
-The `fetchFields` option allows you to specify which fields of place data you want to retrieve when a user selects a suggestion. This can help reduce API costs by only fetching the necessary information. See the [Place Class Data Fields](https://developers.google.com/maps/documentation/javascript/place-class-data-fields) for all available fields.
-By default, the library fetches `['formattedAddress', 'addressComponents']`, but you can customise this based on your needs.
+The `fetchFields` option specifies which place data fields to retrieve when a user selects a suggestion. This helps optimise API costs by only fetching necessary information.
 
-**Example `fetchFields`:**
+**Default fields:** `['formattedAddress', 'addressComponents']`
+
+See [Place Class Data Fields](https://developers.google.com/maps/documentation/javascript/place-class-data-fields) for all available fields and their billing impact.
+
+**Example:**
 
 ```javascript
+// In constructor
 const autocomplete = new PlacesAutocomplete({
-  // ... other config
-  fetchFields: ["formattedAddress", "addressComponents", "displayName"], // Fetch additional fields as needed
+  containerId: 'autocomplete-container',
+  googleMapsApiKey: 'YOUR_API_KEY',
+  fetchFields: ['formattedAddress', 'addressComponents', 'displayName', 'types'],
 });
 
-// Or
-autocomplete.setFetchFields({
-  fetchFields: ["formattedAddress", "addressComponents", "displayName"], // Update fetch fields dynamically
-});
+// Or update dynamically
+autocomplete.setFetchFields(['formattedAddress', 'location', 'viewport']);
 ```
 
 ### Retain Input Value After Selection
 
-To keep the selected address visible in the input field after a suggestion is chosen. Set the `options.clear_input = false`.
+By default, the input field is cleared after a place is selected. To retain the selected address in the input field, set `options.clear_input` to `false`.
 
 ```javascript
 const autocomplete = new PlacesAutocomplete({
-  // ... other config
+  containerId: 'autocomplete-container',
+  googleMapsApiKey: 'YOUR_API_KEY',
   options: {
-    clear_input: false, // Retain the input value after selection
+    clear_input: false,
   },
 });
 ```
 
 ## Public Methods
 
-Instances of `PlacesAutocomplete` have the following public methods:
+The `PlacesAutocomplete` instance provides the following methods for dynamic control:
 
-- **`clear()`**: Clears the input field and any visible suggestions, and refreshes the session token.
+### `clear()`
 
-  ```javascript
-  autocomplete.clear();
-  ```
+Clears the input field, removes visible suggestions, and refreshes the session token.
 
-- **`destroy()`**: Removes event listeners and cleans up DOM elements created by the widget. Useful when the component is no longer needed (e.g., in SPAs when a view is unmounted).
+```javascript
+autocomplete.clear();
+```
 
-  ```javascript
-  autocomplete.destroy();
-  ```
+### `destroy()`
 
-- **`setFetchFields(fields)`**: Dynamically updates the array of Place Data Fields. The provided `fields` array will be combined with the library's default fields (`formattedAddress`, `addressComponents`), ensuring uniqueness, to form the new set of fields to request. Refer to the "Fetch Fields (`fetchFields`)" section and [Place Class Data Fields](https://developers.google.com/maps/documentation/javascript/place-class-data-fields) for available fields.
+Removes event listeners and cleans up DOM elements. Use this when the component is no longer needed (e.g., when unmounting a view in SPAs).
 
-  - `fields` (Array<string>): An array of field names to fetch. These will be merged with the default fields (`formattedAddress`, `addressComponents`) and any existing fetch fields, ensuring uniqueness.
+```javascript
+autocomplete.destroy();
+```
 
-  ```javascript
-  // Example: Update to fetch displayName and geometry in addition to defaults
-  autocomplete.setFetchFields(["displayName", "types"]);
+### `setFetchFields(fields)`
 
-  // Example: Set a specific list of fields, overriding previous settings (while still including defaults)
-  autocomplete.setFetchFields(["regularOpeningHours", "websiteURI"]);
-  ```
+Dynamically updates the Place Data Fields to fetch on selection. The provided fields are merged with the library's default fields (`formattedAddress`, `addressComponents`).
 
-- **`getFetchFields()`**: Retrieves the current array of Place Data Fields that will be requested when a place is selected.
+**Parameters:**
+- `fields` (`Array<string>`): Field names to fetch
 
-  ```javascript
-  const currentFetchFields = autocomplete.getFetchFields();
-  console.log("Current Fetch Fields:", currentFetchFields);
-  // Expected output might be: ['formattedAddress', 'addressComponents', 'regularOpeningHours', 'websiteURI']
-  // (depending on what was set via constructor or setFetchFields)
-  ```
+```javascript
+autocomplete.setFetchFields(['displayName', 'types', 'location']);
+```
 
-- **`setRequestParams(params)`**: Dynamically updates the parameters sent to the Google Places Autocomplete API. This allows you to change search criteria like language, region, or location bias after initialisation.
+### `getFetchFields()`
 
-  - `params` (object): An object containing the API request parameters to update. These will be merged with existing request parameters. Refer to the "API Request Parameters (`requestParams`)" section for available options.
+Retrieves the current array of Place Data Fields that will be requested.
 
-  ```javascript
-  // Example: Change the search region and language
-  autocomplete.setRequestParams({
-    region: "fr",
-    language: "fr",
-    includedRegionCodes: ["fr"],
-  });
+**Returns:** `Array<string>`
 
-  // Example: Set an origin for distance calculations
-  autocomplete.setRequestParams({
-    origin: { lat: 48.8566, lng: 2.3522 }, // Paris
-  });
-  ```
+```javascript
+const fields = autocomplete.getFetchFields();
+console.log('Current fields:', fields);
+// Output: ['formattedAddress', 'addressComponents', 'displayName', 'types', 'location']
+```
 
-- **`getRequestParams()`**: Retrieves the current API request parameters being used by the instance.
+### `setRequestParams(params)`
 
-  ```javascript
-  const currentRequestParams = autocomplete.getRequestParams();
-  console.log("Current API Request Params:", currentRequestParams);
-  ```
+Dynamically updates the Google Places API request parameters. Useful for changing search criteria after initialisation.
 
-- **`setOptions(options)`**: Dynamically updates the UI behavior and appearance options of the widget. This allows you to change things like the placeholder text, debounce timing, or CSS classes after initialisation.
+**Parameters:**
+- `params` (`object`): Request parameters to update (merged with existing parameters)
 
-  - `options` (object): An object containing the UI and behavior options to update. These will be merged with existing options. Refer to the "UI & Behavior Options (`options`)" section for available options.
+```javascript
+// Change region and language
+autocomplete.setRequestParams({
+  region: 'FR',
+  language: 'fr',
+  includedRegionCodes: ['FR'],
+});
 
-  ```javascript
-  // Example: Change the placeholder text and debounce time
-  autocomplete.setOptions({
-    placeholder: "Search for a location in France...",
-    debounce: 250,
-  });
+// Set origin for distance calculations
+autocomplete.setRequestParams({
+  origin: { lat: 48.8566, lng: 2.3522 }, // Paris
+});
+```
 
-  // Example: Update CSS classes for the input
-  autocomplete.setOptions({
-    classes: {
-      input: "new-custom-input-style",
-    },
-  });
-  ```
+### `getRequestParams()`
 
-- **`getOptions()`**: Retrieves the current UI and behavior options being used by the instance.
-  ```javascript
-  const currentOptions = autocomplete.getOptions();
-  console.log("Current UI Options:", currentOptions);
-  ```
+Retrieves the current API request parameters.
+
+**Returns:** `object`
+
+```javascript
+const params = autocomplete.getRequestParams();
+console.log('Current request params:', params);
+```
+
+### `setOptions(options)`
+
+Dynamically updates UI behaviour and appearance options.
+
+**Parameters:**
+- `options` (`object`): Options to update (merged with existing options)
+
+```javascript
+// Update placeholder and debounce
+autocomplete.setOptions({
+  placeholder: 'Enter your postcode...',
+  debounce: 250,
+});
+
+// Update CSS classes
+autocomplete.setOptions({
+  classes: {
+    input: 'custom-input',
+    ul: 'custom-dropdown',
+  },
+});
+```
+
+### `getOptions()`
+
+Retrieves the current UI and behaviour options.
+
+**Returns:** `object`
+
+```javascript
+const options = autocomplete.getOptions();
+console.log('Current options:', options);
+```
 
 ## Google Places API & Billing
 
-- This library uses the Google Maps JavaScript API (specifically the Places library). Usage is subject to Google's terms and pricing.
-- An API key enabled for the "Places API" (and "Maps JavaScript API") is required.
-- The library uses **Session Tokens** automatically to group Autocomplete requests, which can lead to significant cost savings compared to per-request billing. See [Google's Session Token Pricing](https://developers.google.com/maps/documentation/places/web-service/usage-and-billing#session-pricing).
-- Place Details requests (made when a suggestion is selected to get `displayName`, `formattedAddress`, etc.) are billed separately. The library currently fetches `displayName`, `formattedAddress`, and `addressComponents` by default. This can be expanded if needed, but be mindful of [Place Data Fields Pricing](https://developers.google.com/maps/documentation/javascript/usage-and-billing#data-pricing).
+This library uses the Google Maps JavaScript API (Places library). Usage is subject to Google's terms and pricing.
+
+### Requirements
+
+- An API key with "Places API" and "Maps JavaScript API" enabled
+- Active Google Cloud billing account
+
+### Cost Optimisation
+
+The library automatically implements several cost-saving measures:
+
+1. **Session Tokens**: Autocomplete requests are grouped using session tokens, significantly reducing costs compared to per-request billing. See [Session Token Pricing](https://developers.google.com/maps/documentation/places/web-service/usage-and-billing#session-pricing).
+
+2. **Minimal Default Fields**: By default, only `formattedAddress` and `addressComponents` are fetched, minimising costs. Additional fields can be requested via `fetchFields`, but be mindful of [Place Data Fields Pricing](https://developers.google.com/maps/documentation/javascript/usage-and-billing#data-pricing).
+
+3. **Debounced Requests**: Input is debounced by default (100ms) to reduce unnecessary API calls while typing.
 
 ## Testing
 

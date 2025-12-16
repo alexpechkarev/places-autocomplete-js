@@ -768,7 +768,8 @@ export class PlacesAutocomplete {
       // create button element
       const button = this._createButtonElement(index);
       // Add click event listener to handle selection
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
         this._onPlaceSelected(suggestion.placePrediction.toPlace());
       });
 

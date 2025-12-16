@@ -234,10 +234,10 @@ class w {
   async _loadGoogleMapsApi(t) {
     var e, s, i, n = "The Google Maps JavaScript API", a = "google", c = "importLibrary", p = "__ib__", m = document, h = window;
     h = h[a] || (h[a] = {});
-    var r = h.maps || (h.maps = {}), _ = /* @__PURE__ */ new Set(), d = new URLSearchParams(), f = () => (
+    var o = h.maps || (h.maps = {}), _ = /* @__PURE__ */ new Set(), d = new URLSearchParams(), f = () => (
       // Function to initiate API loading (if not already started)
       e || // eslint-disable-next-line no-async-promise-executor
-      (e = new Promise(async (u, o) => {
+      (e = new Promise(async (u, l) => {
         s = m.createElement("script"), d.set("libraries", [..._].join(","));
         for (i in t)
           d.set(
@@ -245,14 +245,14 @@ class w {
             // Convert camelCase to snake_case
             t[i]
           );
-        d.set("callback", a + ".maps." + p), s.src = `https://maps.${a}apis.com/maps/api/js?` + d, r[p] = u, s.onerror = () => e = o(
+        d.set("callback", a + ".maps." + p), s.src = `https://maps.${a}apis.com/maps/api/js?` + d, o[p] = u, s.onerror = () => e = l(
           new Error(
             `${n} could not load. Check your API key and network connection.`
           )
         ), s.nonce = m.querySelector("script[nonce]")?.nonce || "", m.head.append(s);
       }))
     );
-    r[c] ? console.warn(n + " only loads once. Ignoring:", t) : r[c] = (u, ...o) => _.add(u) && f().then(() => r[c](u, ...o));
+    o[c] ? console.warn(n + " only loads once. Ignoring:", t) : o[c] = (u, ...l) => _.add(u) && f().then(() => o[c](u, ...l));
   }
   // --- UI Creation ---
   _createPACStructure() {
@@ -421,39 +421,39 @@ class w {
       const n = document.createElement("li");
       n.id = `option-${s + 1}`, n.className = this.#t.classes.li;
       const a = this._createButtonElement(s);
-      a.addEventListener("click", () => {
-        this._onPlaceSelected(e.placePrediction.toPlace());
+      a.addEventListener("click", (r) => {
+        r.preventDefault(), this._onPlaceSelected(e.placePrediction.toPlace());
       });
       const c = this._createDivElement(
         this.#t.classes.li_div_container
       ), p = this._createDivElement(this.#t.classes.li_div_one), m = this._createDivElement(this.#t.classes.li_div_two), h = this._createMapPinIconElement();
       p.appendChild(h);
-      const r = this._createDivElement(
+      const o = this._createDivElement(
         this.#t.classes.li_div_p_container
       );
-      p.appendChild(r);
+      p.appendChild(o);
       const _ = this._createPElement(this.#t.classes.li_div_one_p), d = this._createPElement(
         this.#t.classes.li_div_one_p_secondaryText
       ), f = this._createPElement(this.#t.classes.li_div_two_p);
       f.textContent = this._formatDistance(
         e.placePrediction.distanceMeters,
         this.#t.distance_units ?? "km"
-      ), r.appendChild(_), r.appendChild(d), m.appendChild(f), c.appendChild(p), c.appendChild(m), a.appendChild(c), n.appendChild(a);
-      const u = e.placePrediction.mainText, o = u.text, b = u.matches;
+      ), o.appendChild(_), o.appendChild(d), m.appendChild(f), c.appendChild(p), c.appendChild(m), a.appendChild(c), n.appendChild(a);
+      const u = e.placePrediction.mainText, l = u.text, b = u.matches;
       let y = 0;
-      b.sort((l, A) => l.startOffset - A.startOffset);
+      b.sort((r, A) => r.startOffset - A.startOffset);
       const v = document.createElement("span"), g = document.createElement("span");
       g.classList = this.#t.classes.highlight ?? "font-bold";
-      for (const l of b)
-        v.textContent += o.substring(
+      for (const r of b)
+        v.textContent += l.substring(
           y,
-          l.startOffset
-        ), l.startOffset > 0 && o.charAt(l.startOffset - 1) == " " && (g.textContent += " "), g.textContent += o.substring(
-          l.startOffset,
-          l.endOffset
-        ), y = l.endOffset;
+          r.startOffset
+        ), r.startOffset > 0 && l.charAt(r.startOffset - 1) == " " && (g.textContent += " "), g.textContent += l.substring(
+          r.startOffset,
+          r.endOffset
+        ), y = r.endOffset;
       const k = document.createTextNode(
-        o.substring(y)
+        l.substring(y)
       );
       v.appendChild(g), v.appendChild(k), _.appendChild(v);
       const E = this._getSecondaryText(i);

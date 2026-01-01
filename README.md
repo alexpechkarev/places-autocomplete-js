@@ -2,8 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/places-autocomplete-js.svg)](https://badge.fury.io/js/places-autocomplete-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Google Maps Platform Awards 2025](https://img.shields.io/badge/Google%20Maps%20Platform-Awards%202025%20Winner-4285F4?style=flat&logo=google-maps&logoColor=white)](https://developers.google.com/maps)
 
-A flexible and customisable vanilla JavaScript library for frontend web applications, leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). This library provides a user-friendly way to search for and retrieve detailed address and location information in any web application.
+A flexible and customisable vanilla JavaScript library for frontend web applications, leveraging the [Google Maps Places (New) Autocomplete API](https://developers.google.com/maps/documentation/javascript/place-autocomplete-overview). **Winner of the Google Maps Platform Awards 2025**, recognising excellence in Google Maps Platform development. This library provides a user-friendly way to search for and retrieve detailed address and location information in any web application.
 
 It handles API loading, session tokens for cost-effective usage, fetching suggestions with debouncing, keyboard navigation, highlighting matched text, and requesting place details, allowing you to focus on integrating the results into your application.
 
@@ -37,6 +38,20 @@ See a more comprehensive live demo of the library in action: [pacservice.pages.d
 - **Reduce API Costs:** Leverage automatic session token management to optimise your Google Maps API billing.
 - **Maintain Brand Consistency:** Easily customise the look and feel of the autocomplete component to match your application's design system.
 - **Future-Proof:** Built on the latest Google Places (New) Autocomplete API, ensuring compatibility and access to new features.
+
+## Recognition
+
+
+### 🏆 Google Maps Platform Awards 2025 Winner
+<p align="left">
+  <a href="https://developers.google.com/maps">
+    <img src="badge.svg" alt="Google Maps Platform Awards 2025 Winner" width="200">
+  </a>
+</p>
+
+This library has been recognised as a winner of the **Google Maps Platform Awards 2025** by the Google Developer Program. This award celebrates outstanding projects that demonstrate exceptional use of Google Maps Platform APIs, innovation, and contribution to the developer community.
+
+[Learn more about the Google Maps Platform Awards](https://developers.google.com/maps)
 
 ## Requirements
 
@@ -265,7 +280,7 @@ Then define these classes in your stylesheet:
 
 ### API Request Parameters (`requestParams`)
 
-Passed within the main configuration object under the `requestParams` key. These parameters are sent to the Google Places Autocomplete API. Refer to the [AutocompleteRequest documentation](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#AutocompleteRequest) for all available options.
+Passed within the main configuration object under the `requestParams` key. These parameters are sent to the Google Places Autocomplete API. Refer to the [AutocompleteRequest documentation](https://developers-dot-devsite-v2-prod.appspot.com/maps/documentation/javascript/reference/autocomplete-data#AutocompleteRequest) for all available options.
 
 **Common Parameters:**
 

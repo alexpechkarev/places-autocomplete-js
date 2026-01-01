@@ -7,15 +7,15 @@
 
 
 
-     <link href="./dist/places-autocomplete.css" rel="stylesheet">
+    <link href="./dist/places-autocomplete.css" rel="stylesheet">
 
-    
-     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"> -->
+
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"> -->
 
 
     <script type="module">
         // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
-         import { PlacesAutocomplete } from './dist/places-autocomplete.js';
+        import { PlacesAutocomplete } from './dist/places-autocomplete.js';
         //import './dist/places-autocomplete.css';
         // import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
         // import 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css';
@@ -58,6 +58,13 @@
                         origin: {
                             lat: 53.76538654312942,
                             lng: -3.0181503295898438
+                        },
+                        locationBias: {
+                            lat: 53.39670653190076,
+                            lng: -2.9346197562747967,
+                            radius: 50000 // 50km radius
+
+
                         }
                     },
                     fetchFields: ["formattedAddress", "addressComponents"], // Optional: Specify which fields to fetch

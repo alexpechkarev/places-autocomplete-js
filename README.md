@@ -196,30 +196,30 @@ You can customise the appearance by providing your own CSS classes via the `opti
 
 **Available Class Keys:**
 
-| Class Key | Description |
-|-----------|-------------|
-| `section` | Main container section |
-| `container` | Div containing the input and suggestions list |
-| `label` | Label element (if `options.label` is provided) |
-| `input` | Main text input element |
-| `icon_container` | Container for the search icon |
-| `icon` | SVG string for the search icon |
-| `ul` | Suggestions list (`<ul>` element) |
-| `li` | Individual suggestion item |
-| `li_current` | Class for the currently highlighted suggestion |
-| `li_button` | Button element within each suggestion |
-| `li_button_current` | Class for the button in the highlighted suggestion |
-| `li_div_container` | Container div within the button |
-| `li_div_one` | First inner div (contains place name and icon) |
-| `li_div_one_p` | Paragraph containing the main suggestion text |
-| `li_div_two` | Second inner div (contains distance) |
-| `li_div_two_p` | Paragraph containing the distance text |
-| `kbd_container` | Container for keyboard hint keys |
-| `kbd_escape` | Escape key hint |
-| `kbd_up` | Up arrow key hint |
-| `kbd_down` | Down arrow key hint |
-| `kbd_active` | Class applied when a keyboard key is pressed |
-| `highlight` | Class for matched text highlighting (defaults to `pac-highlight`) |
+| Class Key | Default CSS Class | Description |
+|-----------|-------------------|-------------|
+| `section` | `pac-section` | Main container section |
+| `container` | `pac-container` | Div containing the input and suggestions list |
+| `label` | N/A | Label element (if `options.label` is provided) |
+| `input` | `pac-input` | Main text input element |
+| `icon_container` | `pac-icon-container` | Container for the search icon |
+| `icon` | N/A | SVG string for the search icon |
+| `ul` | `pac-ul` | Suggestions list (`<ul>` element) |
+| `li` | `pac-li` | Individual suggestion item |
+| `li_current` | `pac-li-current` | Class for the currently highlighted suggestion |
+| `li_button` | `pac-li-button` | Button element within each suggestion |
+| `li_button_current` | `pac-li-button-current` | Class for the button in the highlighted suggestion |
+| `li_div_container` | `pac-li-div-container` | Container div within the button |
+| `li_div_one` | `pac-li-div-one` | First inner div (contains place name and icon) |
+| `li_div_one_p` | `pac-li-div-one-p` | Paragraph containing the main suggestion text |
+| `li_div_two` | `pac-li-div-two` | Second inner div (contains distance) |
+| `li_div_two_p` | `pac-li-div-two-p` | Paragraph containing the distance text |
+| `kbd_container` | `pac-kbd-container` | Container for keyboard hint keys |
+| `kbd_escape` | `pac-kbd-escape` | Escape key hint |
+| `kbd_up` | `pac-kbd-up` | Up arrow key hint |
+| `kbd_down` | `pac-kbd-down` | Down arrow key hint |
+| `kbd_active` | `pac-kbd-active` | Class applied when a keyboard key is pressed |
+| `highlight` | `pac-highlight` | Class for matched text highlighting |
 
 **Example:**
 

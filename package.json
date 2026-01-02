@@ -2,7 +2,7 @@
   "name": "places-autocomplete-js",
   "license": "MIT",
   "type": "module", 
-  "version": "1.1.14",
+  "version": "1.1.15",
   "description": "Google Maps Platform Awards 2025 Winner - A flexible, accessible, and secure vanilla JavaScript library that brings the power of Google's address search to your application in minutes.",
   "keywords": [
     "place-autocomplete",
@@ -29,7 +29,7 @@
     "address-autocomplete",
     "location-autocomplete"
   ],
-  "homepage": "https://pacservice.pages.dev",
+  "homepage": "https://pacservice.uk",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexpechkarev/places-autocomplete-js.git"

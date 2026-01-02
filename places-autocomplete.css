@@ -4,14 +4,6 @@
   This file is processed by Vite and PostCSS to generate a standalone CSS file (dist/places-autocomplete.css)
   that can be used as a fallback for users who are not using Tailwind CSS.
 */
-
-p{
-	margin: 0;
-	padding: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-} 
 @reference "tailwindcss";
 
 :root,
@@ -149,6 +141,7 @@ p{
   @apply relative z-10 mt-1 transform rounded-lg;
 }
 
+
 /* Container for the search icon inside the input field. */
 .pac-icon-container {
   @apply pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3;
@@ -220,6 +213,12 @@ p{
   @apply flex w-full justify-between items-center;
 }
 
+/* Reset styles for paragraph elements within the pac-container. */
+.pac-li-div-container  p{
+	margin-block-start: 0;
+	margin-block-end: 0;
+  margin: 0;
+}
 /* The primary flex container for the suggestion text. */
 .pac-li-div-one {
   @apply min-w-0 flex-auto flex items-center gap-x-3;

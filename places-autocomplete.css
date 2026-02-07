@@ -163,7 +163,7 @@
 
 /* Container for the keyboard hints (Esc, Up, Down) on the right side of the input. */
 .pac-kbd-container {
-  @apply absolute inset-y-0 -right-5 flex py-1.5 pr-1.5 max-h-8 items-center gap-x-1  transform -translate-y-1/2 top-1/2;
+  @apply absolute inset-y-0 right-1 flex py-1.5 pr-1.5 max-h-8 items-center gap-x-1  transform -translate-y-1/2 top-1/2;
 }
 
 /* Styling for the 'Esc' key hint. */

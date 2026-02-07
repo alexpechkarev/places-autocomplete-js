@@ -14,9 +14,7 @@ Explore interactive examples of the Google Places Autocomplete JS library:
 
 A quick, editable sandbox to experiment with the core functionality:
 
-[![Try it on CodePen](https://img.shields.io/badge/Try%20it%20on-CodePen-blue?style=for-the-badge&logo=codepen)](https://codepen.io/alexpechkarev/pen/wBaMaMY)
-
-See a more comprehensive live demo of the library in action: [pacservice.pages.dev](https://pacservice.pages.dev/)
+See a more comprehensive live demo of the library in action: [pacservice.uk](https://pacservice.uk/)
 
 <img src="places-autocomplete-js.gif" alt="A video demonstrating the Places Autocomplete JavaScript component in action, showing address suggestions and selection.">
 
@@ -26,8 +24,10 @@ See a more comprehensive live demo of the library in action: [pacservice.pages.d
 - **Cost-Effective API Usage:** Automatically handles **session tokens** to optimise your Google Maps API costs per Google's guidelines.
 - **Optimised User Experience:** Implements **Debounced Input** to limit API calls while the user is typing, ensuring a smooth and responsive search experience.
 - **Enhanced Readability:** Provides **Suggestion Highlighting** to automatically bold the portion of text matching the user's input, making suggestions easier to scan.
-- **Flexible Styling:** Offers **Customisable Styling** allowing you to easily override default styles or apply your own using CSS classes. Built with sensible defaults (Tailwind CSS utility classes by default but can be entirely replaced).
+- **Visual Categorisation:** Includes **Place Type Icons** (🏪 Shopping, 🍽️ Dining, 🏨 Lodging, etc.) to help users quickly identify the type of place in suggestions.
+- **Flexible Styling:** Offers **Customisable Styling** allowing you to easily override default styles or apply your own using CSS classes. Built with sensible defaults.
 - **Robust Event Handling:** Provides `onResponse` and `onError` callbacks for comprehensive control over successful place selections and error scenarios.
+- **Imperative API:** Programmatically control the component with methods like `clear()`, `focus()`, `setInputValue()`, `getRequestParams()`, and more.
 - **Highly Configurable:** Allows you to control API parameters (`requestParams`) and component behavior/appearance (`options`) to fit your specific application needs.
 - **Efficient API Loading:** Dynamically loads the Google Maps API script on demand, reducing initial page load times.
 
@@ -56,6 +56,7 @@ This library has been recognised as a winner of the **Google Maps Platform Award
 ## Requirements
 
 - **Google Maps API Key** with the Places API (New) enabled. Refer to [Use API Keys](https://developers.google.com/maps/documentation/javascript/get-api-key) for detailed instructions.
+- **Geocoding API** enabled if you plan to use `setInputValue(latitude, longitude)`.
 
 ## Installation & Usage
 
@@ -123,7 +124,7 @@ Add the following lines to your HTML file. The stylesheet goes in the `<head>` a
   <title>Places Autocomplete Demo</title>
   
   <!-- 1. Link to the stylesheet -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete-js.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css">
   
 </head>
 <body>
@@ -165,7 +166,7 @@ The `PlacesAutocomplete` class is initialised with a configuration object.
 | `containerId`          | `string`   | Yes      | The ID of the HTML element where the autocomplete widget will be rendered.                                                            |
 | `googleMapsApiKey`     | `string`   | Yes      | Your Google Maps API Key with the Places API (New) enabled.                                                                           |
 | `googleMapsApiVersion` | `string`   | No       | The version of the Google Maps API to load (e.g., "weekly", "quarterly", "beta"). Defaults to "weekly".                               |
-| `onResponse`           | `function` | No       | Callback function triggered with selected place details. Receives a `Place` object (see Google's docs). Default logs to console.      |
+| `onResponse`           | `function` | No       | Callback for selected place details. Receives JSON by default (`options.response_type: 'json'`) or a Google `Place` instance when `options.response_type: 'place'`. |
 | `onError`              | `function` | No       | Callback function triggered when an error occurs. Receives an `Error` object or string. Default logs to console.                      |
 | `options`              | `object`   | No       | Object to customise UI behavior and appearance. See "UI & Behavior Options" below.                                                    |
 | `requestParams`        | `object`   | No       | Object to customise the parameters sent to the Google Places Autocomplete API. See "API Request Parameters" below.                    |
@@ -179,13 +180,15 @@ Passed within the main configuration object under the `options` key.
 | ---------------- | ----------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `placeholder`    | `string`          | `"Start typing your address ..."` | Placeholder text for the input field.                                                                                                                         |
 | `debounce`       | `number`          | `100`                             | Delay in milliseconds before triggering an API request after user stops typing. Set to `0` to disable.                                                        |
-| `distance`       | `boolean`         | `true`                            | Whether to attempt to show distance in suggestions (requires `origin` in `requestParams`).                                                                    |
+| `distance`       | `boolean`         | `false`                           | Whether to attempt to show distance in suggestions (requires `origin` in `requestParams`).                                                                    |
 | `distance_units` | `'km' \| 'miles'` | `'km'`                            | Units to display distance in if `distance` is true.                                                                                                           |
 | `label`          | `string`          | `""`                              | Optional label text displayed above the input field.                                                                                                          |
 | `autofocus`      | `boolean`         | `false`                           | If `true`, automatically focuses the input field on initialisation.                                                                                           |
 | `autocomplete`   | `string`          | `'off'`                           | Standard HTML `autocomplete` attribute for the input field.                                                                                                   |
 | `classes`        | `object`          | _(See default classes below)_     | Object to override default CSS classes for styling. See "Styling" section.                                                                                    |
-| `clear_input`    | `boolean`         | `true`                            | If `true` (default), clears the input field after a suggestion is selected. If `false`, the input field retains the `formattedAddress` of the selected place. |
+| `clear_input`    | `boolean`         | `false`                           | If `true`, clears the input field after a suggestion is selected. If `false` (default), the input field retains the `formattedAddress` of the selected place. |
+| `response_type` | `'json' \| 'place'` | `'json'` | Return format: `'json'` for plain JSON object (default), `'place'` for full Google Maps Place instance with method access. |
+| `show_place_type` | `boolean` | `false` | Whether to display icons representing the place type (🏪, 🍽️, etc.). **Mutually exclusive with `distance`.** |
 
 ### Styling
 
@@ -202,7 +205,7 @@ import 'places-autocomplete-js/style.css';
 
 **For CDN usage:**
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete-js.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css">
 ```
 
 #### 2. Custom CSS Classes (`options.classes`)
@@ -234,6 +237,9 @@ You can customise the appearance by providing your own CSS classes via the `opti
 | `kbd_up` | `pac-kbd-up` | Up arrow key hint |
 | `kbd_down` | `pac-kbd-down` | Down arrow key hint |
 | `kbd_active` | `pac-kbd-active` | Class applied when a keyboard key is pressed |
+| `li_div_two_p_place_type` | `pac-li-div-two-p-place_type` | Container for place type display |
+| `li_div_two_p_place_type_icon` | `pac-li-div-two-p-place_type-icon` | The place type icon element |
+| `li_div_two_p_place_type_label` | `pac-li-div-two-p-place_type-label` | The place type label text |
 | `highlight` | `pac-highlight` | Class for matched text highlighting |
 
 **Example:**
@@ -332,18 +338,6 @@ const autocomplete = new PlacesAutocomplete({
 autocomplete.setFetchFields(['formattedAddress', 'location', 'viewport']);
 ```
 
-### Retain Input Value After Selection
-
-By default, the input field is cleared after a place is selected. To retain the selected address in the input field, set `options.clear_input` to `false`.
-
-```javascript
-const autocomplete = new PlacesAutocomplete({
-  containerId: 'autocomplete-container',
-  googleMapsApiKey: 'YOUR_API_KEY',
-  options: {
-    clear_input: false,
-  },
-});
 ```
 
 ## Public Methods
@@ -364,6 +358,23 @@ Removes event listeners and cleans up DOM elements. Use this when the component 
 
 ```javascript
 autocomplete.destroy();
+```
+
+### `focus()`
+
+Sets focus on the autocomplete text input field.
+
+```javascript
+autocomplete.focus();
+```
+
+### `setInputValue(latitude, longitude)`
+
+Sets the input by finding and selecting a place for the given coordinates. Performs reverse geocoding to convert lat/lng to a place, then triggers `onResponse` using the configured `options.response_type`. **Requires Geocoding API to be enabled.**
+
+```javascript
+// Set location to Eiffel Tower
+await autocomplete.setInputValue(48.8584, 2.2945);
 ```
 
 ### `setFetchFields(fields)`
@@ -488,7 +499,7 @@ npm run test:vitest
 
 ### End-to-End Tests
 
-End-to-end tests are located in the `e2e/` directory and are run using Playwright. To execute the end-to-end tests, ensure your development server is running (e.g., `npm run dev`) and then use the following command:
+End-to-end tests are located in the `e2e/` directory and are run using Playwright. The Playwright config starts the Vite dev server automatically via `webServer`, so you can run:
 
 ```bash
 npm run test:e2e
@@ -501,4 +512,3 @@ Contributions are welcome! Please feel free to open an issue or submit a pull re
 ## License
 
 [MIT](LICENSE)
-

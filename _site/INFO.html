@@ -26,7 +26,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/places-autocomplete-js/assets/css/style.css?v=415870e47355f6c8c0446794750df686561329a4">
+    <link rel="stylesheet" href="/places-autocomplete-js/assets/css/style.css?v=8e023bf8e31ded588df532bdf318188c368118b5">
     <meta name="google-site-verification" content="ZBPJY6t8GM1Cuu4udri69DMYVoM0M1ePgvRp9q8IFfs" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   </head>
@@ -62,9 +62,7 @@
 
 <p>A quick, editable sandbox to experiment with the core functionality:</p>
 
-<p><a href="https://codepen.io/alexpechkarev/pen/wBaMaMY"><img src="https://img.shields.io/badge/Try%20it%20on-CodePen-blue?style=for-the-badge&amp;logo=codepen" alt="Try it on CodePen" /></a></p>
-
-<p>See a more comprehensive live demo of the library in action: <a href="https://pacservice.pages.dev/">pacservice.pages.dev</a></p>
+<p>See a more comprehensive live demo of the library in action: <a href="https://pacservice.uk/">pacservice.uk</a></p>
 
 <p><img src="places-autocomplete-js.gif" alt="A video demonstrating the Places Autocomplete JavaScript component in action, showing address suggestions and selection." /></p>
 
@@ -75,8 +73,10 @@
   <li><strong>Cost-Effective API Usage:</strong> Automatically handles <strong>session tokens</strong> to optimise your Google Maps API costs per Google’s guidelines.</li>
   <li><strong>Optimised User Experience:</strong> Implements <strong>Debounced Input</strong> to limit API calls while the user is typing, ensuring a smooth and responsive search experience.</li>
   <li><strong>Enhanced Readability:</strong> Provides <strong>Suggestion Highlighting</strong> to automatically bold the portion of text matching the user’s input, making suggestions easier to scan.</li>
-  <li><strong>Flexible Styling:</strong> Offers <strong>Customisable Styling</strong> allowing you to easily override default styles or apply your own using CSS classes. Built with sensible defaults (Tailwind CSS utility classes by default but can be entirely replaced).</li>
+  <li><strong>Visual Categorisation:</strong> Includes <strong>Place Type Icons</strong> (🏪 Shopping, 🍽️ Dining, 🏨 Lodging, etc.) to help users quickly identify the type of place in suggestions.</li>
+  <li><strong>Flexible Styling:</strong> Offers <strong>Customisable Styling</strong> allowing you to easily override default styles or apply your own using CSS classes. Built with sensible defaults.</li>
   <li><strong>Robust Event Handling:</strong> Provides <code class="language-plaintext highlighter-rouge">onResponse</code> and <code class="language-plaintext highlighter-rouge">onError</code> callbacks for comprehensive control over successful place selections and error scenarios.</li>
+  <li><strong>Imperative API:</strong> Programmatically control the component with methods like <code class="language-plaintext highlighter-rouge">clear()</code>, <code class="language-plaintext highlighter-rouge">focus()</code>, <code class="language-plaintext highlighter-rouge">setInputValue()</code>, <code class="language-plaintext highlighter-rouge">getRequestParams()</code>, and more.</li>
   <li><strong>Highly Configurable:</strong> Allows you to control API parameters (<code class="language-plaintext highlighter-rouge">requestParams</code>) and component behavior/appearance (<code class="language-plaintext highlighter-rouge">options</code>) to fit your specific application needs.</li>
   <li><strong>Efficient API Loading:</strong> Dynamically loads the Google Maps API script on demand, reducing initial page load times.</li>
 </ul>
@@ -108,6 +108,7 @@
 
 <ul>
   <li><strong>Google Maps API Key</strong> with the Places API (New) enabled. Refer to <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">Use API Keys</a> for detailed instructions.</li>
+  <li><strong>Geocoding API</strong> enabled if you plan to use <code class="language-plaintext highlighter-rouge">setInputValue(latitude, longitude)</code>.</li>
 </ul>
 
 <h2 id="installation--usage">Installation &amp; Usage</h2>
@@ -172,7 +173,7 @@ yarn add places-autocomplete-js
   <span class="nt">&lt;title&gt;</span>Places Autocomplete Demo<span class="nt">&lt;/title&gt;</span>
   
   <span class="c">&lt;!-- 1. Link to the stylesheet --&gt;</span>
-  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete-js.css"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"</span><span class="nt">&gt;</span>
   
 <span class="nt">&lt;/head&gt;</span>
 <span class="nt">&lt;body&gt;</span>
@@ -243,7 +244,7 @@ yarn add places-autocomplete-js
       <td><code class="language-plaintext highlighter-rouge">onResponse</code></td>
       <td><code class="language-plaintext highlighter-rouge">function</code></td>
       <td>No</td>
-      <td>Callback function triggered with selected place details. Receives a <code class="language-plaintext highlighter-rouge">Place</code> object (see Google’s docs). Default logs to console.</td>
+      <td>Callback for selected place details. Receives JSON by default (<code class="language-plaintext highlighter-rouge">options.response_type: 'json'</code>) or a Google <code class="language-plaintext highlighter-rouge">Place</code> instance when <code class="language-plaintext highlighter-rouge">options.response_type: 'place'</code>.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">onError</code></td>
@@ -301,7 +302,7 @@ yarn add places-autocomplete-js
     <tr>
       <td><code class="language-plaintext highlighter-rouge">distance</code></td>
       <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
-      <td><code class="language-plaintext highlighter-rouge">true</code></td>
+      <td><code class="language-plaintext highlighter-rouge">false</code></td>
       <td>Whether to attempt to show distance in suggestions (requires <code class="language-plaintext highlighter-rouge">origin</code> in <code class="language-plaintext highlighter-rouge">requestParams</code>).</td>
     </tr>
     <tr>
@@ -337,8 +338,20 @@ yarn add places-autocomplete-js
     <tr>
       <td><code class="language-plaintext highlighter-rouge">clear_input</code></td>
       <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
-      <td><code class="language-plaintext highlighter-rouge">true</code></td>
-      <td>If <code class="language-plaintext highlighter-rouge">true</code> (default), clears the input field after a suggestion is selected. If <code class="language-plaintext highlighter-rouge">false</code>, the input field retains the <code class="language-plaintext highlighter-rouge">formattedAddress</code> of the selected place.</td>
+      <td><code class="language-plaintext highlighter-rouge">false</code></td>
+      <td>If <code class="language-plaintext highlighter-rouge">true</code>, clears the input field after a suggestion is selected. If <code class="language-plaintext highlighter-rouge">false</code> (default), the input field retains the <code class="language-plaintext highlighter-rouge">formattedAddress</code> of the selected place.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">response_type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'json' \| 'place'</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'json'</code></td>
+      <td>Return format: <code class="language-plaintext highlighter-rouge">'json'</code> for plain JSON object (default), <code class="language-plaintext highlighter-rouge">'place'</code> for full Google Maps Place instance with method access.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">show_place_type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">false</code></td>
+      <td>Whether to display icons representing the place type (🏪, 🍽️, etc.). <strong>Mutually exclusive with <code class="language-plaintext highlighter-rouge">distance</code>.</strong></td>
     </tr>
   </tbody>
 </table>
@@ -356,7 +369,7 @@ yarn add places-autocomplete-js
 </code></pre></div></div>
 
 <p><strong>For CDN usage:</strong></p>
-<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete-js.css"</span><span class="nt">&gt;</span>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"</span><span class="nt">&gt;</span>
 </code></pre></div></div>
 
 <h4 id="2-custom-css-classes-optionsclasses">2. Custom CSS Classes (<code class="language-plaintext highlighter-rouge">options.classes</code>)</h4>
@@ -478,6 +491,21 @@ yarn add places-autocomplete-js
       <td><code class="language-plaintext highlighter-rouge">kbd_active</code></td>
       <td><code class="language-plaintext highlighter-rouge">pac-kbd-active</code></td>
       <td>Class applied when a keyboard key is pressed</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">li_div_two_p_place_type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">pac-li-div-two-p-place_type</code></td>
+      <td>Container for place type display</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">li_div_two_p_place_type_icon</code></td>
+      <td><code class="language-plaintext highlighter-rouge">pac-li-div-two-p-place_type-icon</code></td>
+      <td>The place type icon element</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">li_div_two_p_place_type_label</code></td>
+      <td><code class="language-plaintext highlighter-rouge">pac-li-div-two-p-place_type-label</code></td>
+      <td>The place type label text</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">highlight</code></td>
@@ -620,28 +648,17 @@ yarn add places-autocomplete-js
 <span class="nx">autocomplete</span><span class="p">.</span><span class="nx">setFetchFields</span><span class="p">([</span><span class="dl">'</span><span class="s1">formattedAddress</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">location</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">viewport</span><span class="dl">'</span><span class="p">]);</span>
 </code></pre></div></div>
 
-<h3 id="retain-input-value-after-selection">Retain Input Value After Selection</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+## Public Methods
 
-<p>By default, the input field is cleared after a place is selected. To retain the selected address in the input field, set <code class="language-plaintext highlighter-rouge">options.clear_input</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
+The `PlacesAutocomplete` instance provides the following methods for dynamic control:
 
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">autocomplete</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PlacesAutocomplete</span><span class="p">({</span>
-  <span class="na">containerId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">autocomplete-container</span><span class="dl">'</span><span class="p">,</span>
-  <span class="na">googleMapsApiKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">YOUR_API_KEY</span><span class="dl">'</span><span class="p">,</span>
-  <span class="na">options</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">clear_input</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="p">},</span>
-<span class="p">});</span>
-</code></pre></div></div>
+### `clear()`
 
-<h2 id="public-methods">Public Methods</h2>
+Clears the input field, removes visible suggestions, and refreshes the session token.
 
-<p>The <code class="language-plaintext highlighter-rouge">PlacesAutocomplete</code> instance provides the following methods for dynamic control:</p>
-
-<h3 id="clear"><code class="language-plaintext highlighter-rouge">clear()</code></h3>
-
-<p>Clears the input field, removes visible suggestions, and refreshes the session token.</p>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">autocomplete</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+```javascript
+autocomplete.clear();
 </code></pre></div></div>
 
 <h3 id="destroy"><code class="language-plaintext highlighter-rouge">destroy()</code></h3>
@@ -649,6 +666,21 @@ yarn add places-autocomplete-js
 <p>Removes event listeners and cleans up DOM elements. Use this when the component is no longer needed (e.g., when unmounting a view in SPAs).</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">autocomplete</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="focus"><code class="language-plaintext highlighter-rouge">focus()</code></h3>
+
+<p>Sets focus on the autocomplete text input field.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">autocomplete</span><span class="p">.</span><span class="nx">focus</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="setinputvaluelatitude-longitude"><code class="language-plaintext highlighter-rouge">setInputValue(latitude, longitude)</code></h3>
+
+<p>Sets the input by finding and selecting a place for the given coordinates. Performs reverse geocoding to convert lat/lng to a place, then triggers <code class="language-plaintext highlighter-rouge">onResponse</code> using the configured <code class="language-plaintext highlighter-rouge">options.response_type</code>. <strong>Requires Geocoding API to be enabled.</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Set location to Eiffel Tower</span>
+<span class="k">await</span> <span class="nx">autocomplete</span><span class="p">.</span><span class="nx">setInputValue</span><span class="p">(</span><span class="mf">48.8584</span><span class="p">,</span> <span class="mf">2.2945</span><span class="p">);</span>
 </code></pre></div></div>
 
 <h3 id="setfetchfieldsfields"><code class="language-plaintext highlighter-rouge">setFetchFields(fields)</code></h3>
@@ -780,7 +812,7 @@ yarn add places-autocomplete-js
 
 <h3 id="end-to-end-tests">End-to-End Tests</h3>
 
-<p>End-to-end tests are located in the <code class="language-plaintext highlighter-rouge">e2e/</code> directory and are run using Playwright. To execute the end-to-end tests, ensure your development server is running (e.g., <code class="language-plaintext highlighter-rouge">npm run dev</code>) and then use the following command:</p>
+<p>End-to-end tests are located in the <code class="language-plaintext highlighter-rouge">e2e/</code> directory and are run using Playwright. The Playwright config starts the Vite dev server automatically via <code class="language-plaintext highlighter-rouge">webServer</code>, so you can run:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run <span class="nb">test</span>:e2e
 </code></pre></div></div>
@@ -792,7 +824,6 @@ yarn add places-autocomplete-js
 <h2 id="license">License</h2>
 
 <p><a href="LICENSE">MIT</a></p>
-
 
 
       <footer class="site-footer">

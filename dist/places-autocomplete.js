@@ -1,27 +1,27 @@
-class w {
+class S {
   // --- Private Properties (using # or _ prefix by convention) ---
   #u;
   // Container ID where the autocomplete widget will be rendered.
   #d;
-  #_;
-  #f;
+  #m;
+  #w;
   #t;
-  #a;
+  #o;
   #e;
   #n;
-  #s;
-  #l;
+  #i;
+  #r;
   #c;
   #h;
-  #r = [];
-  #i = -1;
-  #b;
-  // For user-provided data callback
-  #o;
-  // For user-provided error callback
+  #a = [];
+  #s = -1;
   #p;
+  // For user-provided data callback
+  #l;
+  // For user-provided error callback
+  #_;
   // Declare without initializing here
-  #y = {
+  #f = {
     // Default options for the autocomplete widget.
     autofocus: !1,
     // Automatically focus the input on load.
@@ -29,7 +29,7 @@ class w {
     // HTML autocomplete attribute for the input.
     placeholder: "Start typing your address ...",
     // Placeholder text for the input.
-    distance: !0,
+    distance: !1,
     // Show distance in suggestions (requires origin in request).
     distance_units: "km",
     // Units for distance ('km' or 'miles').
@@ -37,12 +37,16 @@ class w {
     // Optional label text above the input.
     debounce: 100,
     // Debounce delay (ms) for API requests.
-    clear_input: !0,
-    // Clear input button (not implemented in this version).
-    debug: !1
+    clear_input: !1,
+    // Clear input .
+    debug: !1,
     // Enable debug mode (not implemented in this version).
+    response_type: "json",
+    // Return format: 'json' for JSON object, 'place' for Google Maps Place instance.
+    show_place_type: !1
+    // Display place type icons (mutually exclusive with distance).
   };
-  #m = {
+  #g = {
     // CSS classes for various parts of the widget.
     section: "",
     // Outer section container.
@@ -70,8 +74,6 @@ class w {
     //"z-50 cursor-default select-none py-2 px-2 lg:px-4 text-gray-900 hover:bg-indigo-500 hover:text-white", // Suggestion item (li).
     li_current: "pac-li-current",
     //"bg-indigo-500", // Class for the currently selected suggestion item.
-    li_a: "pac-li-a",
-    //"block w-full flex justify-between", // Link element within a suggestion item.
     li_button: "pac-li-button",
     //"block w-full flex justify-between", // Link element within a suggestion item.
     li_button_current: "pac-li-button-current",
@@ -90,21 +92,151 @@ class w {
     //"shrink-0 flex flex-col items-end min-w-16", // Second inner div (for distance).
     li_div_two_p: "pac-li-div-two-p",
     //"mt-1 text-xs/5", // Paragraph for the distance.
+    li_div_two_p_place_type: "pac-li-div-two-p-place_type",
+    // Container for place type display.
+    li_div_two_p_place_type_icon: "pac-li-div-two-p-place_type-icon",
+    // The place type icon element.
+    li_div_two_p_place_type_label: "pac-li-div-two-p-place_type-label",
+    // The place type label text.
     highlight: "pac-highlight"
     //"font-bold", // Class for highlighting matched text in suggestions.
   };
-  #v = {
+  #k = {
     // Default parameters for the autocomplete request.
-    input: "",
+    input: ""
     // Initial input value (empty).
-    includedRegionCodes: ["GB"],
-    // Default region codes to include in suggestions.
-    language: "en-gb",
-    region: "GB"
+    // includedRegionCodes: ["GB"], // Default region codes to include in suggestions.
+    // language: "en-gb",
+    // region: "GB",
   };
-  #g = ["formattedAddress", "addressComponents"];
-  #E = ["formattedAddress", "addressComponents"];
+  #v = ["formattedAddress", "addressComponents"];
+  #C = ["formattedAddress", "addressComponents"];
   // Fields to fetch for the selected place (can be extended).
+  // Itinerary category mapping
+  #y = {
+    // --- TRANSPORT & AUTO ---
+    car_rental: "Automotive",
+    car_dealer: "Automotive",
+    gas_station: "Automotive",
+    electric_vehicle_charging_station: "Automotive",
+    parking: "Automotive",
+    airport: "Airport",
+    bus_station: "Transport",
+    train_station: "Train Station",
+    subway_station: "Subway Station",
+    taxi_stand: "Transport",
+    ferry_terminal: "Transport",
+    // --- DINING & NIGHTLIFE ---
+    restaurant: "Food and Drink",
+    cafe: "Food and Drink",
+    coffee_shop: "Food and Drink",
+    bar: "Food and Drink",
+    pub: "Food and Drink",
+    night_club: "Food and Drink",
+    bakery: "Food and Drink",
+    fast_food_restaurant: "Food and Drink",
+    ice_cream_shop: "Food and Drink",
+    pizza_restaurant: "Food and Drink",
+    steak_house: "Food and Drink",
+    sushi_restaurant: "Food and Drink",
+    // --- LODGING ---
+    hotel: "Lodging",
+    hostel: "Lodging",
+    motel: "Lodging",
+    resort_hotel: "Lodging",
+    bed_and_breakfast: "Lodging",
+    campground: "Lodging",
+    rv_park: "Lodging",
+    lodging: "Lodging",
+    cottage: "Lodging",
+    inn: "Lodging",
+    guest_house: "Lodging",
+    // --- SIGHTSEEING & CULTURE ---
+    tourist_attraction: "Sightseeing",
+    museum: "Sightseeing",
+    art_gallery: "Sightseeing",
+    cultural_landmark: "Sightseeing",
+    historical_landmark: "Sightseeing",
+    monument: "Sightseeing",
+    performing_arts_theater: "Sightseeing",
+    aquarium: "Sightseeing",
+    zoo: "Sightseeing",
+    visitor_center: "Sightseeing",
+    town_square: "Sightseeing",
+    landmark: "Sightseeing",
+    place_of_worship: "Sightseeing",
+    // --- RECREATION & PARKS ---
+    park: "Recreation",
+    national_park: "Recreation",
+    state_park: "Recreation",
+    beach: "Recreation",
+    hiking_area: "Recreation",
+    amusement_park: "Recreation",
+    water_park: "Recreation",
+    botanical_garden: "Recreation",
+    golf_course: "Recreation",
+    gym: "Recreation",
+    natural_feature: "Recreation",
+    // --- SHOPPING ---
+    shopping_mall: "Shopping",
+    supermarket: "Shopping",
+    grocery_store: "Shopping",
+    clothing_store: "Shopping",
+    electronics_store: "Shopping",
+    souvenir_shop: "Shopping",
+    // Simplified name
+    gift_shop: "Shopping",
+    duty_free_store: "Shopping",
+    // --- ESSENTIAL SERVICES ---
+    hospital: "Health",
+    pharmacy: "Health",
+    atm: "Finance",
+    bank: "Finance",
+    post_office: "Services",
+    police: "Services",
+    // --- GEOGRAPHICAL ---
+    neighborhood: "Geographical",
+    sublocality: "Geographical",
+    // --- NAVIGATION ---
+    route: "Navigation",
+    street_address: "Navigation",
+    intersection: "Navigation",
+    // -- CITY --
+    locality: "City",
+    administrative_area_level_4: "City",
+    country: "Country",
+    administrative_area_level_1: "City",
+    administrative_area_level_2: "City",
+    administrative_area_level_3: "City",
+    administrative_area_level_5: "City",
+    sublocality_level_1: "Neighborhood",
+    sublocality_level_2: "Neighborhood",
+    sublocality_level_3: "Neighborhood",
+    sublocality_level_4: "Neighborhood",
+    sublocality_level_5: "Neighborhood",
+    // --- DEFAULT ---
+    default: "Default"
+  };
+  // Mapping of itinerary categories to SVG icons (using Lucide icons for simplicity)
+  #b = {
+    Automotive: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>',
+    Transport: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',
+    "Food and Drink": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>',
+    Lodging: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>',
+    Sightseeing: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-binoculars-icon lucide-binoculars"><path d="M10 10h4"/><path d="M19 7V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3"/><path d="M20 21a2 2 0 0 0 2-2v-3.851c0-1.39-2-2.962-2-4.829V8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v11a2 2 0 0 0 2 2z"/><path d="M 22 16 L 2 16"/><path d="M4 21a2 2 0 0 1-2-2v-3.851c0-1.39 2-2.962 2-4.829V8a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2z"/><path d="M9 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3"/></svg>',
+    Recreation: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-kayak-icon lucide-kayak"><path d="M18 17a1 1 0 0 0-1 1v1a2 2 0 1 0 2-2z"/><path d="M20.97 3.61a.45.45 0 0 0-.58-.58C10.2 6.6 6.6 10.2 3.03 20.39a.45.45 0 0 0 .58.58C13.8 17.4 17.4 13.8 20.97 3.61"/><path d="m6.707 6.707 10.586 10.586"/><path d="M7 5a2 2 0 1 0-2 2h1a1 1 0 0 0 1-1z"/></svg>',
+    Shopping: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+    Health: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/></svg>',
+    Finance: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+    Geographical: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20 20-6-10.6c-.4-.7-1.5-.7-1.9 0L6 20"/><path d="M7 16h10"/><path d="M12 4a8 8 0 0 1 8 8v2a2 2 0 0 1-2 2h-1"/><path d="M7 16H6a2 2 0 0 1-2-2v-2a8 8 0 0 1 8-8"/></svg>',
+    Navigation: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-navigation-icon lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
+    City: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2-icon lucide-building-2"><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg>',
+    District: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-land-plot-icon lucide-land-plot"><path d="m12 8 6-3-6-3v10"/><path d="m8 11.99-5.5 3.14a1 1 0 0 0 0 1.74l8.5 4.86a2 2 0 0 0 2 0l8.5-4.86a1 1 0 0 0 0-1.74L16 12"/><path d="m6.49 12.85 11.02 6.3"/><path d="M17.51 12.85 6.5 19.15"/></svg>',
+    Airport: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-icon lucide-plane"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',
+    "Subway Station": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-subway-icon lucide-subway"><path d="M12 22a10 10 0 0 0 10-10V8l-5-5H7L2 8v4a10 10 0 0 0 10 10Z"/><path d="M12 22V8"/><path d="M7 13h10"/><path d="M7 17h10"/></svg>',
+    "Train Station": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-train-icon lucide-train"><path d="M2 10h20"/><path d="M2 10a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5Z"/><circle cx="7" cy="15" r="2"/><circle cx="17" cy="15" r="2"/></svg>',
+    Default: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="display:inline-block";  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>'
+  };
   /**
    * Class constructor for PacAutocomplete.
    * Initializes the autocomplete widget with the provided configuration.
@@ -125,32 +257,32 @@ class w {
       throw new Error(
         `PacAutocomplete: Container element with ID "${t.containerId}" not found.`
       );
-    this.#_ = t.googleMapsApiKey, this.#f = t.googleMapsApiVersion || "weekly", this.#t = {
-      ...this.#y,
+    this.#m = t.googleMapsApiKey, this.#w = t.googleMapsApiVersion || "weekly", this.#t = {
+      ...this.#f,
       // Default options
       ...t.options
       // User-defined options override defaults
     }, t.options && t.options.classes ? this.#t.classes = {
-      ...this.#m,
+      ...this.#g,
       ...t.options.classes
-    } : this.#t.classes = this.#m, this.#t.debug && (console.log("___debug constructor options:"), console.log(this.#t)), t.fetchFields && Array.isArray(t.fetchFields) && this._setFetchFields(t.fetchFields), this.#b = t.onResponse || ((e) => {
+    } : this.#t.classes = this.#g, this.#t.show_place_type && this.#t.distance && (this.#t.distance = !1), this.#t.debug && (console.log("___debug constructor options:"), console.log(this.#t)), t.fetchFields && Array.isArray(t.fetchFields) && this._setFetchFields(t.fetchFields), this.#p = t.onResponse || ((e) => {
       console.info("---------Default onResponse not provided---------"), console.info("Selected Place:", JSON.stringify(e, null, 2));
-    }), this.#o = t.onError || ((e) => {
+    }), this.#l = t.onError || ((e) => {
       console.error("---------Default onError not provided---------"), console.error("PAC Error:", e);
-    }), t.requestParams && Object.keys(t.requestParams).length > 0 ? this.#a = {
-      ...this.#v,
+    }), t.requestParams && Object.keys(t.requestParams).length > 0 ? this.#o = {
+      ...this.#k,
       ...t.requestParams
-    } : this.#a = { ...this.#v }, this.#t.debug && console.log("___debug constructor requestParams:", this.#a), this._initialiseDebouncedRequest(), this._init();
+    } : this.#o = { ...this.#k }, this.#t.debug && console.log("___debug constructor requestParams:", this.#o), this._initialiseDebouncedRequest(), this._init();
   }
   // --- Private Initialization Method ---
   async _init() {
     try {
       (typeof google > "u" || !google.maps) && await this._loadGoogleMapsApi({
-        key: this.#_,
-        v: this.#f
+        key: this.#m,
+        v: this.#w
       }), this._createPACStructure(), await this._initializeAutocomplete();
     } catch (t) {
-      this.#o(t);
+      this.#l(t);
     }
   }
   /**
@@ -160,28 +292,28 @@ class w {
    * @private
    */
   _initialiseDebouncedRequest() {
-    this.#p = this._debounce(async () => {
+    this.#_ = this._debounce(async () => {
       if (!this.#e || !this.#e.value) {
         this._reset(), this.#e && this.#e.setAttribute("aria-expanded", "false");
         return;
       }
-      this.#a.input = this.#e.value;
+      this.#o.input = this.#e.value;
       try {
         const { suggestions: t } = (
           // eslint-disable-next-line no-undef
           await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
-            this.#a
+            this.#o
           )
         );
         if (t && t.length > 0) {
           const e = await Promise.all(
             this._createSuggestionElements(t)
           );
-          this.#s.replaceChildren(...e), this.#s.style.display = "block", this.#e.setAttribute("aria-expanded", "true");
+          this.#i.replaceChildren(...e), this.#i.style.display = "block", this.#e.setAttribute("aria-expanded", "true");
         } else
           this._reset(), this.#e.setAttribute("aria-expanded", "false");
       } catch (t) {
-        this.#o(t), this._reset();
+        this.#l(t), this._reset();
       }
     }, this.#t.debounce);
   }
@@ -190,8 +322,8 @@ class w {
    * @param {Array<string>} fields - The fields to fetch.
    */
   _setFetchFields(t) {
-    Array.isArray(t) && t.length > 0 && (this.#g = [
-      .../* @__PURE__ */ new Set([...this.#E, ...t])
+    Array.isArray(t) && t.length > 0 && (this.#v = [
+      .../* @__PURE__ */ new Set([...this.#C, ...t])
     ].filter((e) => e));
   }
   /**
@@ -203,12 +335,12 @@ class w {
    * @returns {Function} Debounced function
    */
   _debounce(t, e) {
-    let s = null;
+    let i = null;
     return function(...n) {
       const a = () => {
-        s = null, t(...n);
+        i = null, t(...n);
       };
-      s !== null && clearTimeout(s), s = setTimeout(a, e ?? 100);
+      i !== null && clearTimeout(i), i = setTimeout(a, e ?? 100);
     };
   }
   /**
@@ -220,10 +352,10 @@ class w {
    * @returns {string|null} Formatted distance string or null if invalid
    */
   _formatDistance(t, e) {
-    if (typeof t != "number" || !this.#t.distance)
+    if (typeof t != "number" || !this.#t.distance || this.#t.show_place_type)
       return null;
-    let s, i;
-    return e === "km" ? (s = (t / 1e3).toFixed(2), i = "km") : (s = (t / 1609.34).toFixed(2), i = "miles"), s = s.replace(/\.00$/, ""), `${s} ${i}`;
+    let i, s;
+    return e === "km" ? (i = (t / 1e3).toFixed(2), s = "km") : (i = (t / 1609.34).toFixed(2), s = "miles"), i = i.replace(/\.00$/, ""), `${i} ${s}`;
   }
   /**
    * Dynamically loads the Google Maps JavaScript API using the importLibrary method.
@@ -232,27 +364,27 @@ class w {
    * @param {object} g - Configuration object for the API loader (key, v, libraries, etc.).
    */
   async _loadGoogleMapsApi(t) {
-    var e, s, i, n = "The Google Maps JavaScript API", a = "google", c = "importLibrary", p = "__ib__", m = document, h = window;
-    h = h[a] || (h[a] = {});
-    var o = h.maps || (h.maps = {}), _ = /* @__PURE__ */ new Set(), d = new URLSearchParams(), f = () => (
+    var e, i, s, n = "The Google Maps JavaScript API", a = "google", l = "importLibrary", _ = "__ib__", h = document, d = window;
+    d = d[a] || (d[a] = {});
+    var r = d.maps || (d.maps = {}), g = /* @__PURE__ */ new Set(), p = new URLSearchParams(), m = () => (
       // Function to initiate API loading (if not already started)
       e || // eslint-disable-next-line no-async-promise-executor
-      (e = new Promise(async (u, l) => {
-        s = m.createElement("script"), d.set("libraries", [..._].join(","));
-        for (i in t)
-          d.set(
-            i.replace(/[A-Z]/g, (b) => "_" + b[0].toLowerCase()),
+      (e = new Promise(async (u, c) => {
+        i = h.createElement("script"), p.set("libraries", [...g].join(","));
+        for (s in t)
+          p.set(
+            s.replace(/[A-Z]/g, (w) => "_" + w[0].toLowerCase()),
             // Convert camelCase to snake_case
-            t[i]
+            t[s]
           );
-        d.set("callback", a + ".maps." + p), s.src = `https://maps.${a}apis.com/maps/api/js?` + d, o[p] = u, s.onerror = () => e = l(
+        p.set("callback", a + ".maps." + _), i.src = `https://maps.${a}apis.com/maps/api/js?` + p, r[_] = u, i.onerror = () => e = c(
           new Error(
             `${n} could not load. Check your API key and network connection.`
           )
-        ), s.nonce = m.querySelector("script[nonce]")?.nonce || "", m.head.append(s);
+        ), i.nonce = h.querySelector("script[nonce]")?.nonce || "", h.head.append(i);
       }))
     );
-    o[c] ? console.warn(n + " only loads once. Ignoring:", t) : o[c] = (u, ...l) => _.add(u) && f().then(() => o[c](u, ...l));
+    r[l] ? console.warn(n + " only loads once. Ignoring:", t) : r[l] = (u, ...c) => g.add(u) && m().then(() => r[l](u, ...c));
   }
   // --- UI Creation ---
   _createPACStructure() {
@@ -260,32 +392,32 @@ class w {
     t.className = this.#t.classes.section, this.#n = document.createElement("div"), this.#n.className = this.#t.classes.container, this.#n.setAttribute("id", this.#u + "-div"), t.appendChild(this.#n);
     const e = document.createElement("div");
     e.className = this.#t.classes.icon_container, this.#n.appendChild(e);
-    const s = document.createElement("div");
-    if (s.innerHTML = this.#t.classes.icon, e.appendChild(s.firstElementChild), this.#e = document.createElement("input"), this.#e.id = this.#u + "-input", this.#e.type = "text", this.#e.name = "search", this.#e.placeholder = this.#t.placeholder, this.#e.autocomplete = this.#t.autocomplete, this.#e.className = this.#t.classes.input, this.#e.setAttribute("role", "combobox"), this.#e.setAttribute("aria-autocomplete", "list"), this.#e.setAttribute("aria-expanded", "false"), this.#e.setAttribute("aria-controls", "pacSuggestions"), this.#e.setAttribute("aria-activedescendant", ""), this.#t.autofocus && (this.#e.autofocus = !0), this.#t.label) {
+    const i = document.createElement("div");
+    if (i.innerHTML = this.#t.classes.icon, e.appendChild(i.firstElementChild), this.#e = document.createElement("input"), this.#e.id = this.#u + "-input", this.#e.type = "text", this.#e.name = "search", this.#e.placeholder = this.#t.placeholder, this.#e.autocomplete = this.#t.autocomplete, this.#e.className = this.#t.classes.input, this.#e.setAttribute("role", "combobox"), this.#e.setAttribute("aria-autocomplete", "list"), this.#e.setAttribute("aria-expanded", "false"), this.#e.setAttribute("aria-controls", "pacSuggestions"), this.#e.setAttribute("aria-activedescendant", ""), this.#t.autofocus && (this.#e.autofocus = !0), this.#t.label) {
       const n = document.createElement("label");
       n.htmlFor = this.#e.id, n.textContent = this.#t.label, t.prepend(n);
     }
     this.#n.appendChild(this.#e);
-    const i = document.createElement("div");
-    i.className = this.#t.classes.kbd_container, this.#l = document.createElement("kbd"), this.#l.className = this.#t.classes.kbd_escape, this.#l.textContent = "Esc", i.appendChild(this.#l), this.#c = document.createElement("kbd"), this.#c.className = this.#t.classes.kbd_up, this.#c.innerHTML = "&#8593;", i.appendChild(this.#c), this.#h = document.createElement("kbd"), this.#h.className = this.#t.classes.kbd_down, this.#h.innerHTML = "&#8595;", i.appendChild(this.#h), this.#n.appendChild(i), this.#s = document.createElement("ul"), this.#s.id = "pacSuggestions", this.#s.className = this.#t.classes.ul, this.#s.style.display = "none", this.#s.setAttribute("role", "listbox"), this.#s.setAttribute("aria-labelledby", this.#e.id), this.#n.appendChild(this.#s), this.#d.appendChild(t), t.addEventListener("keydown", this._onKeyDown.bind(this));
+    const s = document.createElement("div");
+    s.className = this.#t.classes.kbd_container, this.#r = document.createElement("kbd"), this.#r.className = this.#t.classes.kbd_escape, this.#r.textContent = "Esc", s.appendChild(this.#r), this.#c = document.createElement("kbd"), this.#c.className = this.#t.classes.kbd_up, this.#c.innerHTML = "&#8593;", s.appendChild(this.#c), this.#h = document.createElement("kbd"), this.#h.className = this.#t.classes.kbd_down, this.#h.innerHTML = "&#8595;", s.appendChild(this.#h), this.#n.appendChild(s), this.#i = document.createElement("ul"), this.#i.id = "pacSuggestions", this.#i.className = this.#t.classes.ul, this.#i.style.display = "none", this.#i.setAttribute("role", "listbox"), this.#i.setAttribute("aria-labelledby", this.#e.id), this.#n.appendChild(this.#i), this.#d.appendChild(t), t.addEventListener("keydown", this._onKeyDown.bind(this));
   }
   /**
    * Attaches event listeners to the input element for handling user input.
    * This includes debounced input handling, focus/blur events, and keyboard navigation.
    */
   _attachedEventListeners() {
-    this.#e.addEventListener("input", this.#p), this.#e.addEventListener("blur", () => {
+    this.#e.addEventListener("input", this.#_), this.#e.addEventListener("blur", () => {
       setTimeout(() => {
-        this.#s && !this.#s.contains(document.activeElement) && (this.#s.style.display = "none", this.#e.setAttribute("aria-expanded", "false"));
+        this.#i && !this.#i.contains(document.activeElement) && (this.#i.style.display = "none", this.#e.setAttribute("aria-expanded", "false"));
       }, 200);
     }), this.#e.addEventListener("focus", () => {
-      this.#e.value && this.#r.length > 0 && (this.#s.style.display = "block", this.#e.setAttribute("aria-expanded", "true"));
+      this.#e.value && this.#a.length > 0 && (this.#i.style.display = "block", this.#e.setAttribute("aria-expanded", "true"));
     });
   }
   _detachEventListeners() {
     this.#e && this.#e.removeEventListener(
       "input",
-      this.#p
+      this.#_
     ), this.#d && this.#n && this.#d.removeChild(this.#n.parentElement);
   }
   /**
@@ -294,11 +426,11 @@ class w {
    */
   async _initializeAutocomplete() {
     try {
-      await google.maps.importLibrary("places"), this._refreshToken(), this.#e ? this._attachedEventListeners() : this.#o(
+      await google.maps.importLibrary("places"), this._refreshToken(), this.#e ? this._attachedEventListeners() : this.#l(
         new Error("Input element not found during initialization.")
       );
     } catch (t) {
-      console.error("Error initializing Google Places Autocomplete:", t), this.#o(
+      console.error("Error initializing Google Places Autocomplete:", t), this.#l(
         new Error("Google Maps Places library not available.")
       );
     }
@@ -308,16 +440,16 @@ class w {
    * @param {boolean} [refresh=false] - Whether to refresh the Google Places session token.
    */
   _reset(t = !1, e = null) {
-    this.#i = -1, this.#e && this.#t.clear_input == !1 && e && e.formattedAddress ? this.#e.value = e.formattedAddress : this.#e && (this.#e.value = ""), this.#e && (this.#e.setAttribute("aria-expanded", "false"), this.#e.setAttribute("aria-activedescendant", ""), this.#e.blur()), this.#r = [], this.#i = -1, this.#s && (this.#s.innerHTML = "", this.#s.style.display = "none"), t && this._refreshToken();
+    this.#s = -1, this.#e && this.#t.clear_input == !1 && e && e.formattedAddress ? this.#e.value = e.formattedAddress : this.#e && (this.#e.value = ""), this.#e && (this.#e.setAttribute("aria-expanded", "false"), this.#e.setAttribute("aria-activedescendant", ""), this.#e.blur()), this.#a = [], this.#s = -1, this.#i && (this.#i.innerHTML = "", this.#i.style.display = "none"), t && this._refreshToken();
   }
   /**
    * Removes the 'current' highlighting classes from all suggestion list items (li) and their links (a).
    */
   _resetLiClasses() {
-    this.#s && Array.from(this.#s.children).forEach((t) => {
-      this.#t.classes.li_current.split(" ").forEach((s) => t.classList.remove(s));
+    this.#i && Array.from(this.#i.children).forEach((t) => {
+      this.#t.classes.li_current.split(" ").forEach((i) => t.classList.remove(i));
       const e = t.querySelector("button");
-      e && this.#t.classes.li_button_current.split(" ").forEach((s) => e.classList.remove(s));
+      e && this.#t.classes.li_button_current.split(" ").forEach((i) => e.classList.remove(i));
     });
   }
   /**
@@ -326,50 +458,42 @@ class w {
    * @param {KeyboardEvent} e - The keyboard event object.
    */
   _onKeyDown(t) {
-    if (this._resetLiClasses(), t.key === "Escape" && (t.preventDefault(), this.#t.classes.kbd_active.split(" ").forEach((e) => this.#l?.classList.add(e)), setTimeout(
-      () => this.#t.classes.kbd_active.split(" ").forEach((e) => this.#l?.classList.remove(e)),
+    if (this._resetLiClasses(), t.key === "Escape" && (t.preventDefault(), this.#t.classes.kbd_active.split(" ").forEach((e) => this.#r?.classList.add(e)), setTimeout(
+      () => this.#t.classes.kbd_active.split(" ").forEach((e) => this.#r?.classList.remove(e)),
       300
-    ), this._reset(!0)), !(!this.#r.length || !this.#s || this.#s.style.display === "none"))
+    ), this._reset(!0)), !(!this.#a.length || !this.#i || this.#i.style.display === "none"))
       if (t.key === "ArrowDown") {
-        t.preventDefault(), this.#i = Math.min(
-          this.#i + 1,
-          this.#r.length - 1
-        ), this.#i < 0 && (this.#i = 0);
-        const e = this.#s.children.item(this.#i);
+        t.preventDefault(), this.#s = Math.min(
+          this.#s + 1,
+          this.#a.length - 1
+        ), this.#s < 0 && (this.#s = 0);
+        const e = this.#i.children.item(this.#s);
         if (e) {
-          const s = e.querySelector("button");
-          this.#t.classes.li_current.split(" ").forEach((i) => e.classList.add(i)), s && this.#t.classes.li_button_current.split(" ").forEach((i) => s.classList.add(i)), e.scrollIntoView({ block: "nearest" }), this.#e.setAttribute("aria-activedescendant", e.id);
+          const i = e.querySelector("button");
+          this.#t.classes.li_current.split(" ").forEach((s) => e.classList.add(s)), i && this.#t.classes.li_button_current.split(" ").forEach((s) => i.classList.add(s)), e.scrollIntoView({ block: "nearest" }), this.#e.setAttribute("aria-activedescendant", e.id);
         }
-        this.#t.classes.kbd_active.split(" ").forEach((s) => this.#h?.classList.add(s)), setTimeout(
-          () => this.#t.classes.kbd_active.split(" ").forEach((s) => this.#h?.classList.remove(s)),
+        this.#t.classes.kbd_active.split(" ").forEach((i) => this.#h?.classList.add(i)), setTimeout(
+          () => this.#t.classes.kbd_active.split(" ").forEach((i) => this.#h?.classList.remove(i)),
           300
         );
       } else if (t.key === "ArrowUp") {
-        t.preventDefault(), this.#i = Math.max(this.#i - 1, 0);
-        const e = this.#s.children.item(this.#i);
+        t.preventDefault(), this.#s = Math.max(this.#s - 1, 0);
+        const e = this.#i.children.item(this.#s);
         if (e) {
-          const s = e.querySelector("button");
-          this.#t.classes.li_current.split(" ").forEach((i) => e.classList.add(i)), s && this.#t.classes.li_button_current.split(" ").forEach((i) => s.classList.add(i)), e.scrollIntoView({ block: "nearest" });
+          const i = e.querySelector("button");
+          this.#t.classes.li_current.split(" ").forEach((s) => e.classList.add(s)), i && this.#t.classes.li_button_current.split(" ").forEach((s) => i.classList.add(s)), e.scrollIntoView({ block: "nearest" });
         }
-        this.#t.classes.kbd_active.split(" ").forEach((s) => this.#c?.classList.add(s)), setTimeout(
-          () => this.#t.classes.kbd_active.split(" ").forEach((s) => this.#c?.classList.remove(s)),
+        this.#t.classes.kbd_active.split(" ").forEach((i) => this.#c?.classList.add(i)), setTimeout(
+          () => this.#t.classes.kbd_active.split(" ").forEach((i) => this.#c?.classList.remove(i)),
           300
         );
-      } else t.key === "Enter" && (t.preventDefault(), this.#i >= 0 && this.#i < this.#r.length && this._onPlaceSelected(
-        this.#r[this.#i].place
+      } else t.key === "Enter" && (t.preventDefault(), this.#s >= 0 && this.#s < this.#a.length && this._onPlaceSelected(
+        this.#a[this.#s].place
       ));
   }
   // Helper function to find a specific address component
   _getAddressComponent(t, e) {
-    return t.addressComponents?.find((s) => s.types.includes(e))?.longText || "";
-  }
-  // Helper function to get secondary text from address components
-  _getSecondaryText(t) {
-    const e = this._getAddressComponent(t, "locality"), s = this._getAddressComponent(
-      t,
-      "administrative_area_level_1"
-    ), i = this._getAddressComponent(t, "postal_code"), n = this._getAddressComponent(t, "country");
-    return [e, s, n, i].filter(Boolean).join(", ");
+    return t.addressComponents?.find((i) => i.types.includes(e))?.longText || "";
   }
   /**
    * Creates a button element for a suggestion item.
@@ -415,53 +539,65 @@ class w {
    * @returns {Array<HTMLLIElement>} An array of LI elements to be added to the suggestions UL.
    */
   _createSuggestionElements(t) {
-    return this.#r = [], t.map(async (e, s) => {
-      let i = e.placePrediction.toPlace();
-      await i.fetchFields({ fields: ["addressComponents"] });
+    return this.#a = [], t.map(async (e, i) => {
+      let s = e.placePrediction.toPlace();
       const n = document.createElement("li");
-      n.id = `option-${s + 1}`, n.className = this.#t.classes.li;
-      const a = this._createButtonElement(s);
-      a.addEventListener("click", (r) => {
-        r.preventDefault(), this._onPlaceSelected(e.placePrediction.toPlace());
+      n.id = `option-${i + 1}`, n.className = this.#t.classes.li;
+      const a = this._createButtonElement(i);
+      a.addEventListener("click", (o) => {
+        o.preventDefault(), this._onPlaceSelected(e.placePrediction.toPlace());
       });
-      const c = this._createDivElement(
+      const l = this._createDivElement(
         this.#t.classes.li_div_container
-      ), p = this._createDivElement(this.#t.classes.li_div_one), m = this._createDivElement(this.#t.classes.li_div_two), h = this._createMapPinIconElement();
-      p.appendChild(h);
-      const o = this._createDivElement(
+      ), _ = this._createDivElement(this.#t.classes.li_div_one), h = this._createDivElement(this.#t.classes.li_div_two), d = this._createMapPinIconElement();
+      _.appendChild(d);
+      const r = this._createDivElement(
         this.#t.classes.li_div_p_container
       );
-      p.appendChild(o);
-      const _ = this._createPElement(this.#t.classes.li_div_one_p), d = this._createPElement(
+      _.appendChild(r);
+      const g = this._createPElement(this.#t.classes.li_div_one_p), p = this._createPElement(
         this.#t.classes.li_div_one_p_secondaryText
-      ), f = this._createPElement(this.#t.classes.li_div_two_p);
-      f.textContent = this._formatDistance(
+      ), m = this._createPElement(this.#t.classes.li_div_two_p);
+      if (m.textContent = this._formatDistance(
         e.placePrediction.distanceMeters,
         this.#t.distance_units ?? "km"
-      ), o.appendChild(_), o.appendChild(d), m.appendChild(f), c.appendChild(p), c.appendChild(m), a.appendChild(c), n.appendChild(a);
-      const u = e.placePrediction.mainText, l = u.text, b = u.matches;
+      ), r.appendChild(g), r.appendChild(p), this.#t.show_place_type && Array.isArray(e.placePrediction.types) && e.placePrediction.types.length > 0) {
+        const o = this._createDivElement(
+          this.#t.classes.li_div_two_p_place_type
+        ), v = this._createPElement(
+          this.#t.classes.li_div_two_p_place_type_icon
+        ), C = this._createPElement(
+          this.#t.classes.li_div_two_p_place_type_label
+        ), x = e.placePrediction.types.find(
+          (E) => typeof E == "string" && E in this.#y
+        );
+        C.textContent = x ? this.#y[x] : "Default", v.innerHTML = this.#b[C.textContent] || this.#b.Default, o.appendChild(v), o.appendChild(C), h.appendChild(o);
+      } else
+        h.appendChild(m);
+      l.appendChild(_), l.appendChild(h), a.appendChild(l), n.appendChild(a);
+      const u = e.placePrediction.mainText, c = u.text, w = u.matches;
       let y = 0;
-      b.sort((r, A) => r.startOffset - A.startOffset);
-      const v = document.createElement("span"), g = document.createElement("span");
-      g.classList = this.#t.classes.highlight ?? "font-bold";
-      for (const r of b)
-        v.textContent += l.substring(
+      w.sort((o, v) => o.startOffset - v.startOffset);
+      const k = document.createElement("span"), f = document.createElement("span");
+      f.classList = this.#t.classes.highlight ?? "font-bold";
+      for (const o of w)
+        k.textContent += c.substring(
           y,
-          r.startOffset
-        ), r.startOffset > 0 && l.charAt(r.startOffset - 1) == " " && (g.textContent += " "), g.textContent += l.substring(
-          r.startOffset,
-          r.endOffset
-        ), y = r.endOffset;
-      const k = document.createTextNode(
-        l.substring(y)
+          o.startOffset
+        ), o.startOffset > 0 && c.charAt(o.startOffset - 1) == " " && (f.textContent += " "), f.textContent += c.substring(
+          o.startOffset,
+          o.endOffset
+        ), y = o.endOffset;
+      const A = document.createTextNode(
+        c.substring(y)
       );
-      v.appendChild(g), v.appendChild(k), _.appendChild(v);
-      const E = this._getSecondaryText(i);
-      return E && (d.textContent = E), this.#r.push({
-        id: s + 1,
-        place: i,
+      k.appendChild(f), k.appendChild(A), g.appendChild(k);
+      const b = e.placePrediction?.secondaryText?.text ?? "";
+      return b && (p.textContent = b), this.#a.push({
+        id: i + 1,
+        place: s,
         mainText: e.placePrediction.mainText.text,
-        secondaryText: this._getSecondaryText(i),
+        secondaryText: b,
         description: e.placePrediction.toString()
       }), n.appendChild(a), n;
     });
@@ -476,11 +612,11 @@ class w {
     let e = null;
     try {
       await t.fetchFields({
-        fields: this.#g
+        fields: this.#v
         //["displayName", "formattedAddress", "addressComponents"], // Add more fields as needed
-      }), e = t.toJSON(), this.#b(e);
-    } catch (s) {
-      console.error("Error fetching place details:", s), this.#o(s);
+      }), this.#t.response_type === "place" ? (e = t, this.#p(t)) : (e = t.toJSON(), this.#p(e));
+    } catch (i) {
+      console.error("Error fetching place details:", i), this.#l(i);
     } finally {
       this._reset(!0, e);
     }
@@ -491,9 +627,9 @@ class w {
    */
   _refreshToken() {
     try {
-      this.#a.sessionToken = new google.maps.places.AutocompleteSessionToken();
+      this.#o.sessionToken = new google.maps.places.AutocompleteSessionToken();
     } catch (t) {
-      console.error("Error creating session token:", t), this.#o(t);
+      console.error("Error creating session token:", t), this.#l(t);
     }
   }
   /**
@@ -514,7 +650,7 @@ class w {
    * @returns {Array<string>} The current fetch fields.
    */
   getFetchFields() {
-    return this.#g;
+    return this.#v;
   }
   /**
    * Sets the request parameters for the Places Autocomplete instance.
@@ -526,8 +662,8 @@ class w {
    * @param {*} params
    */
   setRequestParams(t) {
-    typeof t == "object" && !Array.isArray(t) && t !== null && (t.input && typeof t.input == "string" && (this.#e.value = t.input), this.#a = {
-      ...this.#v,
+    typeof t == "object" && !Array.isArray(t) && t !== null && (t.input && typeof t.input == "string" && (this.#e.value = t.input), this.#o = {
+      ...this.#k,
       ...t
     });
   }
@@ -538,7 +674,7 @@ class w {
    * @returns {Object} The current request parameters.
    */
   getRequestParams() {
-    return this.#a;
+    return this.#o;
   }
   /**
    * Sets the options for the Places Autocomplete instance.
@@ -554,12 +690,12 @@ class w {
       this._detachEventListeners();
       const e = t.classes || {};
       delete t.classes, this.#t = {
-        ...this.#y,
+        ...this.#f,
         ...t
       }, e && typeof e == "object" && Object.keys(e).length > 0 ? this.#t.classes = {
-        ...this.#m,
+        ...this.#g,
         ...e
-      } : this.#t.classes = { ...this.#m }, this._initialiseDebouncedRequest(), this._createPACStructure(), this.#e && this._attachedEventListeners();
+      } : this.#t.classes = { ...this.#g }, this.#t.show_place_type && this.#t.distance && (this.#t.distance = !1), this._initialiseDebouncedRequest(), this._createPACStructure(), this.#e && this._attachedEventListeners();
     }
   }
   /**
@@ -568,6 +704,28 @@ class w {
    */
   getOptions() {
     return this.#t;
+  }
+  /**
+   * Sets the input value by reverse geocoding coordinates.
+   * Performs reverse geocoding to convert lat/lng to a place, then triggers onResponse.
+   * Requires the Geocoding API to be enabled in your Google Cloud Console project.
+   * @param {number} latitude - Latitude coordinate
+   * @param {number} longitude - Longitude coordinate
+   * @returns {Promise<void>}
+   */
+  async setInputValue(t, e) {
+    try {
+      const { Geocoder: i } = await google.maps.importLibrary("geocoding"), n = await new i().geocode({
+        location: { lat: t, lng: e }
+      });
+      if (n.results && n.results.length > 0) {
+        const a = n.results[0].place_id, l = new google.maps.places.Place({ id: a });
+        await l.fetchFields({ fields: this.#v }), !this.#t.clear_input && l.formattedAddress && (this.#e.value = l.formattedAddress), this.#t.response_type === "place" ? this.#p(l) : this.#p(l.toJSON());
+      } else
+        throw new Error("No results found for the provided coordinates");
+    } catch (i) {
+      console.error("Error in setInputValue:", i), this.#l(i);
+    }
   }
   /**
    * Clears the autocomplete input field and suggestions list.
@@ -580,6 +738,15 @@ class w {
     this._reset(!0);
   }
   /**
+   * Sets focus on the autocomplete input field.
+   * This method allows programmatic control of the input focus,
+   * useful for improving user experience and accessibility.
+   * @returns {void}
+   */
+  focus() {
+    this.#e && this.#e.focus();
+  }
+  /**
    * Destroys the PacAutocomplete instance.
    * Removes event listeners, clears the DOM, and nullifies properties.
    * This method should be called when the autocomplete widget is no longer needed.
@@ -587,10 +754,10 @@ class w {
    * @returns {void}
    */
   destroy() {
-    this._detachEventListeners(), this.#u = null, this.#d = null, this.#_ = null, this.#f = null, this.#t = null, this.#a = null, this.#e = null, this.#n = null, this.#s = null, this.#l = null, this.#c = null, this.#h = null, this.#r = null, this.#i = -1, this.#b = null, this.#o = null, this.#p = null;
+    this._detachEventListeners(), this.#u = null, this.#d = null, this.#m = null, this.#w = null, this.#t = null, this.#o = null, this.#e = null, this.#n = null, this.#i = null, this.#r = null, this.#c = null, this.#h = null, this.#a = null, this.#s = -1, this.#p = null, this.#l = null, this.#_ = null;
   }
 }
 export {
-  w as PlacesAutocomplete
+  S as PlacesAutocomplete
 };
 //# sourceMappingURL=places-autocomplete.js.map

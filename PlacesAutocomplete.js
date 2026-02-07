@@ -37,12 +37,14 @@ export class PlacesAutocomplete {
     autofocus: false, // Automatically focus the input on load.
     autocomplete: "off", // HTML autocomplete attribute for the input.
     placeholder: "Start typing your address ...", // Placeholder text for the input.
-    distance: true, // Show distance in suggestions (requires origin in request).
+    distance: false, // Show distance in suggestions (requires origin in request).
     distance_units: "km", // Units for distance ('km' or 'miles').
     label: "", // Optional label text above the input.
     debounce: 100, // Debounce delay (ms) for API requests.
-    clear_input: true, // Clear input button (not implemented in this version).
+    clear_input: false, // Clear input .
     debug: false, // Enable debug mode (not implemented in this version).
+    response_type: "json", // Return format: 'json' for JSON object, 'place' for Google Maps Place instance.
+    show_place_type: false, // Display place type icons (mutually exclusive with distance).
   };
   #defaultClasses = {
     // CSS classes for various parts of the widget.
@@ -59,7 +61,6 @@ export class PlacesAutocomplete {
     ul: "pac-ul", //"absolute z-50 -mb-2 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm divide-y divide-gray-100", // Suggestions list (ul).
     li: "pac-li", //"z-50 cursor-default select-none py-2 px-2 lg:px-4 text-gray-900 hover:bg-indigo-500 hover:text-white", // Suggestion item (li).
     li_current: "pac-li-current", //"bg-indigo-500", // Class for the currently selected suggestion item.
-    li_a: "pac-li-a", //"block w-full flex justify-between", // Link element within a suggestion item.
     li_button: "pac-li-button", //"block w-full flex justify-between", // Link element within a suggestion item.
     li_button_current: "pac-li-button-current", //"text-white", // Class for the link in the currently selected suggestion item.
     li_div_container: "pac-li-div-container", //"flex min-w-0 gap-x-4", // Container div within the suggestion link.
@@ -72,18 +73,170 @@ export class PlacesAutocomplete {
     li_div_one_p_secondaryText: "pac-li-div-one-p-secondaryText",
     li_div_two: "pac-li-div-two", //"shrink-0 flex flex-col items-end min-w-16", // Second inner div (for distance).
     li_div_two_p: "pac-li-div-two-p", //"mt-1 text-xs/5", // Paragraph for the distance.
+    li_div_two_p_place_type: "pac-li-div-two-p-place_type", // Container for place type display.
+    li_div_two_p_place_type_icon: "pac-li-div-two-p-place_type-icon", // The place type icon element.
+    li_div_two_p_place_type_label: "pac-li-div-two-p-place_type-label", // The place type label text.
     highlight: "pac-highlight", //"font-bold", // Class for highlighting matched text in suggestions.
   };
   #defaultRequestParams = {
     // Default parameters for the autocomplete request.
     input: "", // Initial input value (empty).
-    includedRegionCodes: ["GB"], // Default region codes to include in suggestions.
-    language: "en-gb",
-    region: "GB",
+    // includedRegionCodes: ["GB"], // Default region codes to include in suggestions.
+    // language: "en-gb",
+    // region: "GB",
   };
   #fetchFields = ["formattedAddress", "addressComponents"];
   #defaultFetchFields = ["formattedAddress", "addressComponents"]; // Fields to fetch for the selected place (can be extended).
+  // Itinerary category mapping
+  #ITINERARY_CATEGORIES = {
+    // --- TRANSPORT & AUTO ---
+    car_rental: "Automotive",
+    car_dealer: "Automotive",
+    gas_station: "Automotive",
+    electric_vehicle_charging_station: "Automotive",
+    parking: "Automotive",
+    airport: "Airport",
+    bus_station: "Transport",
+    train_station: "Train Station",
+    subway_station: "Subway Station",
+    taxi_stand: "Transport",
+    ferry_terminal: "Transport",
 
+    // --- DINING & NIGHTLIFE ---
+    restaurant: "Food and Drink",
+    cafe: "Food and Drink",
+    coffee_shop: "Food and Drink",
+    bar: "Food and Drink",
+    pub: "Food and Drink",
+    night_club: "Food and Drink",
+    bakery: "Food and Drink",
+    fast_food_restaurant: "Food and Drink",
+    ice_cream_shop: "Food and Drink",
+    pizza_restaurant: "Food and Drink",
+    steak_house: "Food and Drink",
+    sushi_restaurant: "Food and Drink",
+
+    // --- LODGING ---
+    hotel: "Lodging",
+    hostel: "Lodging",
+    motel: "Lodging",
+    resort_hotel: "Lodging",
+    bed_and_breakfast: "Lodging",
+    campground: "Lodging",
+    rv_park: "Lodging",
+    lodging: "Lodging",
+    cottage: "Lodging",
+    inn: "Lodging",
+    guest_house: "Lodging",
+
+    // --- SIGHTSEEING & CULTURE ---
+    tourist_attraction: "Sightseeing",
+    museum: "Sightseeing",
+    art_gallery: "Sightseeing",
+    cultural_landmark: "Sightseeing",
+    historical_landmark: "Sightseeing",
+    monument: "Sightseeing",
+    performing_arts_theater: "Sightseeing",
+    aquarium: "Sightseeing",
+    zoo: "Sightseeing",
+    visitor_center: "Sightseeing",
+    town_square: "Sightseeing",
+    landmark: "Sightseeing",
+    place_of_worship: "Sightseeing",
+
+    // --- RECREATION & PARKS ---
+    park: "Recreation",
+    national_park: "Recreation",
+    state_park: "Recreation",
+    beach: "Recreation",
+    hiking_area: "Recreation",
+    amusement_park: "Recreation",
+    water_park: "Recreation",
+    botanical_garden: "Recreation",
+    golf_course: "Recreation",
+    gym: "Recreation",
+    natural_feature: "Recreation",
+
+    // --- SHOPPING ---
+    shopping_mall: "Shopping",
+    supermarket: "Shopping",
+    grocery_store: "Shopping",
+    clothing_store: "Shopping",
+    electronics_store: "Shopping",
+    souvenir_shop: "Shopping", // Simplified name
+    gift_shop: "Shopping",
+    duty_free_store: "Shopping",
+
+    // --- ESSENTIAL SERVICES ---
+    hospital: "Health",
+    pharmacy: "Health",
+    atm: "Finance",
+    bank: "Finance",
+    post_office: "Services",
+    police: "Services",
+
+    // --- GEOGRAPHICAL ---
+    neighborhood: "Geographical",
+    sublocality: "Geographical",
+
+    // --- NAVIGATION ---
+    route: "Navigation",
+    street_address: "Navigation",
+    intersection: "Navigation",
+
+    // -- CITY --
+    locality: "City",
+    administrative_area_level_4: "City",
+    country: "Country",
+    administrative_area_level_1: "City",
+    administrative_area_level_2: "City",
+    administrative_area_level_3: "City",
+    administrative_area_level_5: "City",
+    sublocality_level_1: "Neighborhood",
+    sublocality_level_2: "Neighborhood",
+    sublocality_level_3: "Neighborhood",
+    sublocality_level_4: "Neighborhood",
+    sublocality_level_5: "Neighborhood",
+
+    // --- DEFAULT ---
+    default: "Default",
+  };
+  // Mapping of itinerary categories to SVG icons (using Lucide icons for simplicity)
+  #ITINERARY_SVG_ICONS = {
+    Automotive: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>`,
+
+    Transport: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>`,
+
+    "Food and Drink": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>`,
+
+    Lodging: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>`,
+
+    Sightseeing: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-binoculars-icon lucide-binoculars"><path d="M10 10h4"/><path d="M19 7V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3"/><path d="M20 21a2 2 0 0 0 2-2v-3.851c0-1.39-2-2.962-2-4.829V8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v11a2 2 0 0 0 2 2z"/><path d="M 22 16 L 2 16"/><path d="M4 21a2 2 0 0 1-2-2v-3.851c0-1.39 2-2.962 2-4.829V8a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2z"/><path d="M9 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3"/></svg>`,
+
+    Recreation: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-kayak-icon lucide-kayak"><path d="M18 17a1 1 0 0 0-1 1v1a2 2 0 1 0 2-2z"/><path d="M20.97 3.61a.45.45 0 0 0-.58-.58C10.2 6.6 6.6 10.2 3.03 20.39a.45.45 0 0 0 .58.58C13.8 17.4 17.4 13.8 20.97 3.61"/><path d="m6.707 6.707 10.586 10.586"/><path d="M7 5a2 2 0 1 0-2 2h1a1 1 0 0 0 1-1z"/></svg>`,
+
+    Shopping: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+
+    Health: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/></svg>`,
+
+    Finance: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+
+    Geographical: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20 20-6-10.6c-.4-.7-1.5-.7-1.9 0L6 20"/><path d="M7 16h10"/><path d="M12 4a8 8 0 0 1 8 8v2a2 2 0 0 1-2 2h-1"/><path d="M7 16H6a2 2 0 0 1-2-2v-2a8 8 0 0 1 8-8"/></svg>`,
+
+    Navigation: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-navigation-icon lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>`,
+
+    City: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2-icon lucide-building-2"><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg>`,
+
+    District: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-land-plot-icon lucide-land-plot"><path d="m12 8 6-3-6-3v10"/><path d="m8 11.99-5.5 3.14a1 1 0 0 0 0 1.74l8.5 4.86a2 2 0 0 0 2 0l8.5-4.86a1 1 0 0 0 0-1.74L16 12"/><path d="m6.49 12.85 11.02 6.3"/><path d="M17.51 12.85 6.5 19.15"/></svg>`,
+
+    Airport: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-icon lucide-plane"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>`,
+
+    "Subway Station": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-subway-icon lucide-subway"><path d="M12 22a10 10 0 0 0 10-10V8l-5-5H7L2 8v4a10 10 0 0 0 10 10Z"/><path d="M12 22V8"/><path d="M7 13h10"/><path d="M7 17h10"/></svg>`,
+
+    "Train Station": `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  style="display:inline-block"; viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-train-icon lucide-train"><path d="M2 10h20"/><path d="M2 10a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-5Z"/><circle cx="7" cy="15" r="2"/><circle cx="17" cy="15" r="2"/></svg>`,
+
+    Default: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="display:inline-block";  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  };
   /**
    * Class constructor for PacAutocomplete.
    * Initializes the autocomplete widget with the provided configuration.
@@ -98,7 +251,7 @@ export class PlacesAutocomplete {
   constructor(config) {
     if (!config || !config.containerId || !config.googleMapsApiKey) {
       throw new Error(
-        "PacAutocomplete: Missing required configuration (containerId, googleMapsApiKey)."
+        "PacAutocomplete: Missing required configuration (containerId, googleMapsApiKey).",
       );
     }
 
@@ -106,7 +259,7 @@ export class PlacesAutocomplete {
     this.#pacEl = document.getElementById(config.containerId);
     if (!this.#pacEl) {
       throw new Error(
-        `PacAutocomplete: Container element with ID "${config.containerId}" not found.`
+        `PacAutocomplete: Container element with ID "${config.containerId}" not found.`,
       );
     }
 
@@ -126,6 +279,11 @@ export class PlacesAutocomplete {
       };
     } else {
       this.#options.classes = this.#defaultClasses; // Use default classes if none provided
+    }
+
+    // Ensure distance and show_place_type are mutually exclusive
+    if (this.#options.show_place_type && this.#options.distance) {
+      this.#options.distance = false; // Disable distance when show_place_type is enabled
     }
 
     if (this.#options.debug) {
@@ -208,13 +366,13 @@ export class PlacesAutocomplete {
         const { suggestions } =
           // eslint-disable-next-line no-undef
           await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(
-            this.#request
+            this.#request,
           );
 
         // Display suggestions
         if (suggestions && suggestions.length > 0) {
           const suggestionElements = await Promise.all(
-            this._createSuggestionElements(suggestions)
+            this._createSuggestionElements(suggestions),
           );
           this.#ul.replaceChildren(...suggestionElements);
           this.#ul.style.display = "block";
@@ -273,8 +431,12 @@ export class PlacesAutocomplete {
    * @returns {string|null} Formatted distance string or null if invalid
    */
   _formatDistance(distance, units) {
-    if (typeof distance !== "number" || !this.#options.distance) {
-      return null; // Return null if distance isn't shown or invalid
+    if (
+      typeof distance !== "number" ||
+      !this.#options.distance ||
+      this.#options.show_place_type
+    ) {
+      return null; // Return null if distance isn't shown, show_place_type is enabled, or invalid
     }
     let value;
     let unitLabel;
@@ -324,7 +486,7 @@ export class PlacesAutocomplete {
           for (k in g)
             e.set(
               k.replace(/[A-Z]/g, (t) => "_" + t[0].toLowerCase()), // Convert camelCase to snake_case
-              g[k]
+              g[k],
             );
           e.set("callback", c + ".maps." + q); // Set the internal callback function name
           a.src = `https://maps.${c}apis.com/maps/api/js?` + e; // Construct the API URL
@@ -333,8 +495,8 @@ export class PlacesAutocomplete {
           a.onerror = () =>
             (h = n(
               new Error(
-                `${p} could not load. Check your API key and network connection.`
-              )
+                `${p} could not load. Check your API key and network connection.`,
+              ),
             )); // Use onerror for load failures
           // Nonce for Content Security Policy
           a.nonce = m.querySelector("script[nonce]")?.nonce || "";
@@ -453,7 +615,7 @@ export class PlacesAutocomplete {
     if (this.#inputElement) {
       this.#inputElement.removeEventListener(
         "input",
-        this.#debouncedMakeAcRequest
+        this.#debouncedMakeAcRequest,
       );
       // remove other listeners
     }
@@ -481,14 +643,14 @@ export class PlacesAutocomplete {
         this._attachedEventListeners();
       } else {
         this.#onErrorCallback(
-          new Error("Input element not found during initialization.")
+          new Error("Input element not found during initialization."),
         );
       }
     } catch (error) {
       console.error("Error initializing Google Places Autocomplete:", error);
       // eslint-disable-next-line no-undef
       this.#onErrorCallback(
-        new Error("Google Maps Places library not available.")
+        new Error("Google Maps Places library not available."),
       );
     }
   }
@@ -574,7 +736,7 @@ export class PlacesAutocomplete {
           this.#options.classes.kbd_active
             .split(" ")
             .forEach((cl) => this.#kbdEscape?.classList.remove(cl)),
-        300
+        300,
       );
 
       this._reset(true); // Reset search input and results, refresh token
@@ -591,7 +753,7 @@ export class PlacesAutocomplete {
       e.preventDefault(); // Prevent cursor movement in input
       this.#currentSuggestion = Math.min(
         this.#currentSuggestion + 1,
-        this.#allSuggestions.length - 1
+        this.#allSuggestions.length - 1,
       );
       if (this.#currentSuggestion < 0) this.#currentSuggestion = 0; // Handle case where it was -1
 
@@ -619,7 +781,7 @@ export class PlacesAutocomplete {
           this.#options.classes.kbd_active
             .split(" ")
             .forEach((cl) => this.#kbdDown?.classList.remove(cl)),
-        300
+        300,
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault(); // Prevent cursor movement in input
@@ -648,7 +810,7 @@ export class PlacesAutocomplete {
           this.#options.classes.kbd_active
             .split(" ")
             .forEach((cl) => this.#kbdUp?.classList.remove(cl)),
-        300
+        300,
       );
     } else if (e.key === "Enter") {
       e.preventDefault(); // Prevent form submission if applicable
@@ -657,7 +819,7 @@ export class PlacesAutocomplete {
         this.#currentSuggestion < this.#allSuggestions.length
       ) {
         this._onPlaceSelected(
-          this.#allSuggestions[this.#currentSuggestion].place
+          this.#allSuggestions[this.#currentSuggestion].place,
         );
         // Reset is handled within onPlaceSelected via reset(true)
       }
@@ -670,19 +832,6 @@ export class PlacesAutocomplete {
       response.addressComponents?.find((c) => c.types.includes(type))
         ?.longText || ""
     );
-  }
-
-  // Helper function to get secondary text from address components
-  _getSecondaryText(place) {
-    const locality = this._getAddressComponent(place, "locality");
-    const adminArea = this._getAddressComponent(
-      place,
-      "administrative_area_level_1"
-    );
-    const postalCode = this._getAddressComponent(place, "postal_code");
-    const country = this._getAddressComponent(place, "country");
-    let components = [locality, adminArea, country, postalCode].filter(Boolean);
-    return components.join(", ");
   }
 
   /**
@@ -716,7 +865,7 @@ export class PlacesAutocomplete {
   _createMapPinIconElement() {
     const svgIcon = document.createElementNS(
       "http://www.w3.org/2000/svg",
-      "svg"
+      "svg",
     );
     svgIcon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     svgIcon.setAttribute("width", "24");
@@ -758,8 +907,6 @@ export class PlacesAutocomplete {
     return suggestions.map(async (suggestion, index) => {
       // Fetch place details for each suggestion
       let place = suggestion.placePrediction.toPlace();
-      // Fetch address components for the place
-      await place.fetchFields({ fields: ["addressComponents"] });
 
       const li = document.createElement("li");
       li.id = `option-${index + 1}`;
@@ -775,7 +922,7 @@ export class PlacesAutocomplete {
 
       // create div elements pac-li-div-container
       const divContainer = this._createDivElement(
-        this.#options.classes.li_div_container
+        this.#options.classes.li_div_container,
       );
 
       // create li div one element - place name
@@ -788,7 +935,7 @@ export class PlacesAutocomplete {
 
       // create div p container
       const divPContainer = this._createDivElement(
-        this.#options.classes.li_div_p_container
+        this.#options.classes.li_div_p_container,
       );
       // append div p container to liDivOne
       liDivOne.appendChild(divPContainer);
@@ -797,18 +944,56 @@ export class PlacesAutocomplete {
       const pOne = this._createPElement(this.#options.classes.li_div_one_p);
       // create p element - secondary text
       const pTwo = this._createPElement(
-        this.#options.classes.li_div_one_p_secondaryText
+        this.#options.classes.li_div_one_p_secondaryText,
       );
       // create p element - distance
       const pThree = this._createPElement(this.#options.classes.li_div_two_p);
       pThree.textContent = this._formatDistance(
         suggestion.placePrediction.distanceMeters,
-        this.#options.distance_units ?? "km"
+        this.#options.distance_units ?? "km",
       );
       // append p element to div p container
       divPContainer.appendChild(pOne);
       divPContainer.appendChild(pTwo);
-      liDivTwo.appendChild(pThree);
+
+      // Add place type display if enabled, otherwise show distance
+      if (
+        this.#options.show_place_type &&
+        Array.isArray(suggestion.placePrediction.types) &&
+        suggestion.placePrediction.types.length > 0
+      ) {
+        const placeTypeContainer = this._createDivElement(
+          this.#options.classes.li_div_two_p_place_type,
+        );
+
+        const placeTypeIcon = this._createPElement(
+          this.#options.classes.li_div_two_p_place_type_icon,
+        );
+
+        const placeTypeLabel = this._createPElement(
+          this.#options.classes.li_div_two_p_place_type_label,
+        );
+
+        // Look through the array until we find a type we actually recognize
+        const matchedType = suggestion.placePrediction.types.find(
+          (type) =>
+            typeof type === "string" && type in this.#ITINERARY_CATEGORIES,
+        );
+
+        placeTypeLabel.textContent = matchedType
+          ? this.#ITINERARY_CATEGORIES[matchedType]
+          : "Default";
+
+        placeTypeIcon.innerHTML =
+          this.#ITINERARY_SVG_ICONS[placeTypeLabel.textContent] ||
+          this.#ITINERARY_SVG_ICONS["Default"];
+
+        placeTypeContainer.appendChild(placeTypeIcon);
+        placeTypeContainer.appendChild(placeTypeLabel);
+        liDivTwo.appendChild(placeTypeContainer);
+      } else {
+        liDivTwo.appendChild(pThree);
+      }
 
       // append liDivOne to divContainer
       divContainer.appendChild(liDivOne);
@@ -841,7 +1026,7 @@ export class PlacesAutocomplete {
         // Append text before the current match
         outerSpan.textContent += originalText.substring(
           lastIndex,
-          match.startOffset
+          match.startOffset,
         );
 
         // Append the highlighted match segment
@@ -854,7 +1039,7 @@ export class PlacesAutocomplete {
         }
         innerSpan.textContent += originalText.substring(
           match.startOffset,
-          match.endOffset
+          match.endOffset,
         );
 
         // Update the last index processed
@@ -863,7 +1048,7 @@ export class PlacesAutocomplete {
 
       // 3. Create a text node for the remaining text
       const remainingText = document.createTextNode(
-        originalText.substring(lastIndex)
+        originalText.substring(lastIndex),
       );
 
       // 4. Append the inner span and the text node to the outer span
@@ -873,8 +1058,9 @@ export class PlacesAutocomplete {
       // 5. Append the outer span to the paragraph element
       pOne.appendChild(outerSpan);
 
-      // set secondary text
-      const secondaryText = this._getSecondaryText(place);
+      // set secondary text if available
+      const secondaryText =
+        suggestion.placePrediction?.secondaryText?.text ?? "";
 
       if (secondaryText) {
         pTwo.textContent = secondaryText;
@@ -884,7 +1070,7 @@ export class PlacesAutocomplete {
         id: index + 1,
         place: place,
         mainText: suggestion.placePrediction.mainText.text,
-        secondaryText: this._getSecondaryText(place),
+        secondaryText: secondaryText,
         description: suggestion.placePrediction.toString(),
       });
 
@@ -907,9 +1093,15 @@ export class PlacesAutocomplete {
         fields: this.#fetchFields, //["displayName", "formattedAddress", "addressComponents"], // Add more fields as needed
       });
       // Call the user-provided callback with the place data
-      // eslint-disable-next-line no-undef
-      data = place.toJSON(); // Convert to plain JSON object
-      this.#onDataCallback(data); // Convert to plain JSON object for the callback
+      // Handle response_type option
+      if (this.#options.response_type === "place") {
+        data = place; // Return the Place instance
+        this.#onDataCallback(place);
+      } else {
+        // eslint-disable-next-line no-undef
+        data = place.toJSON(); // Convert to plain JSON object (default)
+        this.#onDataCallback(data);
+      }
     } catch (error) {
       console.error("Error fetching place details:", error);
       // eslint-disable-next-line no-undef
@@ -1038,6 +1230,11 @@ export class PlacesAutocomplete {
         this.#options.classes = { ...this.#defaultClasses }; // Use defaults if no classes provided
       }
 
+      // Ensure distance and show_place_type are mutually exclusive
+      if (this.#options.show_place_type && this.#options.distance) {
+        this.#options.distance = false; // Disable distance when show_place_type is enabled
+      }
+
       this._initialiseDebouncedRequest(); // Reinitialize the debounced request function
       this._createPACStructure(); // Recreate the structure with new options
       // Reattach the input event listener to the input element
@@ -1063,6 +1260,52 @@ export class PlacesAutocomplete {
   }
 
   /**
+   * Sets the input value by reverse geocoding coordinates.
+   * Performs reverse geocoding to convert lat/lng to a place, then triggers onResponse.
+   * Requires the Geocoding API to be enabled in your Google Cloud Console project.
+   * @param {number} latitude - Latitude coordinate
+   * @param {number} longitude - Longitude coordinate
+   * @returns {Promise<void>}
+   */
+  async setInputValue(latitude, longitude) {
+    try {
+      // Import the geocoding library
+      const { Geocoder } = await google.maps.importLibrary("geocoding");
+      const geocoder = new Geocoder();
+
+      // Perform reverse geocoding
+      const response = await geocoder.geocode({
+        location: { lat: latitude, lng: longitude },
+      });
+
+      if (response.results && response.results.length > 0) {
+        const placeId = response.results[0].place_id;
+        const place = new google.maps.places.Place({ id: placeId });
+
+        // Fetch the configured fields
+        await place.fetchFields({ fields: this.#fetchFields });
+
+        // Update input field if clear_input is false
+        if (!this.#options.clear_input && place.formattedAddress) {
+          this.#inputElement.value = place.formattedAddress;
+        }
+
+        // Trigger the callback with appropriate response type
+        if (this.#options.response_type === "place") {
+          this.#onDataCallback(place);
+        } else {
+          this.#onDataCallback(place.toJSON());
+        }
+      } else {
+        throw new Error("No results found for the provided coordinates");
+      }
+    } catch (error) {
+      console.error("Error in setInputValue:", error);
+      this.#onErrorCallback(error);
+    }
+  }
+
+  /**
    * Clears the autocomplete input field and suggestions list.
    * This method resets the state of the autocomplete widget,
    * allowing the user to start a new search without any previous input or suggestions.
@@ -1071,6 +1314,18 @@ export class PlacesAutocomplete {
    */
   clear() {
     this._reset(true);
+  }
+
+  /**
+   * Sets focus on the autocomplete input field.
+   * This method allows programmatic control of the input focus,
+   * useful for improving user experience and accessibility.
+   * @returns {void}
+   */
+  focus() {
+    if (this.#inputElement) {
+      this.#inputElement.focus();
+    }
   }
 
   /**

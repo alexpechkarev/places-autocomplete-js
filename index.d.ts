@@ -8,17 +8,20 @@ export interface PlacesAutocompleteOptions {
   /** Your Google Maps API key. */
   googleMapsApiKey: string;
 
+  /** Optional Google Maps JavaScript API version (for example: "weekly", "quarterly", "beta"). */
+  googleMapsApiVersion?: string;
+
   /**
    * Callback function that is invoked when a place is successfully selected and its details are fetched.
    * @param place The selected place details.
    */
-  onResponse: (place: PlaceResult) => void;
+  onResponse?: (place: PlaceResult) => void;
 
   /**
    * Callback function that is invoked when an error occurs.
    * @param error An object containing the error message.
    */
-  onError: (error: { message: any }) => void;
+  onError?: (error: { message: any }) => void;
 
   /**
    * Optional parameters for the Google Places Autocomplete API request.
@@ -106,6 +109,17 @@ export class PlacesAutocomplete {
    * Clears the input field, removes suggestions, and refreshes the session token.
    */
   clear(): void;
+
+  /**
+   * Programmatically focuses the autocomplete input element.
+   */
+  focus(): void;
+
+  /**
+   * Finds and selects a place for the provided coordinates.
+   * Requires Geocoding API support in your Google project.
+   */
+  setInputValue(latitude: number, longitude: number): Promise<void>;
 
   /**
    * Removes all event listeners and DOM elements created by the widget.

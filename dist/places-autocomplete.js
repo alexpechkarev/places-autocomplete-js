@@ -91,6 +91,7 @@ var e = {
 	sublocality_level_5: "Neighborhood",
 	default: "Default"
 }, t = {
+	Distance: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" style=\"display:inline-block\"; viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-route-icon lucide-route\"><circle cx=\"6\" cy=\"19\" r=\"3\"/><path d=\"M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15\"/><circle cx=\"18\" cy=\"5\" r=\"3\"/></svg>",
 	Automotive: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"  style=\"display:inline-block\"; viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/></svg>",
 	Transport: "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"  style=\"display:inline-block\"; viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"/></svg>",
 	"Food and Drink": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"  style=\"display:inline-block\"; viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2\"/><path d=\"M7 2v20\"/><path d=\"M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7\"/></svg>",
@@ -246,8 +247,7 @@ var e = {
 		};
 	}
 	_formatDistance(e, t) {
-		if (!this.#i.distance) return null;
-		if (typeof e != "number") return "Origin required for distance";
+		if (!this.#i.distance || typeof e != "number") return null;
 		let n, r;
 		return t === "km" ? (n = (e / 1e3).toFixed(2), r = "km") : (n = (e / 1609.34).toFixed(2), r = "miles"), n = n.replace(/\.00$/, ""), `${n} ${r}`;
 	}
@@ -368,9 +368,11 @@ var e = {
 				let n = this._createDivElement(this.#i.classes.li_div_two_p_place_type_item), i = this._createPElement(this.#i.classes.li_div_two_p_place_type_icon), o = this._createPElement(this.#i.classes.li_div_two_p_place_type_label), s = r.placePrediction.types.find((t) => typeof t == "string" && t in e);
 				o.textContent = s ? e[s] : "Default", i.innerHTML = t[o.textContent] || t.Default, n.appendChild(i), n.appendChild(o), a.appendChild(n);
 			}
-			if (this.#i.distance && i !== null) {
-				let e = this._createDivElement(this.#i.classes.li_div_two_p_place_type_item), t = this._createPElement(this.#i.classes.li_div_two_p);
-				t.textContent = i, e.appendChild(t), a.appendChild(e);
+			if (this.#i.distance) {
+				let e = this._createDivElement(this.#i.classes.li_div_two_p_place_type_item), n = this._createPElement(this.#i.classes.li_div_two_p_place_type_icon);
+				n.innerHTML = t.Distance;
+				let r = this._createPElement(this.#i.classes.li_div_two_p);
+				r.textContent = i ?? "-", e.appendChild(n), e.appendChild(r), a.appendChild(e);
 			}
 			a.hasChildNodes() && n.appendChild(a);
 		}

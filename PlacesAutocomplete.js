@@ -48,6 +48,7 @@ export class PlacesAutocomplete {
     debug: false, // Enable debug mode (not implemented in this version).
     response_type: "json", // Return format: 'json' for JSON object, 'place' for Google Maps Place instance.
     show_place_type: false, // Display place type icons (mutually exclusive with distance).
+    sort_by_distance: false, // Sort suggestions by distance (requires distance option enabled).
   };
   #defaultClasses = {
     // CSS classes for various parts of the widget.
@@ -211,10 +212,28 @@ export class PlacesAutocomplete {
         return;
       }
 
-      // Check cache
-      if (this.#cache.has(query)) {
-        await this._renderSuggestions(this.#cache.get(query));
+      // Create a cache key that includes the origin if distance is enabled
+      // This prevents stale distance data when the user moves
+      const originPart =
+        this.#options.distance && this.#request.origin
+          ? `-${JSON.stringify(this.#request.origin)}`
+          : "";
+      const cacheKey = `${query}${originPart}`;
+
+      if (this.#cache.has(cacheKey)) {
+        await this._renderSuggestions(this.#cache.get(cacheKey));
         return;
+      }
+
+      // Debug warning for missing origin
+      if (
+        this.#options.distance &&
+        !this.#request.origin &&
+        this.#options.debug
+      ) {
+        console.warn(
+          "PlacesAutocomplete: 'distance' option is enabled but no 'origin' is provided in requestParams. Distances will be null.",
+        );
       }
 
       this.#request.input = query;
@@ -228,7 +247,22 @@ export class PlacesAutocomplete {
 
         // Cache and display suggestions
         if (suggestions && suggestions.length > 0) {
-          this.#cache.set(query, suggestions);
+          // Sort by distance if option enabled
+          if (this.#options.sort_by_distance && this.#options.distance) {
+            suggestions.sort((a, b) => {
+              const distA =
+                a.placePrediction?.distanceMeters ??
+                a.distanceMeters ??
+                Infinity;
+              const distB =
+                b.placePrediction?.distanceMeters ??
+                b.distanceMeters ??
+                Infinity;
+              return distA - distB;
+            });
+          }
+
+          this.#cache.set(cacheKey, suggestions);
           await this._renderSuggestions(suggestions);
         } else {
           // No suggestions found
@@ -312,6 +346,7 @@ export class PlacesAutocomplete {
     if (!this.#options.distance) {
       return null;
     }
+
     if (typeof distance !== "number") {
       return null;
     }
@@ -699,10 +734,7 @@ export class PlacesAutocomplete {
       this.#inputElement.setAttribute("aria-activedescendant", currentLi.id); // Update aria-activedescendant
 
       // Visual feedback for key press
-      const kbd =
-        this.#currentSuggestion === 0
-          ? this.#kbdUp
-          : this.#kbdDown;
+      const kbd = this.#currentSuggestion === 0 ? this.#kbdUp : this.#kbdDown;
       this.#options.classes.kbd_active
         .split(" ")
         .forEach((cl) => kbd?.classList.add(cl));

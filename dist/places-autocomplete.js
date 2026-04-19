@@ -140,7 +140,8 @@ var e = {
 		clear_input: !1,
 		debug: !1,
 		response_type: "json",
-		show_place_type: !1
+		show_place_type: !1,
+		sort_by_distance: !1
 	};
 	#b = {
 		section: "pac-section",
@@ -215,14 +216,15 @@ var e = {
 				this._reset(), this.#o && this.#o.setAttribute("aria-expanded", "false");
 				return;
 			}
-			if (this.#u.has(e)) {
-				await this._renderSuggestions(this.#u.get(e));
+			let t = `${e}${this.#i.distance && this.#a.origin ? `-${JSON.stringify(this.#a.origin)}` : ""}`;
+			if (this.#u.has(t)) {
+				await this._renderSuggestions(this.#u.get(t));
 				return;
 			}
-			this.#a.input = e;
+			this.#i.distance && !this.#a.origin && this.#i.debug && console.warn("PlacesAutocomplete: 'distance' option is enabled but no 'origin' is provided in requestParams. Distances will be null."), this.#a.input = e;
 			try {
-				let { suggestions: t } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(this.#a);
-				t && t.length > 0 ? (this.#u.set(e, t), await this._renderSuggestions(t)) : (this._reset(), this.#o.setAttribute("aria-expanded", "false"), this._announceStatus("No suggestions found."));
+				let { suggestions: e } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(this.#a);
+				e && e.length > 0 ? (this.#i.sort_by_distance && this.#i.distance && e.sort((e, t) => (e.placePrediction?.distanceMeters ?? e.distanceMeters ?? Infinity) - (t.placePrediction?.distanceMeters ?? t.distanceMeters ?? Infinity)), this.#u.set(t, e), await this._renderSuggestions(e)) : (this._reset(), this.#o.setAttribute("aria-expanded", "false"), this._announceStatus("No suggestions found."));
 			} catch (e) {
 				this.#_(e), this._reset();
 			}

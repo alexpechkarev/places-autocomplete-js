@@ -7,15 +7,15 @@
 
 
 
-    <!-- <link href="./dist/places-autocomplete.css" rel="stylesheet"> -->
-    <link href="./places-autocomplete.css" rel="stylesheet">
+    <link href="./dist/places-autocomplete.css" rel="stylesheet">
+    <!-- <link href="./places-autocomplete.css" rel="stylesheet"> -->
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"> -->
 
 
     <script type="module">
-        import { PlacesAutocomplete } from './PlacesAutocomplete.js';
-        // import { PlacesAutocomplete } from './dist/places-autocomplete.js';
+        // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        import { PlacesAutocomplete } from './dist/places-autocomplete.js';
         //import './dist/places-autocomplete.css';
         // import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
         // import 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css';
@@ -47,6 +47,7 @@
                         clear_input: false, // Show clear button
                         show_place_type: true, // Show place type in suggestions
                         distance: true, // Show distance to each suggestion (mutually exclusive with show_place_type
+                        sort_by_distance: true, // New option
 
                         // classes: { // Override specific classes
                         //     input:
@@ -56,20 +57,26 @@
                     },
                     requestParams: { // Optional: Override default request parameters
                         input: '', // The user's input text. Will be updated dynamically.
-                        // includedRegionCodes: ['GB'], // Restrict search to Great Britain.
+                        includedRegionCodes: ['IT'], // Restrict search to Great Britain.
+                        includedPrimaryTypes: ['establishment'], // Restrict to specific place types.
                         // language: 'en-gb', // Preferred language for results.
-                        // region: 'GB', // Region biasing (GB).
-                         "origin": {
-                            "lat": 41.8967068,
-                            "lng": 12.4822025
+                         region: 'IT', // Region biasing (GB).
+                         origin: {
+                            lat: 41.8967068,
+                            lng: 12.4822025
                         },
-                        // locationBias: {
-                        //     lat: 53.39670653190076,
-                        //     lng: -2.9346197562747967,
-                        //     radius: 50000 // 50km radius
-
-
-                        // }
+                        locationRestriction: {
+                            north: 41.923686448177556,
+                            south: 41.86972715182244,
+                            east: 12.518448420212078,
+                            west: 12.445956579787921
+                        },
+                    //     locationBias: {
+                    //       circle: {
+                    //           center: { lat: 41.8967068, lng: 12.4822025 },
+                    //           radius: 5000 // radius in meters
+                    //       }
+                    //   }
                     },
                     fetchFields: ["formattedAddress", "addressComponents"], // Optional: Specify which fields to fetch
                 });

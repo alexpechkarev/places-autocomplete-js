@@ -313,7 +313,7 @@ export class PlacesAutocomplete {
       return null;
     }
     if (typeof distance !== "number") {
-      return "Origin required for distance"; // Return informative message if distance requested but missing
+      return null;
     }
     let value;
     let unitLabel;
@@ -925,12 +925,20 @@ export class PlacesAutocomplete {
       }
 
       // Distance display
-      if (this.#options.distance && distanceValue !== null) {
+      if (this.#options.distance) {
         const distanceWrapper = this._createDivElement(
           this.#options.classes.li_div_two_p_place_type_item,
         );
+
+        const distanceIcon = this._createPElement(
+          this.#options.classes.li_div_two_p_place_type_icon,
+        );
+        distanceIcon.innerHTML = ITINERARY_SVG_ICONS["Distance"];
+
         const pThree = this._createPElement(this.#options.classes.li_div_two_p);
-        pThree.textContent = distanceValue;
+        pThree.textContent = distanceValue ?? "-";
+
+        distanceWrapper.appendChild(distanceIcon);
         distanceWrapper.appendChild(pThree);
         metaContainer.appendChild(distanceWrapper);
       }

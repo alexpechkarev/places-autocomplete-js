@@ -248,9 +248,11 @@ describe("PlacesAutocomplete Constructor", () => {
     expect(container.textContent).toContain("Food and Drink");
     // Check for distance content
     expect(container.textContent).toContain("1 km");
+    // Check for distance icon
+    expect(container.innerHTML).toContain('class="pac-li-div-two-p-place_type-icon"');
   });
 
-  it("11: should show 'Origin required for distance' if distance option is true but no distance value is provided", async () => {
+  it("11: should show '-' if distance option is true but no distance value is provided", async () => {
     const autocomplete = new PlacesAutocomplete({
       containerId: "test-container",
       googleMapsApiKey: "TEST_API_KEY",
@@ -284,7 +286,7 @@ describe("PlacesAutocomplete Constructor", () => {
 
     const ul = mockContainer.querySelector("ul");
     const container = ul.querySelector(".pac-li-div-two-p-place_type");
-    expect(container.textContent).toContain("Origin required for distance");
+    expect(container.textContent).toContain("-");
   });
 
   it("7: should create an input element within the container", async () => {

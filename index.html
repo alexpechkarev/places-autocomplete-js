@@ -20,6 +20,8 @@
         // import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
         // import 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css';
 
+     
+
 
         document.addEventListener('DOMContentLoaded', () => {
             try {
@@ -44,7 +46,7 @@
                         // debounce: 100,
                         clear_input: false, // Show clear button
                         show_place_type: true, // Show place type in suggestions
-                        distance: false, // Show distance to each suggestion (mutually exclusive with show_place_type
+                        distance: true, // Show distance to each suggestion (mutually exclusive with show_place_type
 
                         // classes: { // Override specific classes
                         //     input:
@@ -57,10 +59,10 @@
                         // includedRegionCodes: ['GB'], // Restrict search to Great Britain.
                         // language: 'en-gb', // Preferred language for results.
                         // region: 'GB', // Region biasing (GB).
-                        // origin: {
-                        //     lat: 53.76538654312942,
-                        //     lng: -3.0181503295898438
-                        // },
+                         "origin": {
+                            "lat": 41.8967068,
+                            "lng": 12.4822025
+                        },
                         // locationBias: {
                         //     lat: 53.39670653190076,
                         //     lng: -2.9346197562747967,
@@ -103,11 +105,11 @@
                 });
 
                 btnGetOptions.addEventListener('click', () => {
-                    console.log('Current Options:', myPac.getOptions());
+                    console.log('Current Options:', JSON.stringify(myPac.getOptions(), null, 2));
                 });
 
                 btnGetRequestParams.addEventListener('click', () => {
-                    console.log('Current Request Params:', myPac.getRequestParams());
+                    console.log('Current Request Params:', JSON.stringify(myPac.getRequestParams(), null, 2));
                 });
 
                 btnSetInputValue.addEventListener('click', () => {

@@ -33,7 +33,7 @@ describe("PlacesAutocomplete Constructor", () => {
             OK: "OK",
             ZERO_RESULTS: "ZERO_RESULTS",
           },
-          AutocompleteSessionToken: vi.fn(() => ({})), // Ensure this is a mock constructor
+          AutocompleteSessionToken: vi.fn(function() { return {}; }), // Ensure this is a mock constructor
           AutocompleteSuggestion: {
             fetchAutocompleteSuggestions: vi.fn(() =>
               Promise.resolve({ suggestions: [] })
@@ -144,7 +144,7 @@ describe("PlacesAutocomplete Constructor", () => {
     expect(autocomplete.getOptions().classes.input).toBe("my-custom-input");
     // Ensure other default classes are still present if not overridden
     expect(autocomplete.getOptions().classes.container).toBe(
-      "relative z-10 transform rounded-xl mt-4"
+      "pac-container"
     );
 
     // Verify request parameters are merged
@@ -194,6 +194,97 @@ describe("PlacesAutocomplete Constructor", () => {
       ])
     );
     expect(autocomplete.getFetchFields().length).toBe(4); // Ensure no unexpected additions
+  });
+
+  it("10: should allow both show_place_type and distance options simultaneously", async () => {
+    const autocomplete = new PlacesAutocomplete({
+      containerId: "test-container",
+      googleMapsApiKey: "TEST_API_KEY",
+      options: {
+        show_place_type: true,
+        distance: true,
+      },
+    });
+
+    await vi.runAllTimers(); // Allow _init to complete
+
+    // Verify both options are true
+    expect(autocomplete.getOptions().show_place_type).toBe(true);
+    expect(autocomplete.getOptions().distance).toBe(true);
+
+    // Mock fetchAutocompleteSuggestions to return a suggestion with distance and types
+    google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions.mockImplementation(
+      () => {
+        return Promise.resolve({
+          suggestions: [
+            {
+              placePrediction: {
+                toPlace: () => mockPlaceInstance,
+                mainText: { text: "Mock Place", matches: [] },
+                distanceMeters: 1000,
+                types: ["restaurant"],
+              },
+            },
+          ],
+        });
+      }
+    );
+
+    const inputElement = mockContainer.querySelector("input");
+    inputElement.value = "test";
+    inputElement.dispatchEvent(new Event("input"));
+    await vi.runAllTimersAsync();
+
+    const ul = mockContainer.querySelector("ul");
+    expect(ul.children.length).toBeGreaterThan(0);
+    const container = ul.querySelector(".pac-li-div-two-p-place_type");
+    expect(container).not.toBeNull();
+
+    // Check if there are two wrappers (items) inside the container
+    const items = container.querySelectorAll(".pac-li-div-two-p-place_type-item");
+    expect(items.length).toBe(2);
+
+    // Check for place type content
+    expect(container.textContent).toContain("Food and Drink");
+    // Check for distance content
+    expect(container.textContent).toContain("1 km");
+  });
+
+  it("11: should show 'Origin required for distance' if distance option is true but no distance value is provided", async () => {
+    const autocomplete = new PlacesAutocomplete({
+      containerId: "test-container",
+      googleMapsApiKey: "TEST_API_KEY",
+      options: {
+        distance: true,
+      },
+    });
+
+    await vi.runAllTimersAsync();
+
+    google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions.mockImplementation(
+      () => {
+        return Promise.resolve({
+          suggestions: [
+            {
+              placePrediction: {
+                toPlace: () => mockPlaceInstance,
+                mainText: { text: "Mock Place", matches: [] },
+                // distanceMeters is missing
+              },
+            },
+          ],
+        });
+      }
+    );
+
+    const inputElement = mockContainer.querySelector("input");
+    inputElement.value = "test";
+    inputElement.dispatchEvent(new Event("input"));
+    await vi.runAllTimersAsync();
+
+    const ul = mockContainer.querySelector("ul");
+    const container = ul.querySelector(".pac-li-div-two-p-place_type");
+    expect(container.textContent).toContain("Origin required for distance");
   });
 
   it("7: should create an input element within the container", async () => {

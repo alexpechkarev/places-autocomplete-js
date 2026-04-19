@@ -27,10 +27,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "places-autocomplete-js.css") {
+          if (assetInfo.name === "places-autocomplete-js.css" || assetInfo.name === "style.css") {
             return "places-autocomplete.css";
           }
-          return assetInfo.name;
+          return assetInfo.name || "assets/[name]-[hash][extname]";
         },
       },
     },

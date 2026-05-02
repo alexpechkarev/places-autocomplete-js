@@ -47,7 +47,7 @@ export class PlacesAutocomplete {
     clear_input: false, // Clear input .
     debug: false, // Enable debug mode (not implemented in this version).
     response_type: "json", // Return format: 'json' for JSON object, 'place' for Google Maps Place instance.
-    show_place_type: false, // Display place type icons (mutually exclusive with distance).
+    show_place_type: false, // Display place type icons.
     sort_by_distance: false, // Sort suggestions by distance (requires distance option enabled).
   };
   #defaultClasses = {
@@ -501,6 +501,8 @@ export class PlacesAutocomplete {
 
     // Event Delegation for suggestion selection
     this.#ul.addEventListener("click", (e) => {
+      // IMPORTANT - to prevent the click event from bubbling up to the input and causing it to form submission if the input is inside a form. This is a common issue when using buttons inside forms.
+      e.preventDefault();
       const li = e.target.closest("li");
       if (li && this.#ul.contains(li)) {
         const index = Array.from(this.#ul.children).indexOf(li);

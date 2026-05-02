@@ -14,7 +14,7 @@
 
 
     <script type="module">
-        // import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        //  import { PlacesAutocomplete } from './PlacesAutocomplete.js';
         import { PlacesAutocomplete } from './dist/places-autocomplete.js';
         //import './dist/places-autocomplete.css';
         // import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
@@ -46,7 +46,7 @@
                         // debounce: 100,
                         clear_input: false, // Show clear button
                         show_place_type: true, // Show place type in suggestions
-                        distance: true, // Show distance to each suggestion (mutually exclusive with show_place_type
+                        distance: true, // Show distance to each suggestion
                         sort_by_distance: true, // New option
 
                         // classes: { // Override specific classes
@@ -129,8 +129,7 @@
                     const currentOptions = myPac.getOptions();
                     const newShowPlaceType = !currentOptions.show_place_type;
                     myPac.setOptions({
-                        show_place_type: newShowPlaceType,
-                        distance: !newShowPlaceType // They are mutually exclusive
+                        show_place_type: newShowPlaceType
                     });
                     console.log('Show Place Type toggled to:', newShowPlaceType);
                 });
@@ -166,8 +165,15 @@
 
 
     <div style="width:850px; margin:0 auto;">
+        <form class="flex flex-col gap-4" onsubmit="console.log('Form submitted');return false;">
+            <input type="text" id="pac-input" name="pac-input"
+                class="border-1 w-full rounded-md border-0 shadow-sm bg-gray-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm"
+                placeholder="Start typing your address...">
 
-        <div id="my-pac-container"></div>
+
+                <div id="my-pac-container"></div>
+        </form>
+
 
 
         <div class="flex flex-wrap items-center mt-10 gap-4" style="margin-top:2rem">

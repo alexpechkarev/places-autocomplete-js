@@ -275,6 +275,7 @@ var e = {
 		this.#s.appendChild(this.#o);
 		let r = document.createElement("div");
 		r.className = this.#i.classes.kbd_container, this.#d = document.createElement("kbd"), this.#d.className = this.#i.classes.kbd_escape, this.#d.textContent = "Esc", r.appendChild(this.#d), this.#f = document.createElement("kbd"), this.#f.className = this.#i.classes.kbd_up, this.#f.innerHTML = "&#8593;", r.appendChild(this.#f), this.#p = document.createElement("kbd"), this.#p.className = this.#i.classes.kbd_down, this.#p.innerHTML = "&#8595;", r.appendChild(this.#p), this.#s.appendChild(r), this.#c = document.createElement("ul"), this.#c.id = "pacSuggestions", this.#c.className = this.#i.classes.ul, this.#c.style.display = "none", this.#c.setAttribute("role", "listbox"), this.#c.setAttribute("aria-labelledby", this.#o.id), this.#s.appendChild(this.#c), this.#c.addEventListener("click", (e) => {
+			e.preventDefault();
 			let t = e.target.closest("li");
 			if (t && this.#c.contains(t)) {
 				let e = Array.from(this.#c.children).indexOf(t);

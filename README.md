@@ -25,6 +25,7 @@ See a more comprehensive live demo of the library in action: [pacservice.uk](htt
 - **Optimised User Experience:** Implements **Debounced Input** to limit API calls while the user is typing, ensuring a smooth and responsive search experience.
 - **Enhanced Readability:** Provides **Suggestion Highlighting** to automatically bold the portion of text matching the user's input, making suggestions easier to scan.
 - **Visual Categorisation:** Includes **Place Type Icons** (🏪 Shopping, 🍽️ Dining, 🏨 Lodging, etc.) to help users quickly identify the type of place in suggestions.
+- **Location Awareness:** Calculates and displays the **Distance** to suggestions, and optionally **Sorts by Distance**, when an origin point is provided.
 - **Flexible Styling:** Offers **Customisable Styling** allowing you to easily override default styles or apply your own using CSS classes. Built with sensible defaults.
 - **Robust Event Handling:** Provides `onResponse` and `onError` callbacks for comprehensive control over successful place selections and error scenarios.
 - **Imperative API:** Programmatically control the component with methods like `clear()`, `focus()`, `setInputValue()`, `getRequestParams()`, and more.
@@ -188,7 +189,8 @@ Passed within the main configuration object under the `options` key.
 | `classes`        | `object`          | _(See default classes below)_     | Object to override default CSS classes for styling. See "Styling" section.                                                                                    |
 | `clear_input`    | `boolean`         | `false`                           | If `true`, clears the input field after a suggestion is selected. If `false` (default), the input field retains the `formattedAddress` of the selected place. |
 | `response_type` | `'json' \| 'place'` | `'json'` | Return format: `'json'` for plain JSON object (default), `'place'` for full Google Maps Place instance with method access. |
-| `show_place_type` | `boolean` | `false` | Whether to display icons representing the place type (🏪, 🍽️, etc.). **Mutually exclusive with `distance`.** |
+| `show_place_type` | `boolean` | `false` | Whether to display icons representing the place type (🏪, 🍽️, etc.). Can be used together with `distance`. |
+| `sort_by_distance` | `boolean` | `false` | Whether to sort the returned suggestions by their distance from the `origin` point. Requires `distance: true` and `origin` to be set in `requestParams`. |
 
 ### Styling
 

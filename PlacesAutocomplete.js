@@ -1244,7 +1244,7 @@ export class PlacesAutocomplete {
     }
   }
 
-  // Helper method to calculate text similarity (Dice's Coefficient)
+  // Helper method to calculate text similarity (Overlap Coefficient)
   #getSimilarity(str1, str2) {
     // Normalize strings: lowercase, remove non-alphanumeric chars, normalize spaces
     const normalize = (str) =>
@@ -1261,8 +1261,6 @@ export class PlacesAutocomplete {
     if (clean1.length < 2 || clean2.length < 2) return 0.0;
 
     const getBigrams = (str) => {
-      // Using an array instead of a Set for true Dice Coefficient
-      // (Sets break on words with repeating letters like 'Colosseum' or 'Mississippi')
       const bigrams = [];
       for (let i = 0; i < str.length - 1; i++) {
         bigrams.push(str.substring(i, i + 2));
@@ -1273,20 +1271,23 @@ export class PlacesAutocomplete {
     const bigrams1 = getBigrams(clean1);
     const bigrams2 = getBigrams(clean2);
 
+    // Store original lengths for the math equation
+    const len1 = bigrams1.length;
+    const len2 = bigrams2.length;
+
     let intersection = 0;
-    // Count matches and remove from the second array to prevent double-counting
     for (const bigram of bigrams1) {
       const index = bigrams2.indexOf(bigram);
       if (index > -1) {
         intersection++;
-        bigrams2.splice(index, 1);
+        // Nullify instead of splicing to preserve performance and prevent index shifting
+        bigrams2[index] = null;
       }
     }
 
-    // Standard Dice's Coefficient Formula
-    return (
-      (2.0 * intersection) / (bigrams1.length + bigrams2.length + intersection)
-    );
+    // THE FIX: Use Overlap Coefficient instead of Dice's
+    // Formula: intersection / min(|A|, |B|)
+    return intersection / Math.min(len1, len2);
   }
 
   /**

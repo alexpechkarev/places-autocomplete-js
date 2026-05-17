@@ -458,12 +458,12 @@ var e = {
 			let t = [];
 			for (let n = 0; n < e.length - 1; n++) t.push(e.substring(n, n + 2));
 			return t;
-		}, o = a(r), s = a(i), c = 0;
+		}, o = a(r), s = a(i), c = o.length, l = s.length, u = 0;
 		for (let e of o) {
 			let t = s.indexOf(e);
-			t > -1 && (c++, s.splice(t, 1));
+			t > -1 && (u++, s[t] = null);
 		}
-		return 2 * c / (o.length + s.length + c);
+		return u / Math.min(c, l);
 	}
 	async addFromAiSuggestion(e) {
 		try {

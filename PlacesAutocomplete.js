@@ -1244,6 +1244,108 @@ export class PlacesAutocomplete {
     }
   }
 
+  // Helper method to calculate text similarity (Dice's Coefficient)
+  #getSimilarity(str1, str2) {
+    // Normalize strings: lowercase, remove non-alphanumeric chars, normalize spaces
+    const normalize = (str) =>
+      str
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const clean1 = normalize(str1);
+    const clean2 = normalize(str2);
+
+    if (clean1 === clean2) return 1.0;
+    if (clean1.length < 2 || clean2.length < 2) return 0.0;
+
+    const getBigrams = (str) => {
+      // Using an array instead of a Set for true Dice Coefficient
+      // (Sets break on words with repeating letters like 'Colosseum' or 'Mississippi')
+      const bigrams = [];
+      for (let i = 0; i < str.length - 1; i++) {
+        bigrams.push(str.substring(i, i + 2));
+      }
+      return bigrams;
+    };
+
+    const bigrams1 = getBigrams(clean1);
+    const bigrams2 = getBigrams(clean2);
+
+    let intersection = 0;
+    // Count matches and remove from the second array to prevent double-counting
+    for (const bigram of bigrams1) {
+      const index = bigrams2.indexOf(bigram);
+      if (index > -1) {
+        intersection++;
+        bigrams2.splice(index, 1);
+      }
+    }
+
+    // Standard Dice's Coefficient Formula
+    return (
+      (2.0 * intersection) / (bigrams1.length + bigrams2.length + intersection)
+    );
+  }
+
+  /**
+   * Programmatically resolve an AI suggestion string using Places API (New).
+   * @param {string} searchQuery - The highly specific query (e.g. "Colosseum, Rome, Italy")
+   * @returns {Promise<boolean>} - Returns true on success, false on failure
+   */
+  async addFromAiSuggestion(searchQuery) {
+    try {
+      const { Place } = await google.maps.importLibrary("places");
+
+      const request = {
+        textQuery: searchQuery,
+        language: this.#options.language,
+        region: this.#options.region,
+        locationRestriction: this.#options.location_restriction,
+        // ADDED formattedAddress to the fields array
+        fields: ["id", "displayName", "formattedAddress"],
+      };
+
+      const { places } = await Place.searchByText(request);
+
+      if (places && places.length > 0) {
+        let bestPlace = places[0];
+        let highestSimilarity = 0;
+
+        for (const p of places) {
+          const name = p.displayName?.text || "";
+          const address = p.formattedAddress || "";
+
+          // Combine name and address to match the specificity of the AI query
+          const fullPlaceString = `${name} ${address}`;
+
+          const similarity = this.#getSimilarity(searchQuery, fullPlaceString);
+
+          if (similarity > highestSimilarity) {
+            highestSimilarity = similarity;
+            bestPlace = p;
+          }
+        }
+
+        // 0.35 is usually a very safe threshold for normalized bigrams
+        if (highestSimilarity > 0.35) {
+          // Map back to the expected payload for your existing Autocomplete flow
+          this._onPlaceSelected(bestPlace);
+          return true; // Success
+        } else {
+          console.warn("Similarity too low to auto-add. Threshold failed.");
+          return false; // Failed threshold
+        }
+      } else {
+        console.warn("AI Suggestion returned no results from Google Maps.");
+        return false; // API returned empty
+      }
+    } catch (error) {
+      console.error("Error resolving AI Suggestion: ", error);
+      return false; // Fatal error
+    }
+  }
   /**
    * Clears the autocomplete input field and suggestions list.
    * This method resets the state of the autocomplete widget,

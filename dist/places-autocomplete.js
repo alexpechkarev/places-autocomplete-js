@@ -450,6 +450,46 @@ var e = {
 			console.error("Error in setInputValue:", e), this.#_(e);
 		}
 	}
+	#w(e, t) {
+		let n = (e) => e.toLowerCase().replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim(), r = n(e), i = n(t);
+		if (r === i) return 1;
+		if (r.length < 2 || i.length < 2) return 0;
+		let a = (e) => {
+			let t = [];
+			for (let n = 0; n < e.length - 1; n++) t.push(e.substring(n, n + 2));
+			return t;
+		}, o = a(r), s = a(i), c = 0;
+		for (let e of o) {
+			let t = s.indexOf(e);
+			t > -1 && (c++, s.splice(t, 1));
+		}
+		return 2 * c / (o.length + s.length + c);
+	}
+	async addFromAiSuggestion(e) {
+		try {
+			let { Place: t } = await google.maps.importLibrary("places"), n = {
+				textQuery: e,
+				language: this.#i.language,
+				region: this.#i.region,
+				locationRestriction: this.#i.location_restriction,
+				fields: [
+					"id",
+					"displayName",
+					"formattedAddress"
+				]
+			}, { places: r } = await t.searchByText(n);
+			if (r && r.length > 0) {
+				let t = r[0], n = 0;
+				for (let i of r) {
+					let r = `${i.displayName?.text || ""} ${i.formattedAddress || ""}`, a = this.#w(e, r);
+					a > n && (n = a, t = i);
+				}
+				return n > .35 ? (this._onPlaceSelected(t), !0) : (console.warn("Similarity too low to auto-add. Threshold failed."), !1);
+			} else return console.warn("AI Suggestion returned no results from Google Maps."), !1;
+		} catch (e) {
+			return console.error("Error resolving AI Suggestion: ", e), !1;
+		}
+	}
 	clear() {
 		this.#u.clear(), this._reset(!0);
 	}

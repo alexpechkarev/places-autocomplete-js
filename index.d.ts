@@ -126,4 +126,11 @@ export class PlacesAutocomplete {
    * This should be called to clean up the instance when it's no longer needed.
    */
   destroy(): void;
+
+  /**
+   * Adds a place to the autocomplete suggestions based on an AI-generated suggestion.
+   * @param searchQuery The search query for the AI suggestion.
+   * @returns A promise that resolves to true if the suggestion was successfully added, false otherwise.
+   */
+  addFromAiSuggestion(searchQuery: string): Promise<boolean>;
 }

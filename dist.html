@@ -7,15 +7,15 @@
 
 
 
-    <!-- <link href="./dist/places-autocomplete.css" rel="stylesheet"> -->
-    <link href="./places-autocomplete.css" rel="stylesheet">
+    <link href="./dist/places-autocomplete.css" rel="stylesheet">
+    <!-- <link href="./places-autocomplete.css" rel="stylesheet"> -->
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css"> -->
 
 
     <script type="module">
-         import { PlacesAutocomplete } from './PlacesAutocomplete.js';
-        // import { PlacesAutocomplete } from './dist/places-autocomplete.js';
+        //  import { PlacesAutocomplete } from './PlacesAutocomplete.js';
+        import { PlacesAutocomplete } from './dist/places-autocomplete.js';
         //import './dist/places-autocomplete.css';
         // import { PlacesAutocomplete } from 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.js';
         // import 'https://cdn.jsdelivr.net/npm/places-autocomplete-js@latest/dist/places-autocomplete.css';
@@ -60,8 +60,8 @@
                         includedRegionCodes: ['IT'], // Restrict search to Great Britain.
                         includedPrimaryTypes: ['establishment'], // Restrict to specific place types.
                         // language: 'en-gb', // Preferred language for results.
-                         region: 'IT', // Region biasing (GB).
-                         origin: {
+                        region: 'IT', // Region biasing (GB).
+                        origin: {
                             lat: 41.8967068,
                             lng: 12.4822025
                         },
@@ -71,12 +71,12 @@
                             east: 12.518448420212078,
                             west: 12.445956579787921
                         },
-                    //     locationBias: {
-                    //       circle: {
-                    //           center: { lat: 41.8967068, lng: 12.4822025 },
-                    //           radius: 5000 // radius in meters
-                    //       }
-                    //   }
+                        //     locationBias: {
+                        //       circle: {
+                        //           center: { lat: 41.8967068, lng: 12.4822025 },
+                        //           radius: 5000 // radius in meters
+                        //       }
+                        //   }
                     },
                     fetchFields: ["formattedAddress", "addressComponents"], // Optional: Specify which fields to fetch
                 });
@@ -175,18 +175,22 @@
 
 
     <div style="width:850px; margin:0 auto;">
-        <form class="flex flex-col gap-4" onsubmit="console.log('Form submitted');return false;">
+
+        Using dist sources.
+        <form class="flex flex-col gap-4"
+            onsubmit="console.log('Form submitted');return false;">
             <input type="text" id="pac-input" name="pac-input"
                 class="border-1 w-full rounded-md border-0 shadow-sm bg-gray-100 px-4 py-2.5 pl-10 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 sm:text-sm"
                 placeholder="Start typing your address...">
 
 
-                <div id="my-pac-container"></div>
+            <div id="my-pac-container"></div>
         </form>
 
 
 
-        <div class="flex flex-wrap items-center mt-10 gap-4" style="margin-top:2rem">
+        <div class="flex flex-wrap items-center mt-10 gap-4"
+            style="margin-top:2rem">
             <button type="button" id="btnClear"
                 class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Clear</button>
 
@@ -225,13 +229,14 @@
                 class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Destroy</button>
         </div>
 
-        <div class="flex my-10 gap-4" style="margin-top:2rem">
+                <div class="flex my-10 gap-4" style="margin-top:2rem">
             <input type="text" id="ai-suggestion-input">
             <button type="button" id="addAiSuggestion">Search</button>
         </div>
 
 
-        <div class="rounded-md bg-gray-100 mt-4 p-4 hidden" id="response-container">
+        <div class="rounded-md bg-gray-100 mt-4 p-4 hidden"
+            id="response-container">
 
             <pre class="">
                 <code id="response-message" class="text-sm font-mono"></code>

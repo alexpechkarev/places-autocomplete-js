@@ -224,9 +224,9 @@ var e = {
 			this.#i.distance && !this.#a.origin && this.#i.debug && console.warn("PlacesAutocomplete: 'distance' option is enabled but no 'origin' is provided in requestParams. Distances will be null."), this.#a.input = e;
 			try {
 				let { suggestions: e } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(this.#a);
-				e && e.length > 0 ? (this.#i.sort_by_distance && this.#i.distance && e.sort((e, t) => (e.placePrediction?.distanceMeters ?? e.distanceMeters ?? Infinity) - (t.placePrediction?.distanceMeters ?? t.distanceMeters ?? Infinity)), this.#u.set(t, e), await this._renderSuggestions(e)) : (this._reset(), this.#o.setAttribute("aria-expanded", "false"), this._announceStatus("No suggestions found."));
+				e && e.length > 0 ? (this.#i.sort_by_distance && this.#i.distance && e.sort((e, t) => (e.placePrediction?.distanceMeters ?? e.distanceMeters ?? Infinity) - (t.placePrediction?.distanceMeters ?? t.distanceMeters ?? Infinity)), this.#u.set(t, e), await this._renderSuggestions(e)) : (this._clearSuggestions(), this.#o.setAttribute("aria-expanded", "false"), this._announceStatus("No suggestions found."));
 			} catch (e) {
-				this.#_(e), this._reset();
+				this.#_(e), this._clearSuggestions();
 			}
 		}, this.#i.debounce);
 	}
@@ -301,6 +301,9 @@ var e = {
 		} catch (e) {
 			console.error("Error initializing Google Places Autocomplete:", e), this.#_(/* @__PURE__ */ Error("Google Maps Places library not available."));
 		}
+	}
+	_clearSuggestions() {
+		this.#m = [], this.#h = -1, this.#c && (this.#c.innerHTML = "", this.#c.style.display = "none");
 	}
 	_reset(e = !1, t = null) {
 		this.#h = -1, this.#o && this.#i.clear_input == 0 && t && t.formattedAddress ? this.#o.value = t.formattedAddress : this.#o && (this.#o.value = ""), this.#o && (this.#o.setAttribute("aria-expanded", "false"), this.#o.setAttribute("aria-activedescendant", ""), this.#o.blur()), this.#m = [], this.#h = -1, this.#c && (this.#c.innerHTML = "", this.#c.style.display = "none"), e && this._refreshToken();

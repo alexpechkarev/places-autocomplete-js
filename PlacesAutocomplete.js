@@ -265,14 +265,14 @@ export class PlacesAutocomplete {
           this.#cache.set(cacheKey, suggestions);
           await this._renderSuggestions(suggestions);
         } else {
-          // No suggestions found
-          this._reset(); // Clear any old suggestions
+          // No suggestions found: clear dropdown list without erasing user's input or blurring
+          this._clearSuggestions();
           this.#inputElement.setAttribute("aria-expanded", "false");
           this._announceStatus("No suggestions found.");
         }
       } catch (error) {
         this.#onErrorCallback(error);
-        this._reset();
+        this._clearSuggestions();
       }
     }, this.#options.debounce); // Default debounce to 100ms if not set
   }
@@ -584,6 +584,18 @@ export class PlacesAutocomplete {
       this.#onErrorCallback(
         new Error("Google Maps Places library not available."),
       );
+    }
+  }
+
+  /**
+   * Clears only the suggestion list elements and dropdown without resetting the input field or blurring.
+   */
+  _clearSuggestions() {
+    this.#allSuggestions = [];
+    this.#currentSuggestion = -1;
+    if (this.#ul) {
+      this.#ul.innerHTML = "";
+      this.#ul.style.display = "none";
     }
   }
 
